@@ -1,0 +1,5 @@
+@for $i from 0 through 20 {
+  .appear:nth-child(#{$i}) {
+    animation-delay: #{$i * 0.1}s;
+  }
+}

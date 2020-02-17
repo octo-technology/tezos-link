@@ -1,30 +1,21 @@
-import * as PropTypes from 'prop-types'
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { Button } from 'src/App/App.components/Button/Button.controller'
+import {Link} from 'react-router-dom'
+import {Button} from 'src/App/App.components/Button/Button.controller'
 
-import { Error404Card, Error404Styled, Error404Title, Error404Message } from './Error404.style'
+import {CreateButton, HomeText, HomeViewStyled, HomeViewTitle} from './Home.style'
 
-type Error404ViewProps = { error: string }
-
-export const Error404View = ({ error }: Error404ViewProps) => (
-  <Error404Styled>
-    <Error404Title>
-      <h1>404</h1>
-    </Error404Title>
-    <Error404Card>
-      <Error404Message>{error}</Error404Message>
-      <Link to="/">
-        <Button text="Go to Dashboard" icon="cards" />
-      </Link>
-    </Error404Card>
-  </Error404Styled>
+export const Home = () => (
+  <HomeViewStyled>
+    <HomeViewTitle>
+      <h1>Your gateway to the Tezos network</h1>
+    </HomeViewTitle>
+      <HomeText>
+          <h3>We provide scalable API access to the Tezos network and usage analytics for your projects</h3>
+      </HomeText>
+      <CreateButton>
+          <Link to="/new-project">
+              <Button text="CREATE PROJECT" icon="cards" />
+          </Link>
+      </CreateButton>
+  </HomeViewStyled>
 )
-
-Error404View.propTypes = {
-  error: PropTypes.string
-}
-
-Error404View.defaultProps = {
-  error: 'Not Found'
-}

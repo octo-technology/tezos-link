@@ -3,6 +3,9 @@
 
 # Project
 bin/*
+**/node_modules
+**/dist
+frontend/build
 
 # IDE
 .idea/

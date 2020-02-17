@@ -1,0 +1,22 @@
+export const postsMock = [
+  { _id: 'mock0' },
+  { _id: 'mock1' },
+  { _id: 'mock2' },
+  { _id: 'mock3' },
+  { _id: 'mock4' },
+  { _id: 'mock5' },
+  { _id: 'mock6' },
+  { _id: 'mock7' },
+  { _id: 'mock8' },
+  { _id: 'mock9' },
+  { _id: 'mock10' },
+  { _id: 'mock11' },
+  { _id: 'mock12' },
+  { _id: 'mock13' },
+  { _id: 'mock14' },
+  { _id: 'mock15' },
+  { _id: 'mock16' },
+  { _id: 'mock17' },
+  { _id: 'mock18' },
+  { _id: 'mock19' }
+]

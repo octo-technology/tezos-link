@@ -1,20 +1,18 @@
 import styled from 'styled-components/macro'
 
-import { AnimatedCard, FadeInFromTop } from '../../styles'
+import { FadeInFromTop } from '../../styles'
 
-export const Error404Styled = styled.div`
-  margin: 100px auto 20px auto;
+export const HomeViewStyled = styled.div`
+  margin: 200px auto 20px auto;
 `
 
-export const Error404Card = styled(AnimatedCard)`
-  width: 400px;
-  max-width: 100vw;
-  padding: 20px;
-  text-align: center;
+export const HomeViewTitle = styled(FadeInFromTop)``
+
+export const HomeText = styled(FadeInFromTop)`
+  margin-top: 10px;
 `
 
-export const Error404Title = styled(FadeInFromTop)``
-
-export const Error404Message = styled.div`
-  margin-bottom: 18px;
+export const CreateButton = styled(FadeInFromTop)`
+  width: max-content;
+  margin: 30px auto;
 `
