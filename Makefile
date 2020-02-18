@@ -45,4 +45,4 @@ docker-tag:
 	docker tag $(BACKEND) ${REGISTRY}:$(BACKEND)-dev
 docs:
 	if ! which swag; then go get -u github.com/swaggo/swag/cmd/swag ; fi
-	swag init --generalInfo rest_controller.go --dir internal/$(BACKEND)/infrastructure/rest --output api-docs/$(BACKEND)
+	swag init --generalInfo rest_controller.go --dir internal/$(BACKEND)/infrastructure/rest --output api/$(BACKEND)

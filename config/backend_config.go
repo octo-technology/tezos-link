@@ -8,7 +8,7 @@ import (
     "log"
 )
 
-type Cfg struct {
+type BackendConf struct {
     Env string
     Debug bool
     Server struct {
@@ -26,21 +26,21 @@ type Cfg struct {
     }
 }
 
-var Conf Cfg
+var BackendConfig BackendConf
 
-func Parse(cfg string) (*Cfg, error) {
-    conf := Cfg{}
+func ParseBackendConf(cfg string) (*BackendConf, error) {
+    conf := BackendConf{}
 
     if data, err := ioutil.ReadFile(cfg); err != nil {
-        log.Fatalf("Could not read config file=%s because of %s.", cfg, err)
+        log.Fatalf("Could not read config file:%s because of %s.", cfg, err)
     } else {
         if _, err := toml.Decode(string(data), &conf); err != nil {
             return nil, errors.New("Could not read TOML config")
         }
     }
-    Conf = conf
+    BackendConfig = conf
     if conf.Debug {
-        log.Println("Read config=", fmt.Sprintf("%+v", conf))
+        log.Println("Read config: ", fmt.Sprintf("%+v", conf))
     }
     return &conf, nil
 }

@@ -68,12 +68,12 @@ func buildControllerWithProjectUseCaseError(error error, ucMethod string) *restC
     return rcc
 }
 
-func buildControllerWithProjectUseCaseReturning(claim *model.Project, ucMethod string) *restController {
+func buildControllerWithProjectUseCaseReturning(project *model.Project, ucMethod string) *restController {
     mockHealthUsecase := &mockHealthUsecase{}
     mockProjectUsecase := &mockProjectUsecase{}
     mockProjectUsecase.
         On(ucMethod, mock.Anything).
-        Return(claim).
+        Return(project).
         Twice()
     rcc := NewRestController(chi.NewRouter(), mockProjectUsecase, mockHealthUsecase)
     rcc.Initialize()

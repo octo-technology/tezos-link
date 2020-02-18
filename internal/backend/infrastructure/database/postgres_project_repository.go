@@ -64,11 +64,11 @@ func (pg postgresProjectRepository) Save(name string, key string) (*model.Projec
     return &r, nil
 }
 
-func (pg postgresProjectRepository) UpdateById(claim *model.Project) error {
+func (pg postgresProjectRepository) UpdateById(project *model.Project) error {
     panic("implement me")
 }
 
-func (pg postgresProjectRepository) DeleteById(claim *model.Project) error {
+func (pg postgresProjectRepository) DeleteById(project *model.Project) error {
     panic("implement me")
 }
 

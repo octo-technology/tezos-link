@@ -2,8 +2,8 @@ package model
 
 type Project struct {
     ID   int64  `json:"id"`
-    Name string `json:"title"`
-    Key  string `json:"title"`
+    Name string `json:"name"`
+    Key  string `json:"key"`
 }
 
 func NewProject(ID int64, name string, key string) Project {

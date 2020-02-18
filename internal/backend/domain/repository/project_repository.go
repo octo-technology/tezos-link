@@ -6,7 +6,7 @@ type ProjectRepository interface {
     FindAll() ([]*model.Project, error)
     FindById(id int64) (*model.Project, error)
     Save(name string, key string) (*model.Project, error)
-    UpdateById(claim *model.Project) error
-    DeleteById(claim *model.Project) error
+    UpdateById(project *model.Project) error
+    DeleteById(project *model.Project) error
     Ping() error
 }

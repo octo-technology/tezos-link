@@ -47,7 +47,7 @@ func (rc *restController) Initialize() {
     // Private routes
     rc.router.Group(func(r chi.Router){
         // TODO: Add auth
-        //tokenAuth := jwtauth.New("HS256", []byte(config.Conf.Jwt.SignKey), nil)
+        //tokenAuth := jwtauth.New("HS256", []byte(config.BackendConfig.Jwt.SignKey), nil)
         //r.Use(jwtauth.Verifier(tokenAuth))
         //r.Use(jwtauth.Authenticator)
 
