@@ -1,6 +1,6 @@
 variable "REGION" {
-  type    = string
-  default = "europe-west1"
+  type    = "string"
+  default = "europe-west-1"
 }
 
 variable "ENV" {
