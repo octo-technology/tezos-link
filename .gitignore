@@ -9,3 +9,12 @@ frontend/build
 
 # IDE
 .idea/
+.vscode/
+
+# Terragrunt
+**/.terragrunt-cache
+
+# Terraform
+**/.terraform
+**/*.tfstate
+**/*.tfstate.backup
