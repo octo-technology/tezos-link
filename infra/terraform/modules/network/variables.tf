@@ -8,6 +8,16 @@ variable "ENV" {
   default = "dev"
 }
 
+variable "PROJECT_NAME" {
+  type = "string"
+  default = "tezos-link"
+}
+
+variable "BUILD_WITH" {
+  type = "string"
+  default = "terraform"
+}
+
 variable "VPC_CIDR" {
   type    = "string"
   default = "10.1.0.0/16"

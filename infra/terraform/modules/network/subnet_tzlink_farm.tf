@@ -6,9 +6,9 @@ resource "aws_subnet" "tzlink_farm" {
   map_public_ip_on_launch = true
   tags {
     Name        = format("tzlink-%s-farm", var.ENV)
-    Project     = "tezos-link"
+    Project     = var.PROJECT_NAME
     Environment = var.ENV
-    BuildWith   = "terraform"
+    BuildWith   = var.BUILD_WITH
     Trigramme   = "adbo"
   }
 }

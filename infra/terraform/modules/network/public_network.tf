@@ -3,9 +3,9 @@ resource "aws_internet_gateway" "tzlink" {
 
   tags = {
     Name        = format("tzlink-%s", var.ENV)
-    Project     = "tezos-link"
+    Project     = var.PROJECT_NAME
     Environment = var.ENV
-    BuildWith   = "terraform"
+    BuildWith   = var.BUILD_WITH
     Trigramme   = "adbo"
   }
 }
@@ -15,9 +15,9 @@ resource "aws_route_table" "tzlink_public" {
 
   tags = {
     Name        = format("tzlink-%s-public", var.ENV)
-    Project     = "tezos-link"
+    Project     = var.PROJECT_NAME
     Environment = var.ENV
-    BuildWith   = "terraform"
+    BuildWith   = var.BUILD_WITH
     Trigramme   = "adbo"
   }
 }
