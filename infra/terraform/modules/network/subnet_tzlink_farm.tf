@@ -5,7 +5,7 @@ resource "aws_subnet" "tzlink_farm_a" {
 
   map_public_ip_on_launch = true
   tags = {
-    Name        = format("tzlink-%s-farm", var.ENV)
+    Name        = format("tzlink-%s-farm-a", var.ENV)
     Project     = var.PROJECT_NAME
     Environment = var.ENV
     BuildWith   = var.BUILD_WITH
@@ -24,7 +24,7 @@ resource "aws_subnet" "tzlink_farm_b" {
 
   map_public_ip_on_launch = true
   tags = {
-    Name        = format("tzlink-%s-farm", var.ENV)
+    Name        = format("tzlink-%s-farm-b", var.ENV)
     Project     = var.PROJECT_NAME
     Environment = var.ENV
     BuildWith   = var.BUILD_WITH
