@@ -9,7 +9,6 @@ resource "aws_subnet" "tzlink_farm_a" {
     Project     = var.PROJECT_NAME
     Environment = var.ENV
     BuildWith   = var.BUILD_WITH
-    Trigramme   = "adbo"
   }
 }
 
@@ -29,7 +28,6 @@ resource "aws_subnet" "tzlink_farm_b" {
     Project     = var.PROJECT_NAME
     Environment = var.ENV
     BuildWith   = var.BUILD_WITH
-    Trigramme   = "adbo"
   }
 }
 

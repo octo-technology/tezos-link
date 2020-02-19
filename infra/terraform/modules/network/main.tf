@@ -6,6 +6,5 @@ resource "aws_vpc" "tzlink" {
     Project     = "tezos-link"
     Environment = var.ENV
     BuildWith   = "terraform"
-    Trigramme   = "adbo"
   }
 }

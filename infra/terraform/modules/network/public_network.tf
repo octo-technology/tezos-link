@@ -6,7 +6,6 @@ resource "aws_internet_gateway" "tzlink" {
     Project     = var.PROJECT_NAME
     Environment = var.ENV
     BuildWith   = var.BUILD_WITH
-    Trigramme   = "adbo"
   }
 }
 
@@ -18,7 +17,6 @@ resource "aws_route_table" "tzlink_public" {
     Project     = var.PROJECT_NAME
     Environment = var.ENV
     BuildWith   = var.BUILD_WITH
-    Trigramme   = "adbo"
   }
 }
 
