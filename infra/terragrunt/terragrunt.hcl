@@ -1,10 +1,11 @@
 remote_state {
   backend = "s3"
   config = {
-      bucket = "tezos-link-tfstate"
+      bucket = "tzlink-tfstate"
       key    = "${get_env("TF_VAR_ENV", "dev")}/${path_relative_to_include()}/terraform.tfstate"
       encrypt = true
       region  = "eu-west-1"
+      dynamodb_table = "tzlink-tfstate-lock"
   }
 }
 

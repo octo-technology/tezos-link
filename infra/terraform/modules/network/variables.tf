@@ -1,29 +1,29 @@
 variable "REGION" {
-  type    = "string"
+  type    = string
   default = "europe-west-1"
 }
 
 variable "ENV" {
-  type    = "string"
+  type    = string
   default = "dev"
 }
 
 variable "PROJECT_NAME" {
-  type = "string"
+  type = string
   default = "tezos-link"
 }
 
 variable "BUILD_WITH" {
-  type = "string"
+  type = string
   default = "terraform"
 }
 
 variable "VPC_CIDR" {
-  type    = "string"
+  type    = string
   default = "10.1.0.0/16"
 }
 
 variable "SUBNET_TZ_FARM_CIDR" {
-  type    = "string"
+  type    = string
   default = "10.1.0.0/24"
 }

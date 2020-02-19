@@ -1,4 +1,4 @@
-REGION = "europe-west1"
+REGION = "eu-west-1"
 
 ENV = "dev"
 

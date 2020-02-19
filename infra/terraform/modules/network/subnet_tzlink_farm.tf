@@ -4,7 +4,7 @@ resource "aws_subnet" "tzlink_farm_a" {
   availability_zone = "${var.REGION}a"
 
   map_public_ip_on_launch = true
-  tags {
+  tags = {
     Name        = format("tzlink-%s-farm", var.ENV)
     Project     = var.PROJECT_NAME
     Environment = var.ENV
@@ -24,7 +24,7 @@ resource "aws_subnet" "tzlink_farm_b" {
   availability_zone = "${var.REGION}b"
 
   map_public_ip_on_launch = true
-  tags {
+  tags = {
     Name        = format("tzlink-%s-farm", var.ENV)
     Project     = var.PROJECT_NAME
     Environment = var.ENV
