@@ -5,7 +5,7 @@ host = "127.0.0.1"
 port = 8765
 
 [server]
-port = 8899
+port = 8001
 
 [proxy]
 readTimeout = 1

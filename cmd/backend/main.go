@@ -23,7 +23,7 @@ func init() {
     if *configPath == "" {
         log.Fatal("Program argument --conf is required")
     } else {
-        _, err := config.Parse(*configPath)
+        _, err := config.ParseBackendConf(*configPath)
         if err != nil {
             log.Fatalf("Could not load config from %s. Reason: %s", *configPath, err)
         }
@@ -46,13 +46,13 @@ func main() {
     // HTTP API
     restController := rest.NewRestController(r, pu, hu)
     restController.Initialize()
-    restController.Run(config.Conf.Server.Port)
+    restController.Run(config.BackendConfig.Server.Port)
 }
 
 func runMigrations() {
     m, err := migrate.New(
-        config.Conf.Migration.Path,
-        config.Conf.Db.Url)
+        config.BackendConfig.Migration.Path,
+        config.BackendConfig.Db.Url)
     if err != nil {
         log.Fatal("Could not apply db migration: ", err)
     }

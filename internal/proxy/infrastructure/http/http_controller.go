@@ -2,6 +2,7 @@ package http
 
 import (
     "fmt"
+    "github.com/go-chi/chi"
     "github.com/octo-technology/tezos-link/backend/config"
     "github.com/octo-technology/tezos-link/backend/internal/proxy/domain/model"
     "github.com/octo-technology/tezos-link/backend/internal/proxy/usecases"
@@ -12,54 +13,40 @@ import (
     "log"
     "net/http"
     "net/http/httputil"
-    "net/url"
     "regexp"
-    "strconv"
+    "strings"
     "time"
 )
 
 type httpController struct {
+    router              *chi.Mux
     uc                  usecases.ProxyUsecaseInterface
     reverseProxy        *httputil.ReverseProxy
+    httpServer          *http.Server
     UUIDRegexp          *regexp.Regexp
-    RPCPathRegexp       *regexp.Regexp
 }
 
 const (
     UUIDRegex       = `(?m)([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})`
-    RPCPathRegexp   = `[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(.*)`
 )
 
-func NewHttpController(uc usecases.ProxyUsecaseInterface) *httpController {
-    reverseUrl, err := url.Parse("http://" + config.ProxyConfig.Tezos.Host + ":" + strconv.Itoa(config.ProxyConfig.Tezos.Port))
-    if err != nil {
-        log.Fatal(fmt.Sprintf("could not read blockchain node reverse url from configuration: %s", err))
-    }
-
+func NewHttpController(uc usecases.ProxyUsecaseInterface, rp *httputil.ReverseProxy, srv *http.Server) *httpController {
     return &httpController{
         uc:             uc,
-        reverseProxy:   httputil.NewSingleHostReverseProxy(reverseUrl),
+        reverseProxy:   rp,
+        httpServer:     srv,
         UUIDRegexp:     regexp.MustCompile(UUIDRegex),
-        RPCPathRegexp:  regexp.MustCompile(RPCPathRegexp),
     }
 }
 
-func (p *httpController) Run() {
-    srv := http.Server{
-        Addr:         ":" + strconv.Itoa(config.ProxyConfig.Server.Port),
-        ReadTimeout:  time.Duration(config.ProxyConfig.Proxy.ReadTimeout) * time.Second,
-        WriteTimeout: time.Duration(config.ProxyConfig.Proxy.WriteTimeout) * time.Second,
-        IdleTimeout:  time.Duration(config.ProxyConfig.Proxy.IdleTimeout) * time.Second,
-    }
+func (p *httpController) Initialize() {
+    basePath := "v1/"
     middleware := setupLimiterMiddleware()
-    handlerFunc := handleProxying(p)
+    http.Handle("/" + basePath, middleware.Handler(http.HandlerFunc(handleProxying(p, basePath))))
+}
 
-    http.Handle("/v1/", middleware.Handler(http.HandlerFunc(handlerFunc)))
-
-    err := srv.ListenAndServe()
-    if err != nil {
-        log.Fatal(fmt.Sprintf("could not launch proxy: %s", err))
-    }
+func (p *httpController) Run() {
+    log.Fatal(p.httpServer.ListenAndServe())
 }
 
 func setupLimiterMiddleware() *stdlib.Middleware {
@@ -72,11 +59,11 @@ func setupLimiterMiddleware() *stdlib.Middleware {
     return middleware
 }
 
-func handleProxying(p *httpController) func(w http.ResponseWriter, req *http.Request) {
+func handleProxying(p *httpController, basePath string) func(w http.ResponseWriter, req *http.Request) {
     return func(w http.ResponseWriter, req *http.Request) {
         var request = model.NewRequest(
-            getRPCFromPath(req.URL.Path, p.UUIDRegexp),
-            getUUIDFromPath(req.URL.Path, p.RPCPathRegexp),
+            getRPCFromPath(basePath, req.URL.Path, p.UUIDRegexp),
+            getUUIDFromPath(req.URL.Path, p.UUIDRegexp),
             model.MethodFromString(req.Method),
             req.RemoteAddr)
         logrus.Debug(request.Method, request.Path, request.UUID, request.RemoteAddr)
@@ -86,7 +73,6 @@ func handleProxying(p *httpController) func(w http.ResponseWriter, req *http.Req
             logrus.Error(fmt.Sprintf("could not proxy request: %s", err))
         }
 
-        // TODO: Test logic
         if toRawProxy {
             forwardRawRequestAndRespond(p, w, req)
             return
@@ -97,19 +83,15 @@ func handleProxying(p *httpController) func(w http.ResponseWriter, req *http.Req
 }
 
 func getUUIDFromPath(path string, re *regexp.Regexp) string {
-    var UUID string
-    for _, match := range re.FindAllString(path, -1) {
-        UUID = match
-    }
-    return UUID
-}
-
-func getRPCFromPath(path string, re *regexp.Regexp) string {
     var rpcPath string
     for _, match := range re.FindAllString(path, -1) {
         rpcPath = match
     }
     return rpcPath
+}
+
+func getRPCFromPath(basePath string, path string, re *regexp.Regexp) string {
+    return strings.Replace(path, basePath + getUUIDFromPath(path, re), "", -1)
 }
 
 func forwardRawRequestAndRespond(p *httpController, w http.ResponseWriter, req *http.Request) {
