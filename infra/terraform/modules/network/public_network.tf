@@ -23,6 +23,7 @@ resource "aws_route_table" "tzlink_public" {
 }
 
 resource "aws_route" "public_route" {
-  route_table_id = aws_route_table.tzlink_public.id
-  gateway_id     = aws_internet_gateway.tzlink.id
+  route_table_id         = aws_route_table.tzlink_public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.tzlink.id
 }
