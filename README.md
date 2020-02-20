@@ -1,5 +1,7 @@
 # Tezos Link
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/octo-technology/tezos-link)](https://goreportcard.com/report/github.com/octo-technology/tezos-link)
+
 Scalable API access to the Tezos network
 
 ## Install
@@ -38,6 +40,11 @@ Then, run the containers with:
 ```shell
 $> make run
 ```
+
+### Requirements
+
+`backend` and `proxy` services requires :
+- PostgreSQL v9.6
 
 ## Documentation
 

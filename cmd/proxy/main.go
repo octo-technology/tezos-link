@@ -31,6 +31,7 @@ func init() {
 		}
 	}
 
+	// We will configure the database in a next version
 	//database.Configure()
 }
 
@@ -40,7 +41,6 @@ func main() {
 		log.Fatal(fmt.Sprintf("could not read blockchain node reverse url from configuration: %s", err))
 	}
 	rp := httputil.NewSingleHostReverseProxy(reverseURL)
-	//runMigrations()
 
 	// Repositories
 	cb := cache.NewLruBlockchainRepository()
@@ -60,17 +60,3 @@ func main() {
 	httpController.Initialize()
 	httpController.Run()
 }
-
-/*
-func runMigrations() {
-    m, err := migrate.New(
-        config.BackendConfig.Migration.Path,
-        config.BackendConfig.Db.Url)
-    if err != nil {
-        log.Fatal("Could not apply db migration: ", err)
-    }
-    if err := m.Up(); err != nil {
-        log.Fatal("Could not apply db migration: ", err)
-    }
-}
-*/
