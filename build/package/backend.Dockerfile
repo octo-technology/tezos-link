@@ -10,7 +10,7 @@ USER backend
 WORKDIR /home/backend
 
 COPY ./bin/backend .
-COPY ./data ./data
+COPY ./data/backend ./data
 
 EXPOSE $API_PORT
 

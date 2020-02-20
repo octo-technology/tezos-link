@@ -1,0 +1,121 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API to manage projects",
+        "title": "Tezos Link API",
+        "contact": {
+            "name": "API Support",
+            "email": "email@ded.fr"
+        },
+        "license": {},
+        "version": "v1"
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/health": {
+            "get": {
+                "summary": "get application health",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Health"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all Projects",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Project"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create a Project",
+                "parameters": [
+                    {
+                        "description": "New Project",
+                        "name": "new-project",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/inputs.NewProject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {},
+                    "400": {}
+                }
+            }
+        },
+        "/projects/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a Project",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Project"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "inputs.NewProject": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Health": {
+            "type": "object",
+            "properties": {
+                "connectedToDb": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.Project": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

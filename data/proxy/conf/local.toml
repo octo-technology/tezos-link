@@ -1,0 +1,28 @@
+debug = true
+
+[tezos]
+host = "127.0.0.1"
+port = 8765
+
+[server]
+port = 8001
+
+[proxy]
+readTimeout = 1
+writeTimeout = 5
+idleTimeout = 120
+whitelistedMethods = [
+  "/chains/main/blocks(.*?)",
+]
+blockedMethods = [
+  "(.*?)context/contracts$",
+  "/monitor(.*?)",
+  "/network(.*?)",
+]
+dontCache = [
+  "(.*?)/head/(.*?)",
+  "/chains/main/blocks$",
+]
+rateLimitPeriod = 100
+rateLimitCount = 100
+cacheMaxItems = 2000

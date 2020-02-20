@@ -20,3 +20,15 @@ services:
       - postgres
     depends_on:
       - postgres
+  proxy:
+    build:
+      context: .
+      dockerfile: build/package/proxy.Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      ENV: local
+    links:
+      - postgres
+    depends_on:
+      - postgres

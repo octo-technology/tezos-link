@@ -1,0 +1,15 @@
+env = "dev"
+debug = true
+
+[server]
+hostname = "localhost"
+port = 8000
+
+[db]
+url = "postgres://user:pass@localhost/tezoslink?sslmode=disable"
+
+[migration]
+path = "file://./data/migrations"
+
+[jwt]
+signkey = "dFcgNAqajhoQPqyOivx-n2VWt5KpSPkuPxLJKbnUPXYFcFONkuvFO_XWMg153otv"
