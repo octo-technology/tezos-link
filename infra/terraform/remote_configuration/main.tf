@@ -18,7 +18,6 @@ resource "aws_s3_bucket" "tfstate_storage" {
     Project     = "tezos-link"
     Environment = "all"
     BuildWith   = "terraform"
-    Trigramme   = "adbo"
   }
 }
 
@@ -38,6 +37,5 @@ resource "aws_dynamodb_table" "tfstate_lock" {
     Project     = "tezos-link"
     Environment = "all"
     BuildWith   = "terraform"
-    Trigramme   = "adbo"
   }
 }
