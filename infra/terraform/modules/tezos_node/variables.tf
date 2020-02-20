@@ -27,3 +27,13 @@ variable "SUBNET_TZ_FARM_CIDR" {
   type    = string
   default = "10.1.0.0/24"
 }
+
+variable "INSTANCE_TYPE" {
+  type    = string
+  default = "i3.large"
+}
+
+variable "KEY_PAIR_NAME" {
+  type    = string
+  default = "AWS-TEZOS-KEY"
+}
