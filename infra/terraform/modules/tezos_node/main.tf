@@ -3,7 +3,7 @@ data "aws_ami" "centos" {
 
   filter {
     name   = "name"
-    values = ["CentOS Linux 7 x86_64 HVM EBS*"]
+    values = ["RHEL-8.1.0_HVM-20191029-x86_64*"]
   }
 
   filter {
@@ -11,7 +11,7 @@ data "aws_ami" "centos" {
     values = ["hvm"]
   }
 
-  owners = ["679593333241"] # Canonical
+  owners = ["309956199498"] # RedHat
 }
 
 data "aws_vpc" "tzlink" {
@@ -63,7 +63,7 @@ resource "aws_instance" "tz_node" {
   instance_type = "t2.micro"
   subnet_id = tolist(data.aws_subnet_ids.tzlink.ids)[0]
 
-  key_name = "adbo"
+  #key_name = "adbo"
 
   associate_public_ip_address = true
 
