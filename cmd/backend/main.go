@@ -12,6 +12,7 @@ import (
 	"github.com/octo-technology/tezos-link/backend/internal/backend/infrastructure/rest"
 	"github.com/octo-technology/tezos-link/backend/internal/backend/usecases"
 	"log"
+	"strings"
 )
 
 var configPath = flag.String("conf", "", "Path to TOML config")
@@ -57,6 +58,8 @@ func runMigrations() {
 		log.Fatal("Could not apply db migration: ", err)
 	}
 	if err := m.Up(); err != nil {
-		log.Fatal("Could not apply db migration: ", err)
+		if !strings.Contains(err.Error(), "no change") {
+			log.Fatal("Could not apply db migration: ", err)
+		}
 	}
 }

@@ -78,7 +78,7 @@ func (rc *Controller) Initialize() {
 
 // Run runs the controller
 func (rc *Controller) Run(port int) {
-	logrus.Info("Running HTTP API on port", port)
+	logrus.Info("running HTTP API on port", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), rc.router))
 }
 

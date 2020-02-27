@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestPostgresProjectRepository_FindById(t *testing.T) {
+func TestPostgresProjectRepository_FindById_Unit(t *testing.T) {
 	// Given
 	pool := getDockerPool()
 	pg, resource := GetPostgresClient(*pool)
@@ -30,7 +30,7 @@ func TestPostgresProjectRepository_FindById(t *testing.T) {
 	assert.Equal(t, &expectedProject, s, "Bad project")
 }
 
-func TestPostgresProjectRepository_FindAll(t *testing.T) {
+func TestPostgresProjectRepository_FindAll_Unit(t *testing.T) {
 	// Given
 	pool := getDockerPool()
 	pg, resource := GetPostgresClient(*pool)

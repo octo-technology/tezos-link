@@ -6,10 +6,12 @@ import (
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/model"
 	"github.com/stretchr/testify/mock"
+	"io/ioutil"
+	"net/http"
 	"testing"
 )
 
-func TestProxyUsecase_Proxy(t *testing.T) {
+func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 	_, err := config.ParseProxyConf("../../../test/proxy/conf/test.toml")
 	if err != nil {
 		t.Fatal("could not parse conf", err)
@@ -33,6 +35,39 @@ func TestProxyUsecase_Proxy(t *testing.T) {
 	whitelistedNotCachedRequest := model.NewRequest("/chains/main/blocks", "UUID", model.GET, "127.0.0.1")
 	t.Run("Returns the proxy response When the path is not cacheable",
 		testProxyUsecaseFunc(&whitelistedNotCachedRequest, "", true, nil, nil, nil))
+
+	whitelistedCacheableNotCachedRequest := model.NewRequest("/chains/main/blocks/number", "UUID", model.GET, "127.0.0.1")
+	t.Run("Returns no response When there is no cache and an proxy error",
+		testProxyUsecaseFunc(&whitelistedCacheableNotCachedRequest, "no response from proxy", false, errors.New("could not request to proxy: proxy error"),
+			errors.New("no cache available"), errors.New("proxy error")))
+}
+
+// Need docker-compose running in background
+func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
+	req, err := http.NewRequest("PUT", "http://0.0.0.0:8001/v1/123e4567-e89b-12d3-a456-426655440010/mockserver/status", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	client := &http.Client{}
+	r, err :=  client.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var b []byte
+	b, err = ioutil.ReadAll(r.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = r.Body.Close()
+
+	assert.Equal(t, string(b), `{
+  "ports" : [ 1090 ],
+  "version" : "5.9.0",
+  "artifactId" : "mockserver-core",
+  "groupId" : "org.mock-server"
+}`)
 }
 
 func testProxyUsecaseFunc(

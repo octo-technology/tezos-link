@@ -1,4 +1,4 @@
-version: '2.1'
+version: "3"
 services:
   postgres:
     image: postgres:9.6
@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
     ports:
-      - 5432:5432
+      - "5432:5432"
   backend:
     build:
       context: .
@@ -16,8 +16,7 @@ services:
       - "8000:8000"
     environment:
       ENV: local
-    links:
-      - postgres
+    restart: on-failure
     depends_on:
       - postgres
   proxy:
@@ -28,7 +27,12 @@ services:
       - "8001:8001"
     environment:
       ENV: local
-    links:
-      - postgres
     depends_on:
       - postgres
+  node:
+    image: mockserver/mockserver:mockserver-5.9.0
+    environment:
+      LOG_LEVEL: "DEBUG"
+      SERVER_PORT: 1090
+    ports:
+      - "8765:1090"

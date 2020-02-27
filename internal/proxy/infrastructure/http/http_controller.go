@@ -13,6 +13,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"net/url"
 	"regexp"
 	"strings"
 	"time"
@@ -64,12 +65,12 @@ func setupLimiterMiddleware() *stdlib.Middleware {
 }
 
 func handleProxying(p *Controller, basePath string) func(w http.ResponseWriter, req *http.Request) {
-	return func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, receivedRequest *http.Request) {
 		var request = model.NewRequest(
-			getRPCFromPath(basePath, req.URL.Path, p.UUIDRegexp),
-			getUUIDFromPath(req.URL.Path, p.UUIDRegexp),
-			model.MethodFromString(req.Method),
-			req.RemoteAddr)
+			getRPCFromPath(basePath, receivedRequest.URL.Path, p.UUIDRegexp),
+			getUUIDFromPath(receivedRequest.URL.Path, p.UUIDRegexp),
+			model.MethodFromString(receivedRequest.Method),
+			receivedRequest.RemoteAddr)
 		logrus.Debug(request.Method, request.Path, request.UUID, request.RemoteAddr)
 
 		r, toRawProxy, err := p.uc.Proxy(&request)
@@ -78,7 +79,7 @@ func handleProxying(p *Controller, basePath string) func(w http.ResponseWriter, 
 		}
 
 		if toRawProxy {
-			forwardRawRequestAndRespond(p, w, req)
+			forwardRawRequestAndRespond(p, w, receivedRequest, &request)
 			return
 		}
 
@@ -95,15 +96,28 @@ func getUUIDFromPath(path string, re *regexp.Regexp) string {
 }
 
 func getRPCFromPath(basePath string, path string, re *regexp.Regexp) string {
-	return strings.Replace(path, basePath+getUUIDFromPath(path, re), "", -1)
+	return strings.Replace(path, "/" + basePath + getUUIDFromPath(path, re), "", -1)
 }
 
-func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, req *http.Request) {
-	p.reverseProxy.ServeHTTP(w, req)
+func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, receivedRequest *http.Request, request *model.Request) {
+	reverseURL, err := url.Parse("http://dummy" + request.Path)
+	if err != nil {
+		log.Fatal(fmt.Sprintf("could not construct revers URL: %s", err))
+	}
+	receivedRequest.URL = reverseURL
+
+	p.reverseProxy.ServeHTTP(w, receivedRequest)
 }
 
 func respondToRequest(w http.ResponseWriter, r string) {
 	optionsHeaders(w)
+
+	if strings.Contains(r, usecases.NoProxyResponse) {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprint(w, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+
 	_, _ = fmt.Fprint(w, r)
 }
 

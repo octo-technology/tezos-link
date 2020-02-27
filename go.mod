@@ -28,6 +28,8 @@ require (
 	github.com/swaggo/http-swagger v0.0.0-20200103000832-0e9263c4b516
 	github.com/swaggo/swag v1.6.3
 	github.com/ulule/limiter v2.2.2+incompatible
+	github.com/vektra/mockery v0.0.0-20181123154057-e78b021dcbb5 // indirect
 	golang.org/x/lint v0.0.0-20200130185559-910be7a94367 // indirect
 	golang.org/x/tools v0.0.0-20200219195521-7c4b6277d74d // indirect
+	gotest.tools v2.2.0+incompatible
 )

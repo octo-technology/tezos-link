@@ -33,19 +33,25 @@ func (p proxyBlockchainRepository) Get(request *model.Request) (interface{}, err
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Error while proxying to blockchain node: %s", err))
+		logrus.Error(fmt.Sprintf("Error while building request for blockchain node: %s", err))
 		return nil, err
 	}
 
 	r, err := p.client.Do(req)
+	if err != nil {
+		logrus.Error(fmt.Sprintf("Error while requesting to blockchain node: %s", err))
+		return nil, err
+	}
+
 	var b []byte
 	b, err = ioutil.ReadAll(r.Body)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Error getting response from blockchain node: %s", err))
+		logrus.Error(fmt.Sprintf("Error while reading response from blockchain node: %s", err))
 		return nil, err
 	}
 	_ = r.Body.Close()
 
+	logrus.Info(url, b)
 	return b, nil
 }
 

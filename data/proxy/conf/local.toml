@@ -1,8 +1,8 @@
 debug = true
 
 [tezos]
-host = "127.0.0.1"
-port = 8765
+host = "node"
+port = 1090
 
 [server]
 port = 8001
@@ -13,6 +13,7 @@ writeTimeout = 5
 idleTimeout = 120
 whitelistedMethods = [
   "/chains/main/blocks(.*?)",
+  "/mockserver/status"
 ]
 blockedMethods = [
   "(.*?)context/contracts$",
@@ -24,5 +25,5 @@ dontCache = [
   "/chains/main/blocks$",
 ]
 rateLimitPeriod = 100
-rateLimitCount = 100
+rateLimitCount = 1000
 cacheMaxItems = 2000

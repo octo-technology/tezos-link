@@ -8,6 +8,7 @@ import (
 	http_infra "github.com/octo-technology/tezos-link/backend/internal/proxy/infrastructure/http"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/infrastructure/proxy"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/usecases"
+	"github.com/sirupsen/logrus"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -40,6 +41,7 @@ func main() {
 	if err != nil {
 		log.Fatal(fmt.Sprintf("could not read blockchain node reverse url from configuration: %s", err))
 	}
+	logrus.Info("proxying requests to node: ", reverseURL)
 	rp := httputil.NewSingleHostReverseProxy(reverseURL)
 
 	// Repositories
