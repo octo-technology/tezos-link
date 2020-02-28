@@ -1,4 +1,4 @@
-name: Services
+name: Build
 on: [push]
 jobs:
 
