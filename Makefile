@@ -29,8 +29,10 @@ build:
 build-unix:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(BACKEND_BIN) $(BACKEND_CMD) && chmod +x $(BACKEND_BIN)
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
-test:
-	set -o pipefail && $(GOTEST) ./... -v | grep -v -E 'GET|POST|PUT'
+unit-test:
+	set -o pipefail && $(GOTEST) -run Unit ./... -v | grep -v -E 'GET|POST|PUT'
+integration-test:
+	set -o pipefail && $(GOTEST) -run Integration ./... -v | grep -v -E 'GET|POST|PUT'
 test-ci:
 	$(GOTEST) ./... -v
 clean : clean-app
@@ -42,7 +44,7 @@ clean-app:
 build-docker: build-unix
 	docker-compose build
 run:
-	docker-compose up -d postgres $(BACKEND) $(PROXY)
+	docker-compose up -d postgres node $(BACKEND) $(PROXY)
 stop:
 	docker-compose down
 	if [ $$(docker ps -a | grep service) ]; then docker stop $$(docker ps -a -q); fi

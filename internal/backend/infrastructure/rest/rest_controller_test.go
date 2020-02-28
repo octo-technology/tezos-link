@@ -13,7 +13,7 @@ import (
 	"testing"
 )
 
-func TestRestController_PostProject(t *testing.T) {
+func TestRestController_PostProject_Unit(t *testing.T) {
 	// Given
 	rc := buildControllerWithProjectUseCaseError(nil, "SaveProject")
 	rcWithError := buildControllerWithProjectUseCaseError(errors.New("error from the DB"), "SaveProject")
@@ -44,7 +44,7 @@ func testPostProjectFunc(jsonInput string, expectedStatus int, expectedResponse 
 	}
 }
 
-func TestRestController_GetProjects(t *testing.T) {
+func TestRestController_GetProjects_Unit(t *testing.T) {
 	// Given
 	rc := buildControllerWithProjectUseCaseError(nil, "FindProjects")
 	rcWithError := buildControllerWithProjectUseCaseError(errors.New("error from the DB"), "FindProjects")
@@ -69,7 +69,7 @@ func testGetProjectsFunc(expectedStatus int, expectedResponse string) func(t *te
 	}
 }
 
-func TestRestController_GetProject(t *testing.T) {
+func TestRestController_GetProject_Unit(t *testing.T) {
 	// Given
 	p := model.NewProject(123, "A Project", "A_KEY")
 	rc := buildControllerWithProjectUseCaseReturning(&p, "FindProject")
@@ -87,7 +87,7 @@ func TestRestController_GetProject(t *testing.T) {
 	assert.Equal(t, `{"data":`+string(jsonBody)+`,"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
 }
 
-func TestRestController_GetHealth(t *testing.T) {
+func TestRestController_GetHealth_Unit(t *testing.T) {
 	// Given
 	req, err := http.NewRequest("GET", "/health", nil)
 	if err != nil {

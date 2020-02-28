@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"fmt"
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/model"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/repository"
@@ -23,6 +24,9 @@ type ProxyUsecaseInterface interface {
 	Proxy(request *model.Request) (response string, toRawProxy bool, err error)
 }
 
+// NoProxyResponse is the error message when there is no response from the proxy
+const NoProxyResponse = "no response from proxy"
+
 // NewProxyUsecase returns a new proxy use-case
 func NewProxyUsecase(cache repository.BlockchainRepository, proxy repository.BlockchainRepository) *ProxyUsecase {
 	return &ProxyUsecase{
@@ -36,19 +40,25 @@ func NewProxyUsecase(cache repository.BlockchainRepository, proxy repository.Blo
 
 // Proxy proxy an http request to the right repositories
 func (p *ProxyUsecase) Proxy(request *model.Request) (response string, toRawProxy bool, err error) {
-	logrus.Info("received proxy request for path: " + request.Path)
+	logrus.Info("received proxy request for path: ", request.Path)
 	r := []byte("call blacklisted")
 
 	if !p.isAllowed(request.Path) {
-		logrus.Debug("not allowed to proxy on the path:", request.Path)
+		logrus.Debug("not allowed to proxy on the path: ", request.Path)
 		return string(r), false, nil
 	}
 
 	if request.Method == model.GET && p.isCacheable(request.Path) {
 		r, err := p.cache.Get(request)
 		if err != nil {
-			logrus.Debug("path not cached, fetching to node:", request.Path)
+			logrus.Info("path not cached, fetching to node: ", request.Path)
+
 			r, err = p.proxy.Get(request)
+			logrus.Info("received response from node: ", string(r.([]byte)))
+			if err != nil {
+				return NoProxyResponse, false, fmt.Errorf("could not request to proxy: %s", err)
+			}
+
 			_ = p.cache.Add(request, r)
 		}
 

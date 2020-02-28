@@ -27,7 +27,7 @@ func NewLruBlockchainRepository() repository.BlockchainRepository {
 
 func (l lruBlockchainRepository) Get(request *model.Request) (interface{}, error) {
 	val, ok := l.cache.Get(request.Path)
-	if ok {
+	if !ok {
 		return nil, fmt.Errorf("could not get cache for path: %s", request.Path)
 	}
 
