@@ -24,6 +24,7 @@ type ProxyUsecaseInterface interface {
 	Proxy(request *model.Request) (response string, toRawProxy bool, err error)
 }
 
+// NoProxyResponse is the error message when there is no response from the proxy
 const NoProxyResponse = "no response from proxy"
 
 // NewProxyUsecase returns a new proxy use-case

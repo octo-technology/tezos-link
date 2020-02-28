@@ -96,7 +96,7 @@ func getUUIDFromPath(path string, re *regexp.Regexp) string {
 }
 
 func getRPCFromPath(basePath string, path string, re *regexp.Regexp) string {
-	return strings.Replace(path, "/" + basePath + getUUIDFromPath(path, re), "", -1)
+	return strings.Replace(path, "/"+basePath+getUUIDFromPath(path, re), "", -1)
 }
 
 func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, receivedRequest *http.Request, request *model.Request) {

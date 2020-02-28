@@ -50,7 +50,7 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 	}
 
 	client := &http.Client{}
-	r, err :=  client.Do(req)
+	r, err := client.Do(req)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -152,7 +152,6 @@ func TestHttpController_ContainsRightPath_WhenPOSTRequest_Unit(t *testing.T) {
 	handler := http.HandlerFunc(handleProxying(httpController, "v1/"))
 	handler.ServeHTTP(rr, req)
 
-
 	// Then, the request is forwarded to the node
 	assert.Equal(t, http.StatusOK, rr.Code, "Bad status code")
 	assert.Equal(t, "", getStringWithoutNewLine(rr.Body.String()), "Bad body")

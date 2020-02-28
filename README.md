@@ -4,6 +4,20 @@
 
 Scalable API access to the Tezos network
 
+```
+.
+├── api         # api documentation
+├── build       # packaging
+├── cmd         # mains
+├── config      # config parsers
+├── data        # config and migrations
+├── docs        # services documentation
+├── infra       # infrastructure
+├── internal    # services
+├── test        # test-specific files
+└── web         # frontend
+```
+
 ## Install
 
 Install `go`, then
@@ -20,8 +34,27 @@ $> make build
 
 ## Test
 
+### Unit tests
+
 ```shell
-$> make test
+$> make unit-test
+```
+
+### Integration tests
+
+Run the services:
+```shell
+$> make build-docker & make run
+```
+
+Then, run integration tests:
+```shell
+$> make integration-test
+```
+
+Finally, shutdown the services:
+```shell
+$> docker-compose down
 ```
 
 ## Run locally
