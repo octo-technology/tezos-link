@@ -1,6 +1,6 @@
 # Tezos Link
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/octo-technology/tezos-link)](https://goreportcard.com/report/github.com/octo-technology/tezos-link)
+[![Go Report Card](https://goreportcard.com/badge/github.com/octo-technology/tezos-link)](https://goreportcard.com/report/github.com/octo-technology/tezos-link) ![Build](https://github.com/octo-technology/tezos-link/workflows/Build/badge.svg?branch=master)
 
 Scalable API access to the Tezos network
 
