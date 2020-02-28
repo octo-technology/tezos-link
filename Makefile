@@ -57,6 +57,10 @@ docker-images: build-unix
 docker-tag:
 	docker tag $(BACKEND) ${REGISTRY}:$(BACKEND)-dev
 	docker tag $(PROXY) ${REGISTRY}:$(PROXY)-dev
+docker-push:
+	echo ${PASSWORD} | docker login -u ${USERNAME} --password-stdin
+	docker push ${REGISTRY}:$(BACKEND)-dev
+	docker push ${REGISTRY}:$(PROXY)-dev
 docs:
 	if ! which swag; then go get -u github.com/swaggo/swag/cmd/swag ; fi
 	swag init --generalInfo rest_controller.go --dir internal/$(BACKEND)/infrastructure/rest --output api/$(BACKEND)
