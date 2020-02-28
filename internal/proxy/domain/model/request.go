@@ -1,43 +1,29 @@
 package model
 
-// Method represents the int of the http method
-type Method int
+// Action represents the int
+type Action int
 
-// GET, POST and PUT http methods
+// OBTAIN, PUSH and MODIFY methods
 const (
-	GET Method = iota + 1
-	POST
-	PUT
+	OBTAIN Action = iota + 1
+	PUSH
+	MODIFY
 )
 
-// MethodFromString returns an http method from the method string
-func MethodFromString(method string) Method {
-	switch method {
-	case "GET":
-		return GET
-	case "POST":
-		return POST
-	case "PUT":
-		return PUT
-	}
-
-	return -1
-}
-
-// Request represents an HTTP request
+// Request represents an request made to the proxy
 type Request struct {
 	Path       string
 	UUID       string
-	Method     Method
+	Action     Action
 	RemoteAddr string
 }
 
 // NewRequest returns a new request
-func NewRequest(path string, UUID string, method Method, remoteAddr string) Request {
+func NewRequest(path string, UUID string, action Action, remoteAddr string) Request {
 	return Request{
 		Path:       path,
 		UUID:       UUID,
-		Method:     method,
+		Action:     action,
 		RemoteAddr: remoteAddr,
 	}
 }

@@ -8,10 +8,10 @@ services:
       POSTGRES_PASSWORD: pass
     ports:
       - "5432:5432"
-  backend:
+  api:
     build:
       context: .
-      dockerfile: build/package/backend.Dockerfile
+      dockerfile: build/package/api.Dockerfile
     ports:
       - "8000:8000"
     environment:

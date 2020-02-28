@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/octo-technology/tezos-link/backend/internal/backend/domain/model"
+import "github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 
 // ProjectRepository contains all methods available for the project repository
 type ProjectRepository interface {

@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"github.com/octo-technology/tezos-link/backend/internal/backend/domain/model"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/domain/repository"
+    "github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
+    "github.com/octo-technology/tezos-link/backend/internal/api/domain/repository"
 	"github.com/sirupsen/logrus"
 )
 

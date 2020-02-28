@@ -48,7 +48,7 @@ func (p *ProxyUsecase) Proxy(request *model.Request) (response string, toRawProx
 		return string(r), false, nil
 	}
 
-	if request.Method == model.GET && p.isCacheable(request.Path) {
+	if request.Action == model.OBTAIN && p.isCacheable(request.Path) {
 		r, err := p.cache.Get(request)
 		if err != nil {
 			logrus.Info("path not cached, fetching to node: ", request.Path)

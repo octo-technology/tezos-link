@@ -7,10 +7,14 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/gorilla/mux"
-	// Used for the doamin objects to be found by Swagger
-	_ "github.com/octo-technology/tezos-link/backend/internal/backend/domain/model"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/infrastructure/rest/inputs"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/usecases"
+    "github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
+    "github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
+
+	// Used for the output objects to be found by Swagger
+    _ "github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
+	// Used for the health object to be found by Swagger
+    _ "github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
+    "github.com/octo-technology/tezos-link/backend/internal/api/usecases"
 	"github.com/sirupsen/logrus"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
@@ -55,7 +59,6 @@ func (rc *Controller) Initialize() {
 		//r.Use(jwtauth.Authenticator)
 
 		r.Route("/api/v1/projects", func(r chi.Router) {
-			r.Get("/", rc.GetProjects)
 			r.Post("/", rc.PostProject)
 
 			r.Route("/{id}", func(r chi.Router) {
@@ -119,7 +122,7 @@ func (rc *Controller) PostProject(w http.ResponseWriter, r *http.Request) {
 // @Summary Get a Project
 // @Produce json
 // @Param id path string true "Project ID"
-// @Success 200 {object} model.Project
+// @Success 200 {object} outputs.ProjectOutput
 // @Router /projects/{id} [get]
 func (rc *Controller) GetProject(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -130,21 +133,8 @@ func (rc *Controller) GetProject(w http.ResponseWriter, r *http.Request) {
 		_, _ = jsend.Wrap(w).Data(err.Error()).Status(http.StatusBadRequest).Send()
 		return
 	}
+	po := outputs.NewProjectOutputFromProject(p)
 
-	_, _ = jsend.Wrap(w).Data(p).Status(http.StatusOK).Send()
+	_, _ = jsend.Wrap(w).Data(po).Status(http.StatusOK).Send()
 }
 
-// GetProjects godoc
-// @Summary Get all Projects
-// @Produce json
-// @Success 200 {object} model.Project[]
-// @Router /projects [get]
-func (rc *Controller) GetProjects(w http.ResponseWriter, r *http.Request) {
-	p, err := rc.pu.FindProjects()
-	if err != nil {
-		_, _ = jsend.Wrap(w).Data(err.Error()).Status(http.StatusBadRequest).Send()
-		return
-	}
-
-	_, _ = jsend.Wrap(w).Data(p).Status(http.StatusOK).Send()
-}

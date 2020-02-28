@@ -2,9 +2,9 @@ package model
 
 // Project contains the fields to represent a project
 type Project struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-	Key  string `json:"key"`
+	ID   int64
+	Name string
+	Key  string
 }
 
 // NewProject returns a new project

@@ -17,26 +17,26 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 		t.Fatal("could not parse conf", err)
 	}
 
-	blockedRequest := model.NewRequest("/dummy/path", "UUID", model.GET, "127.0.0.1")
+	blockedRequest := model.NewRequest("/dummy/path", "UUID", model.OBTAIN, "127.0.0.1")
 	t.Run("Returns blacklisted When there is a blacklisted path",
 		testProxyUsecaseFunc(&blockedRequest, "call blacklisted", false, nil, nil, nil))
 
-	postRequest := model.NewRequest("/chains/main/blocks/head", "UUID", model.POST, "127.0.0.1")
-	t.Run("Forward to reverse proxy When there is a POST request",
+	postRequest := model.NewRequest("/chains/main/blocks/head", "UUID", model.PUSH, "127.0.0.1")
+	t.Run("Forward to reverse proxy When there is a PUSH request",
 		testProxyUsecaseFunc(&postRequest, "", true, nil, nil, nil))
 
-	whitelistedCachedRequest := model.NewRequest("/chains/main/blocks/number", "UUID", model.GET, "127.0.0.1")
+	whitelistedCachedRequest := model.NewRequest("/chains/main/blocks/number", "UUID", model.OBTAIN, "127.0.0.1")
 	t.Run("Returns the cached response When there is a whitelisted path",
 		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy cache response", false, nil, nil, nil))
 
 	t.Run("Returns the proxy response When there is no cached response",
 		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy proxy response", false, nil, errors.New("no cache available"), nil))
 
-	whitelistedNotCachedRequest := model.NewRequest("/chains/main/blocks", "UUID", model.GET, "127.0.0.1")
+	whitelistedNotCachedRequest := model.NewRequest("/chains/main/blocks", "UUID", model.OBTAIN, "127.0.0.1")
 	t.Run("Returns the proxy response When the path is not cacheable",
 		testProxyUsecaseFunc(&whitelistedNotCachedRequest, "", true, nil, nil, nil))
 
-	whitelistedCacheableNotCachedRequest := model.NewRequest("/chains/main/blocks/number", "UUID", model.GET, "127.0.0.1")
+	whitelistedCacheableNotCachedRequest := model.NewRequest("/chains/main/blocks/number", "UUID", model.OBTAIN, "127.0.0.1")
 	t.Run("Returns no response When there is no cache and an proxy error",
 		testProxyUsecaseFunc(&whitelistedCacheableNotCachedRequest, "no response from proxy", false, errors.New("could not request to proxy: proxy error"),
 			errors.New("no cache available"), errors.New("proxy error")))

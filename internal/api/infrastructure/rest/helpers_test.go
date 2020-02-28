@@ -2,7 +2,7 @@ package rest
 
 import (
 	"github.com/go-chi/chi"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/domain/model"
+	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 	"github.com/stretchr/testify/mock"
 	"net/http"
 	"net/http/httptest"
@@ -16,11 +16,6 @@ type mockProjectUsecase struct {
 
 func (m *mockProjectUsecase) SaveProject(name string) (*model.Project, error) {
 	args := m.Called(name)
-	return nil, args.Error(0)
-}
-
-func (m *mockProjectUsecase) FindProjects() ([]*model.Project, error) {
-	args := m.Called()
 	return nil, args.Error(0)
 }
 

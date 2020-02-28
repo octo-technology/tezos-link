@@ -23,7 +23,7 @@ func TestHttpController_Run_WhenThereIsCachedRequest_Unit(t *testing.T) {
 	expectedRequest := model.NewRequest(
 		"/chains/main/head",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model.GET,
+		model.OBTAIN,
 		"")
 
 	// When
@@ -61,7 +61,7 @@ func TestHttpController_Run_WhenThereIsProxiedRequest_Unit(t *testing.T) {
 	request := model.NewRequest(
 		"/chains/main/head",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model.POST,
+		model.PUSH,
 		"")
 
 	// When
@@ -98,7 +98,7 @@ func TestHttpController_Returns500_WhenThereIsProxyError_Unit(t *testing.T) {
 	request := model.NewRequest(
 		"/chains/main/head",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model.POST,
+		model.PUSH,
 		"")
 
 	// When
@@ -139,7 +139,7 @@ func TestHttpController_ContainsRightPath_WhenPOSTRequest_Unit(t *testing.T) {
 	request := model.NewRequest(
 		"/chains/main/number",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model.POST,
+		model.PUSH,
 		"")
 
 	// When

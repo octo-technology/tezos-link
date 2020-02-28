@@ -31,7 +31,7 @@ func NewProxyBlockchainRepository() repository.BlockchainRepository {
 func (p proxyBlockchainRepository) Get(request *model.Request) (interface{}, error) {
 	url := p.baseURL + request.Path
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("OBTAIN", url, nil)
 	if err != nil {
 		logrus.Error(fmt.Sprintf("Error while building request for blockchain node: %s", err))
 		return nil, err

@@ -3,8 +3,8 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/domain/model"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/domain/repository"
+	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
+	"github.com/octo-technology/tezos-link/backend/internal/api/domain/repository"
 )
 
 type postgresProjectRepository struct {

@@ -8,11 +8,11 @@ GOGET=$(GOCMD) get
 # Module
 CMD_PATH=github.com/octo-technology/tezos-link/cmd
 
-# backend service
-BACKEND=backend
-BACKEND_PATH=$(CMD_PATH)/$(BACKEND)
-BACKEND_CMD=./cmd/$(BACKEND)
-BACKEND_BIN=./bin/$(BACKEND)
+# api service
+API=api
+API_PATH=$(CMD_PATH)/$(API)
+API_CMD=./cmd/$(API)
+API_BIN=./bin/$(API)
 
 # proxy service
 PROXY=proxy
@@ -24,10 +24,10 @@ PROXY_BIN=./bin/$(PROXY)
 
 all: test build
 build:
-	$(GOBUILD) -o $(BACKEND_BIN) $(BACKEND_CMD) && chmod +x $(BACKEND_BIN)
+	$(GOBUILD) -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
 	$(GOBUILD) -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
 build-unix:
-	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(BACKEND_BIN) $(BACKEND_CMD) && chmod +x $(BACKEND_BIN)
+	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
 unit-test:
 	$(GOTEST) -run Unit ./... -v
@@ -37,14 +37,14 @@ test-ci:
 	$(GOTEST) ./... -v
 clean : clean-app
 clean-app:
-	$(GOCLEAN) $(BACKEND_PATH)
+	$(GOCLEAN) $(API_PATH)
 	$(GOCLEAN) $(PROXY_PATH)
-	rm -f $(BACKEND_BIN)
+	rm -f $(API_BIN)
 	rm -f $(PROXY_BIN)
 build-docker: build-unix
 	docker-compose build
 run:
-	docker-compose up -d postgres node $(BACKEND) $(PROXY)
+	docker-compose up -d postgres node $(API) $(PROXY)
 stop:
 	docker-compose down
 	if [ $$(docker ps -a | grep service) ]; then docker stop $$(docker ps -a -q); fi
@@ -52,18 +52,18 @@ stop:
 deps:
 	$(GOGET) -v -d ./...
 docker-images: build-unix
-	docker build -t $(BACKEND) -f build/package/$(BACKEND).Dockerfile .
+	docker build -t $(API) -f build/package/$(API).Dockerfile .
 	docker build -t $(PROXY) -f build/package/$(PROXY).Dockerfile .
 docker-tag:
-	docker tag $(BACKEND) ${REGISTRY}:$(BACKEND)-dev
+	docker tag $(API) ${REGISTRY}:$(API)-dev
 	docker tag $(PROXY) ${REGISTRY}:$(PROXY)-dev
 docker-push:
 	echo ${PASSWORD} | docker login -u ${USERNAME} --password-stdin
-	docker push ${REGISTRY}:$(BACKEND)-dev
+	docker push ${REGISTRY}:$(API)-dev
 	docker push ${REGISTRY}:$(PROXY)-dev
 docs:
 	if ! which swag; then go get -u github.com/swaggo/swag/cmd/swag ; fi
-	swag init --generalInfo rest_controller.go --dir internal/$(BACKEND)/infrastructure/rest --output api/$(BACKEND)
+	swag init --generalInfo rest_controller.go --dir internal/$(API)/infrastructure/rest --output api-docs/$(API)
 lint:
 	vendor/golint internal/... cmd/...
 fmt:

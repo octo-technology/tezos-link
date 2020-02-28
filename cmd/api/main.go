@@ -8,9 +8,9 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 	"github.com/octo-technology/tezos-link/backend/config"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/infrastructure/database"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/infrastructure/rest"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/usecases"
+	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/database"
+	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest"
+	"github.com/octo-technology/tezos-link/backend/internal/api/usecases"
 	"log"
 	"strings"
 )

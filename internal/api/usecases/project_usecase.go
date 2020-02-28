@@ -2,8 +2,8 @@ package usecases
 
 import (
 	"github.com/google/uuid"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/domain/model"
-	"github.com/octo-technology/tezos-link/backend/internal/backend/domain/repository"
+    "github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
+    "github.com/octo-technology/tezos-link/backend/internal/api/domain/repository"
 	"github.com/sirupsen/logrus"
 )
 
@@ -15,7 +15,6 @@ type ProjectUsecase struct {
 // ProjectUsecaseInterface contains all available methods of the project use-case
 type ProjectUsecaseInterface interface {
 	SaveProject(name string) (*model.Project, error)
-	FindProjects() ([]*model.Project, error)
 	FindProject(id int64) (*model.Project, error)
 }
 
@@ -35,19 +34,6 @@ func (pu *ProjectUsecase) SaveProject(name string) (*model.Project, error) {
 	}
 
 	logrus.Debug("Saved project", name)
-	return p, nil
-}
-
-// FindProjects finds all projects
-func (pu *ProjectUsecase) FindProjects() ([]*model.Project, error) {
-	p, err := pu.repo.FindAll()
-
-	if err != nil {
-		logrus.Error("Could not find projects", p)
-		return nil, err
-	}
-
-	logrus.Debug("Found projects", p)
 	return p, nil
 }
 

@@ -50,7 +50,7 @@ func getDockerPool() *dockertest.Pool {
 
 func runMigrations(url string) {
 	m, err := migrate.New(
-		"file:../../../../data/backend/migrations",
+		"file:../../../../data/api/migrations",
 		url)
 	if err != nil {
 		log.Fatal("Could not apply db migration: ", err)

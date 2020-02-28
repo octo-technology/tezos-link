@@ -69,9 +69,9 @@ func handleProxying(p *Controller, basePath string) func(w http.ResponseWriter, 
 		var request = model.NewRequest(
 			getRPCFromPath(basePath, receivedRequest.URL.Path, p.UUIDRegexp),
 			getUUIDFromPath(receivedRequest.URL.Path, p.UUIDRegexp),
-			model.MethodFromString(receivedRequest.Method),
+			getActionFromHTTPMethod(receivedRequest.Method),
 			receivedRequest.RemoteAddr)
-		logrus.Debug(request.Method, request.Path, request.UUID, request.RemoteAddr)
+		logrus.Debug(request.Action, request.Path, request.UUID, request.RemoteAddr)
 
 		r, toRawProxy, err := p.uc.Proxy(&request)
 		if err != nil {
@@ -122,9 +122,22 @@ func respondToRequest(w http.ResponseWriter, r string) {
 }
 
 func optionsHeaders(w http.ResponseWriter) {
-	w.Header().Set("Allow", "OPTIONS, POST")
+	w.Header().Set("Allow", "OPTIONS, PUSH")
 	w.Header().Set("Accept", "application/json")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control")
-	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Methods", "PUSH")
 	w.Header().Set("Content-Type", "application/json")
+}
+
+func getActionFromHTTPMethod(action string) model.Action {
+	switch action {
+	case "GET":
+		return model.OBTAIN
+	case "POST":
+		return model.PUSH
+	case "PUT":
+		return model.MODIFY
+	}
+
+	return -1
 }

@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-type BackendConf struct {
+type APIConf struct {
 	Env    string
 	Debug  bool
 	Server struct {
@@ -26,10 +26,10 @@ type BackendConf struct {
 	}
 }
 
-var BackendConfig BackendConf
+var BackendConfig APIConf
 
-func ParseBackendConf(cfg string) (*BackendConf, error) {
-	conf := BackendConf{}
+func ParseBackendConf(cfg string) (*APIConf, error) {
+	conf := APIConf{}
 
 	if data, err := ioutil.ReadFile(cfg); err != nil {
 		log.Fatalf("Could not read config file:%s because of %s.", cfg, err)
