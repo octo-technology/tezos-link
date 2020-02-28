@@ -30,9 +30,9 @@ build-unix:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(BACKEND_BIN) $(BACKEND_CMD) && chmod +x $(BACKEND_BIN)
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
 unit-test:
-	set -o pipefail && $(GOTEST) -run Unit ./... -v | grep -v -E 'GET|POST|PUT'
+	$(GOTEST) -run Unit ./... -v
 integration-test:
-	set -o pipefail && $(GOTEST) -run Integration ./... -v | grep -v -E 'GET|POST|PUT'
+	 $(GOTEST) -run Integration ./... -v
 test-ci:
 	$(GOTEST) ./... -v
 clean : clean-app
