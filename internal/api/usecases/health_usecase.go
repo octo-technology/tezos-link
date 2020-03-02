@@ -6,7 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// MetricUsecase contains the project repository to do the health check
+// HealthUsecase contains the project repository to do the health check
 type HealthUsecase struct {
 	repo repository.ProjectRepository
 }

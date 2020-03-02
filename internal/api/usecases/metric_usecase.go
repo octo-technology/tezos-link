@@ -22,7 +22,7 @@ func NewMetricUsecase(repo repository.MetricRepository) *MetricUsecase {
 	}
 }
 
-// CountRequest count all requests done by a project ID
+// CountRequests count all requests done by a project ID
 func (mu *MetricUsecase) CountRequests(uuid string) (int, error) {
 	n, err := mu.repo.Count(uuid)
 
