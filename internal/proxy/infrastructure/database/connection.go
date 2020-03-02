@@ -11,7 +11,7 @@ var Connection *sql.DB
 
 // Configure setup the database connection
 func Configure() {
-	con, err := sql.Open("postgres", config.APIConfig.Db.Url)
+	con, err := sql.Open("postgres", config.ProxyConfig.Db.Url)
 	if err != nil {
 		log.Fatal("Could not open DB: ", err)
 	}

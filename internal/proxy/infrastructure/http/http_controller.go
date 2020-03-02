@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/octo-technology/tezos-link/backend/config"
-	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/model"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/usecases"
+	model2 "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/sirupsen/logrus"
 	"github.com/ulule/limiter"
 	"github.com/ulule/limiter/drivers/middleware/stdlib"
@@ -66,7 +66,7 @@ func setupLimiterMiddleware() *stdlib.Middleware {
 
 func handleProxying(p *Controller, basePath string) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, receivedRequest *http.Request) {
-		var request = model.NewRequest(
+		var request = model2.NewRequest(
 			getRPCFromPath(basePath, receivedRequest.URL.Path, p.UUIDRegexp),
 			getUUIDFromPath(receivedRequest.URL.Path, p.UUIDRegexp),
 			getActionFromHTTPMethod(receivedRequest.Method),
@@ -99,7 +99,7 @@ func getRPCFromPath(basePath string, path string, re *regexp.Regexp) string {
 	return strings.Replace(path, "/"+basePath+getUUIDFromPath(path, re), "", -1)
 }
 
-func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, receivedRequest *http.Request, request *model.Request) {
+func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, receivedRequest *http.Request, request *model2.Request) {
 	reverseURL, err := url.Parse("http://dummy" + request.Path)
 	if err != nil {
 		log.Fatal(fmt.Sprintf("could not construct revers URL: %s", err))
@@ -129,14 +129,14 @@ func optionsHeaders(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 }
 
-func getActionFromHTTPMethod(action string) model.Action {
+func getActionFromHTTPMethod(action string) model2.Action {
 	switch action {
 	case "GET":
-		return model.OBTAIN
+		return model2.OBTAIN
 	case "POST":
-		return model.PUSH
+		return model2.PUSH
 	case "PUT":
-		return model.MODIFY
+		return model2.MODIFY
 	}
 
 	return -1

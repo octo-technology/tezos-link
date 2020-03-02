@@ -3,11 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/lib/pq"
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/infrastructure/cache"
-	http_infra "github.com/octo-technology/tezos-link/backend/internal/proxy/infrastructure/http"
+	"github.com/octo-technology/tezos-link/backend/internal/proxy/infrastructure/database"
+	httpinfra "github.com/octo-technology/tezos-link/backend/internal/proxy/infrastructure/http"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/infrastructure/proxy"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/usecases"
+	pkgdatabase "github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database"
 	"github.com/sirupsen/logrus"
 	"log"
 	"net/http"
@@ -33,7 +38,7 @@ func init() {
 	}
 
 	// We will configure the database in a next version
-	//database.Configure()
+	database.Configure()
 }
 
 func main() {
@@ -47,9 +52,10 @@ func main() {
 	// Repositories
 	cb := cache.NewLruBlockchainRepository()
 	pb := proxy.NewProxyBlockchainRepository()
+	pm := pkgdatabase.NewPostgresMetricRepository(database.Connection)
 
 	// Use cases
-	pu := usecases.NewProxyUsecase(cb, pb)
+	pu := usecases.NewProxyUsecase(cb, pb, pm)
 
 	// HTTP API
 	srv := http.Server{
@@ -58,7 +64,7 @@ func main() {
 		WriteTimeout: time.Duration(config.ProxyConfig.Proxy.WriteTimeout) * time.Second,
 		IdleTimeout:  time.Duration(config.ProxyConfig.Proxy.IdleTimeout) * time.Second,
 	}
-	httpController := http_infra.NewHTTPController(pu, rp, &srv)
+	httpController := httpinfra.NewHTTPController(pu, rp, &srv)
 	httpController.Initialize()
 	httpController.Run()
 }

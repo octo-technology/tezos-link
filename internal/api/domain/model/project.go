@@ -4,14 +4,14 @@ package model
 type Project struct {
 	ID   int64
 	Name string
-	Key  string
+	UUID string
 }
 
 // NewProject returns a new project
-func NewProject(ID int64, name string, key string) Project {
+func NewProject(ID int64, name string, uuid string) Project {
 	return Project{
 		ID:   ID,
 		Name: name,
-		Key:  key,
+		UUID: uuid,
 	}
 }

@@ -26,9 +26,9 @@ type APIConf struct {
 	}
 }
 
-var BackendConfig APIConf
+var APIConfig APIConf
 
-func ParseBackendConf(cfg string) (*APIConf, error) {
+func ParseAPIConf(cfg string) (*APIConf, error) {
 	conf := APIConf{}
 
 	if data, err := ioutil.ReadFile(cfg); err != nil {
@@ -38,7 +38,7 @@ func ParseBackendConf(cfg string) (*APIConf, error) {
 			return nil, errors.New("Could not read TOML config")
 		}
 	}
-	BackendConfig = conf
+	APIConfig = conf
 	if conf.Debug {
 		log.Println("Read config: ", fmt.Sprintf("%+v", conf))
 	}

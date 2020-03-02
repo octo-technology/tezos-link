@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/model"
+	model2 "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -20,10 +20,10 @@ func TestHttpController_Run_WhenThereIsCachedRequest_Unit(t *testing.T) {
 	mockProxyUsecase := &mockProxyUsecase{}
 	httpController := NewHTTPController(mockProxyUsecase, nil, &http.Server{})
 	httpController.Initialize()
-	expectedRequest := model.NewRequest(
+	expectedRequest := model2.NewRequest(
 		"/chains/main/head",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model.OBTAIN,
+		model2.OBTAIN,
 		"")
 
 	// When
@@ -58,10 +58,10 @@ func TestHttpController_Run_WhenThereIsProxiedRequest_Unit(t *testing.T) {
 	mockProxyUsecase := &mockProxyUsecase{}
 	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
 	httpController.Initialize()
-	request := model.NewRequest(
+	request := model2.NewRequest(
 		"/chains/main/head",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model.PUSH,
+		model2.PUSH,
 		"")
 
 	// When
@@ -95,10 +95,10 @@ func TestHttpController_Returns500_WhenThereIsProxyError_Unit(t *testing.T) {
 	mockProxyUsecase := &mockProxyUsecase{}
 	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
 	httpController.Initialize()
-	request := model.NewRequest(
+	request := model2.NewRequest(
 		"/chains/main/head",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model.PUSH,
+		model2.PUSH,
 		"")
 
 	// When
@@ -136,10 +136,10 @@ func TestHttpController_ContainsRightPath_WhenPOSTRequest_Unit(t *testing.T) {
 	mockProxyUsecase := &mockProxyUsecase{}
 	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
 	httpController.Initialize()
-	request := model.NewRequest(
+	request := model2.NewRequest(
 		"/chains/main/number",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model.PUSH,
+		model2.PUSH,
 		"")
 
 	// When

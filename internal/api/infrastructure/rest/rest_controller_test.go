@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/go-chi/chi"
-    "github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
-    "github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
+	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
+	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -77,6 +77,31 @@ func TestRestController_GetHealth_Unit(t *testing.T) {
 
 	// Then
 	expectedResponse := `{"data":{"connectedToDb":true},"status":"success"}`
+	assert.Equal(t, http.StatusOK, rr.Code, "Bad status code")
+	assert.Equal(t, expectedResponse, getStringWithoutNewLine(rr.Body.String()), "Bad body")
+}
+
+func TestRestController_GetMetric_Unit(t *testing.T) {
+	// Given
+	req, err := http.NewRequest("GET", "/api/v1/projects/DUMMY_UUID/metrics", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mockProjectUsecase := &mockProjectUsecase{}
+	mockHealthUsecase := &mockHealthUsecase{}
+	mockMetricUsecase := &mockMetricUsecase{}
+	mockMetricUsecase.
+		On("CountRequests", "DUMMY_UUID").
+		Return(3, nil).
+		Once()
+	rcc := NewRestController(chi.NewRouter(), mockProjectUsecase, mockHealthUsecase, mockMetricUsecase)
+	rcc.Initialize()
+
+	// When
+	rr := executeRequest(req, rcc.router)
+
+	// Then
+	expectedResponse := `{"data":{"uuid":"DUMMY_UUID","requestsCount":3},"status":"success"}`
 	assert.Equal(t, http.StatusOK, rr.Code, "Bad status code")
 	assert.Equal(t, expectedResponse, getStringWithoutNewLine(rr.Body.String()), "Bad body")
 }

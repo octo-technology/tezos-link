@@ -1,12 +1,12 @@
 package database
 
 import (
-    "github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
+	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestPostgresProjectRepository_FindById_Unit(t *testing.T) {
+func TestPostgresProjectRepository_FindByUUID_Unit(t *testing.T) {
 	// Given
 	pool := getDockerPool()
 	pg, resource := GetPostgresClient(*pool)
@@ -14,13 +14,13 @@ func TestPostgresProjectRepository_FindById_Unit(t *testing.T) {
 
 	pgr := NewPostgresProjectRepository(pg)
 	expectedProject := model.NewProject(1, "New Project", "A_KEY")
-	s, err := pgr.Save(expectedProject.Name, expectedProject.Key)
+	s, err := pgr.Save(expectedProject.Name, expectedProject.UUID)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// When
-	p, err := pgr.FindByID(s.ID)
+	p, err := pgr.FindByUUID("A_KEY")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -38,9 +38,9 @@ func TestPostgresProjectRepository_FindAll_Unit(t *testing.T) {
 
 	pgr := NewPostgresProjectRepository(pg)
 	expectedFirstProject := model.NewProject(1, "New Project", "A_KEY")
-	expectedSecondProject := model.NewProject(2, "New Project 2", "A_KEY")
-	_, _ = pgr.Save(expectedFirstProject.Name, expectedFirstProject.Key)
-	_, _ = pgr.Save(expectedSecondProject.Name, expectedSecondProject.Key)
+	expectedSecondProject := model.NewProject(2, "New Project 2", "A_SECOND_KEY")
+	_, _ = pgr.Save(expectedFirstProject.Name, expectedFirstProject.UUID)
+	_, _ = pgr.Save(expectedSecondProject.Name, expectedSecondProject.UUID)
 
 	// When
 	p, err := pgr.FindAll()
