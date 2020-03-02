@@ -23,6 +23,8 @@ resource "aws_instance" "tz_node" {
 
   associate_public_ip_address = true
 
+  iam_instance_profile = aws_iam_instance_profile.tzlink_backup_access.name
+
   vpc_security_group_ids = [ aws_security_group.tezos_node.id ]
 
   user_data=templatefile("${path.module}/user_data.tpl", {})
@@ -33,4 +35,13 @@ resource "aws_instance" "tz_node" {
     Environment = var.ENV
     BuildWith   = var.BUILD_WITH
   }
+}
+
+resource "aws_iam_instance_profile" "tzlink_backup_access" {
+  name = "tzlink_backup_access"
+  role = data.aws_iam_role.tzlink_backup_access.name
+}
+
+data "aws_iam_role" "tzlink_backup_access" {
+  name = "tzlink_backup_access"
 }
