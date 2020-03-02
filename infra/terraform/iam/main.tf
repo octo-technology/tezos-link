@@ -34,17 +34,26 @@ data "aws_iam_policy_document" "tzlink_backup_access" {
 
 data "aws_iam_policy_document" "tzlink_backup_personal_access" {
   statement {
-    sid = "1"
 
     actions = [
-      "iam:*InstanceProfile*",
-      "s3:Get*Role*",
-      "s3:List*Role*",
-      "s3:PassRole",
+      "iam:Get*Role*",
+      "iam:List*Role*",
+      "iam:PassRole",
     ]
 
     resources = [
-      "arn:aws:iam:::role/tzlink_backup_access", # ARN role que je n'ai pas
+      "arn:aws:iam::609827314188:role/tzlink_backup_access",
+    ]
+  }
+
+  statement {
+
+    actions = [
+      "iam:*InstanceProfile*",
+    ]
+
+    resources = [
+      "*",
     ]
   }
 }
