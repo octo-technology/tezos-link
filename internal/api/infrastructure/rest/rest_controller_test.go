@@ -6,18 +6,17 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
-	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
 	"github.com/stretchr/testify/assert"
 	"net/http"
-	"strconv"
 	"strings"
 	"testing"
 )
 
 func TestRestController_PostProject_Unit(t *testing.T) {
 	// Given
-	rc := buildControllerWithProjectUseCaseError(nil, "SaveProject")
-	rcWithError := buildControllerWithProjectUseCaseError(errors.New("error from the DB"), "SaveProject")
+	p := model.NewProject(1, "PROJECT_NAME", "AN_UUID")
+	rc := buildControllerWithProjectUseCaseError(&p, nil, "CreateProject")
+	rcWithError := buildControllerWithProjectUseCaseError(nil, errors.New("error from the DB"), "CreateProject")
 
 	jsonBody, _ := json.Marshal(inputs.NewProject{
 		Name: "New Project",
@@ -47,20 +46,28 @@ func testPostProjectFunc(jsonInput string, expectedStatus int, expectedResponse 
 
 func TestRestController_GetProject_Unit(t *testing.T) {
 	// Given
-	p := model.NewProject(123, "A Project", "A_KEY")
-	rc := buildControllerWithProjectUseCaseReturning(&p, "FindProject")
+	p := model.NewProject(123, "A Project", "A_UUID_666")
+	m := model.NewMetrics(3)
+
+	mockProjectUsecase := &mockProjectUsecase{}
+	mockProjectUsecase.
+		On("FindProjectAndMetrics", "A_UUID_666").
+		Return(&p, &m, nil).
+		Once()
+	mockHealthUsecase := &mockHealthUsecase{}
+	rcc := NewRestController(chi.NewRouter(), mockProjectUsecase, mockHealthUsecase)
+	rcc.Initialize()
 
 	// When
-	request, err := http.NewRequest("GET", "/api/v1/projects/"+strconv.Itoa(int(p.ID)), nil)
+	request, err := http.NewRequest("GET", "/api/v1/projects/A_UUID_666", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	requestResponse := executeRequest(request, rc.router)
+	requestResponse := executeRequest(request, rcc.router)
 
 	// Then
-	jsonBody, err := json.Marshal(outputs.NewProjectOutputFromProject(&p))
 	assert.Equal(t, http.StatusOK, requestResponse.Code, "Bad status code")
-	assert.Equal(t, `{"data":`+string(jsonBody)+`,"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
+	assert.Equal(t, `{"data":{"name":"A Project","uuid":"A_UUID_666","metrics":{"requestsCount":3}},"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
 }
 
 func TestRestController_GetHealth_Unit(t *testing.T) {
@@ -77,31 +84,6 @@ func TestRestController_GetHealth_Unit(t *testing.T) {
 
 	// Then
 	expectedResponse := `{"data":{"connectedToDb":true},"status":"success"}`
-	assert.Equal(t, http.StatusOK, rr.Code, "Bad status code")
-	assert.Equal(t, expectedResponse, getStringWithoutNewLine(rr.Body.String()), "Bad body")
-}
-
-func TestRestController_GetMetric_Unit(t *testing.T) {
-	// Given
-	req, err := http.NewRequest("GET", "/api/v1/projects/DUMMY_UUID/metrics", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	mockProjectUsecase := &mockProjectUsecase{}
-	mockHealthUsecase := &mockHealthUsecase{}
-	mockMetricUsecase := &mockMetricUsecase{}
-	mockMetricUsecase.
-		On("CountRequests", "DUMMY_UUID").
-		Return(3, nil).
-		Once()
-	rcc := NewRestController(chi.NewRouter(), mockProjectUsecase, mockHealthUsecase, mockMetricUsecase)
-	rcc.Initialize()
-
-	// When
-	rr := executeRequest(req, rcc.router)
-
-	// Then
-	expectedResponse := `{"data":{"uuid":"DUMMY_UUID","requestsCount":3},"status":"success"}`
 	assert.Equal(t, http.StatusOK, rr.Code, "Bad status code")
 	assert.Equal(t, expectedResponse, getStringWithoutNewLine(rr.Body.String()), "Bad body")
 }

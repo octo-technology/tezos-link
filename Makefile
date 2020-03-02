@@ -44,13 +44,16 @@ clean-app:
 build-docker: build-unix
 	docker-compose build
 run:
-	docker-compose up -d postgres node $(API) $(PROXY)
+	docker-compose up -d postgres node $(API) $(PROXY) && cd web && yarn start
+	cd -
+down:
+	docker-compose down
 stop:
 	docker-compose down
 	if [ $$(docker ps -a | grep service) ]; then docker stop $$(docker ps -a -q); fi
 	if [ $$(docker ps -a | grep service) ]; then docker rm $$(docker ps -a -q); fi
 deps:
-	$(GOGET) -v -d ./...
+	$(GOGET) -v -d ./... && cd web && yarn install && cd -
 docker-images: build-unix
 	docker build -t $(API) -f build/package/$(API).Dockerfile .
 	docker build -t $(PROXY) -f build/package/$(PROXY).Dockerfile .

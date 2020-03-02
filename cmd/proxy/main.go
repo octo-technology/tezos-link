@@ -52,7 +52,7 @@ func main() {
 	// Repositories
 	cb := cache.NewLruBlockchainRepository()
 	pb := proxy.NewProxyBlockchainRepository()
-	pm := pkgdatabase.NewPostgresMetricRepository(database.Connection)
+	pm := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
 
 	// Use cases
 	pu := usecases.NewProxyUsecase(cb, pb, pm)

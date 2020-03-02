@@ -1,33 +1,38 @@
 package usecases
 
 import (
+	"errors"
 	"github.com/google/uuid"
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/repository"
+	modelerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
+	pkgrepository "github.com/octo-technology/tezos-link/backend/pkg/domain/repository"
 	"github.com/sirupsen/logrus"
 )
 
 // ProjectUsecase contains the project repository
 type ProjectUsecase struct {
-	repo repository.ProjectRepository
+	rp repository.ProjectRepository
+	mr pkgrepository.MetricsRepository
 }
 
 // ProjectUsecaseInterface contains all available methods of the project use-case
 type ProjectUsecaseInterface interface {
-	SaveProject(name string) (*model.Project, error)
-	FindProject(id string) (*model.Project, error)
+	CreateProject(name string) (*model.Project, error)
+	FindProjectAndMetrics(uuid string) (*model.Project, *model.Metrics, error)
 }
 
 // NewProjectUsecase returns a new project use-case
-func NewProjectUsecase(repo repository.ProjectRepository) *ProjectUsecase {
+func NewProjectUsecase(rp repository.ProjectRepository, mr pkgrepository.MetricsRepository) *ProjectUsecase {
 	return &ProjectUsecase{
-		repo: repo,
+		rp: rp,
+		mr: mr,
 	}
 }
 
-// SaveProject save a new project
-func (pu *ProjectUsecase) SaveProject(name string) (*model.Project, error) {
-	p, err := pu.repo.Save(name, uuid.New().String())
+// CreateProject create and save a new project
+func (pu *ProjectUsecase) CreateProject(name string) (*model.Project, error) {
+	p, err := pu.rp.Save(name, uuid.New().String())
 	if err != nil {
 		logrus.Error("Could not save project", name)
 		return nil, err
@@ -37,15 +42,23 @@ func (pu *ProjectUsecase) SaveProject(name string) (*model.Project, error) {
 	return p, nil
 }
 
-// FindProject finds a project from the project's id
-func (pu *ProjectUsecase) FindProject(uuid string) (*model.Project, error) {
-	p, err := pu.repo.FindByUUID(uuid)
+// FindProjectAndMetrics finds a project and the associated metrics of a given project's uuid
+func (pu *ProjectUsecase) FindProjectAndMetrics(uuid string) (*model.Project, *model.Metrics, error) {
+	p, err := pu.rp.FindByUUID(uuid)
 
+	if errors.Is(err, modelerrors.ErrProjectNotFound) {
+		return nil, nil, err
+	}
 	if err != nil {
-		logrus.Error("Could not find project", p)
-		return nil, err
+		return nil, nil, err
 	}
 
-	logrus.Debug("Found project", p)
-	return p, nil
+	n, err := pu.mr.Count(uuid)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	m := model.NewMetrics(n)
+	logrus.Debug("Found project and metrics", p, m)
+	return p, &m, nil
 }

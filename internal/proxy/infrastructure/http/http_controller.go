@@ -1,11 +1,13 @@
 package http
 
 import (
+	"errors"
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/usecases"
-	model2 "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	pkgerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/sirupsen/logrus"
 	"github.com/ulule/limiter"
 	"github.com/ulule/limiter/drivers/middleware/stdlib"
@@ -66,7 +68,9 @@ func setupLimiterMiddleware() *stdlib.Middleware {
 
 func handleProxying(p *Controller, basePath string) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, receivedRequest *http.Request) {
-		var request = model2.NewRequest(
+		optionsHeaders(w)
+
+		var request = pkgmodel.NewRequest(
 			getRPCFromPath(basePath, receivedRequest.URL.Path, p.UUIDRegexp),
 			getUUIDFromPath(receivedRequest.URL.Path, p.UUIDRegexp),
 			getActionFromHTTPMethod(receivedRequest.Method),
@@ -83,23 +87,29 @@ func handleProxying(p *Controller, basePath string) func(w http.ResponseWriter, 
 			return
 		}
 
-		respondToRequest(w, r)
+		if errors.Is(err, pkgerrors.ErrNoProxyResponse) {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprint(w, http.StatusText(http.StatusInternalServerError))
+			return
+		}
+
+		_, _ = fmt.Fprint(w, r)
 	}
 }
 
 func getUUIDFromPath(path string, re *regexp.Regexp) string {
-	var rpcPath string
+	var uuid string
 	for _, match := range re.FindAllString(path, -1) {
-		rpcPath = match
+		uuid = match
 	}
-	return rpcPath
+	return uuid
 }
 
 func getRPCFromPath(basePath string, path string, re *regexp.Regexp) string {
 	return strings.Replace(path, "/"+basePath+getUUIDFromPath(path, re), "", -1)
 }
 
-func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, receivedRequest *http.Request, request *model2.Request) {
+func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, receivedRequest *http.Request, request *pkgmodel.Request) {
 	reverseURL, err := url.Parse("http://dummy" + request.Path)
 	if err != nil {
 		log.Fatal(fmt.Sprintf("could not construct revers URL: %s", err))
@@ -107,18 +117,6 @@ func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, receivedR
 	receivedRequest.URL = reverseURL
 
 	p.reverseProxy.ServeHTTP(w, receivedRequest)
-}
-
-func respondToRequest(w http.ResponseWriter, r string) {
-	optionsHeaders(w)
-
-	if strings.Contains(r, usecases.NoProxyResponse) {
-		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = fmt.Fprint(w, http.StatusText(http.StatusInternalServerError))
-		return
-	}
-
-	_, _ = fmt.Fprint(w, r)
 }
 
 func optionsHeaders(w http.ResponseWriter) {
@@ -129,14 +127,14 @@ func optionsHeaders(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 }
 
-func getActionFromHTTPMethod(action string) model2.Action {
+func getActionFromHTTPMethod(action string) pkgmodel.Action {
 	switch action {
 	case "GET":
-		return model2.OBTAIN
+		return pkgmodel.OBTAIN
 	case "POST":
-		return model2.PUSH
+		return pkgmodel.PUSH
 	case "PUT":
-		return model2.MODIFY
+		return pkgmodel.MODIFY
 	}
 
 	return -1

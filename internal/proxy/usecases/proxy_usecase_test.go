@@ -1,13 +1,17 @@
 package usecases
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/bmizerany/assert"
 	"github.com/octo-technology/tezos-link/backend/config"
+	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/stretchr/testify/mock"
 	"io/ioutil"
 	"net/http"
+	"regexp"
+	"strings"
 	"testing"
 )
 
@@ -38,20 +42,46 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 
 	whitelistedCacheableNotCachedRequest := pkgmodel.NewRequest("/chains/main/blocks/number", "UUID", pkgmodel.OBTAIN, "127.0.0.1")
 	t.Run("Returns no response When there is no cache and an proxy error",
-		testProxyUsecaseFunc(&whitelistedCacheableNotCachedRequest, "no response from proxy", false, errors.New("could not request to proxy: proxy error"),
+		testProxyUsecaseFunc(&whitelistedCacheableNotCachedRequest, "no response from proxy", false, errors.New("no response from proxy"),
 			errors.New("no cache available"), errors.New("proxy error"), nil))
 }
 
 // Need docker-compose running in background
 func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
-	// Send a dummy request
-	req, err := http.NewRequest("PUT", "http://0.0.0.0:8001/v1/123e4567-e89b-12d3-a456-426655440010/mockserver/status", nil)
+	client := &http.Client{}
+	newProject, _ := json.Marshal(inputs.NewProject{
+		Name: "New Project",
+	})
+
+	// 0. Create a project
+	req, err := http.NewRequest("POST", "http://0.0.0.0:8000/api/v1/projects", strings.NewReader(string(newProject)))
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	client := &http.Client{}
 	r, err := client.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = r.Body.Close()
+
+	url, _ := r.Location()
+	path := url.Path
+
+	var uuidRegex = `(?m)([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})`
+	re := regexp.MustCompile(uuidRegex)
+	var uuid string
+	for _, match := range re.FindAllString(path, -1) {
+		uuid = match
+	}
+
+	// 1. Send a dummy request
+	req, err = http.NewRequest("PUT", "http://0.0.0.0:8001/v1/"+uuid+"/mockserver/status", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	r, err = client.Do(req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,8 +100,8 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
   "groupId" : "org.mock-server"
 }`)
 
-	// Get the number of request done by this project UUID
-	req, err = http.NewRequest("GET", "http://0.0.0.0:8000/api/v1/projects/123e4567-e89b-12d3-a456-426655440010/metrics", nil)
+	// 2. Get the number of request done by this project UUID
+	req, err = http.NewRequest("GET", "http://0.0.0.0:8000/api/v1/projects/"+uuid, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -88,7 +118,8 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 	}
 	_ = r.Body.Close()
 
-	assert.Equal(t, string(sb), `{"data":{"uuid":"123e4567-e89b-12d3-a456-426655440010","requestsCount":1},"status":"success"}`)
+	// There should be only 1 request
+	assert.Equal(t, string(sb), `{"data":{"name":"New Project","uuid":"`+uuid+`","metrics":{"requestsCount":1}},"status":"success"}`)
 }
 
 func testProxyUsecaseFunc(
@@ -103,8 +134,8 @@ func testProxyUsecaseFunc(
 		// Given
 		mockCache := stubBlockchainRepository([]byte("Dummy cache response"), cacheErr)
 		mockProxy := stubBlockchainRepository([]byte("Dummy proxy response"), proxyErr)
-		mockMetricRepo := stubMetricRepository(metricErr)
-		puc := NewProxyUsecase(mockCache, mockProxy, mockMetricRepo)
+		mockMetricsRepo := stubMetricsRepository(metricErr)
+		puc := NewProxyUsecase(mockCache, mockProxy, mockMetricsRepo)
 
 		// When
 		resp, toRawProxy, err := puc.Proxy(r)
@@ -129,11 +160,11 @@ func stubBlockchainRepository(response interface{}, error error) *mockBlockchain
 	return mockBlockchainRepository
 }
 
-func stubMetricRepository(error error) *mockMetricRepository {
-	mockMetricRepository := &mockMetricRepository{}
-	mockMetricRepository.
+func stubMetricsRepository(error error) *mockMetricsRepository {
+	mockMetricsRepository := &mockMetricsRepository{}
+	mockMetricsRepository.
 		On("Save", mock.Anything).
 		Return(error).
 		Once()
-	return mockMetricRepository
+	return mockMetricsRepository
 }

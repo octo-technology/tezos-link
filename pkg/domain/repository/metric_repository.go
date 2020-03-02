@@ -1,9 +1,11 @@
 package repository
 
-import "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+import (
+	"github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
+)
 
-// MetricRepository contains all available methods of the metric repository
-type MetricRepository interface {
-	Save(metric *model.Metric) error
+// MetricsRepository contains all available methods of the metrics repository
+type MetricsRepository interface {
+	Save(metrics *inputs.MetricsInput) error
 	Count(uuid string) (int, error)
 }

@@ -1,7 +1,8 @@
 package http
 
 import (
-	model2 "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	"github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -20,10 +21,10 @@ func TestHttpController_Run_WhenThereIsCachedRequest_Unit(t *testing.T) {
 	mockProxyUsecase := &mockProxyUsecase{}
 	httpController := NewHTTPController(mockProxyUsecase, nil, &http.Server{})
 	httpController.Initialize()
-	expectedRequest := model2.NewRequest(
+	expectedRequest := pkgmodel.NewRequest(
 		"/chains/main/head",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model2.OBTAIN,
+		pkgmodel.OBTAIN,
 		"")
 
 	// When
@@ -58,10 +59,10 @@ func TestHttpController_Run_WhenThereIsProxiedRequest_Unit(t *testing.T) {
 	mockProxyUsecase := &mockProxyUsecase{}
 	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
 	httpController.Initialize()
-	request := model2.NewRequest(
+	request := pkgmodel.NewRequest(
 		"/chains/main/head",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model2.PUSH,
+		pkgmodel.PUSH,
 		"")
 
 	// When
@@ -95,16 +96,16 @@ func TestHttpController_Returns500_WhenThereIsProxyError_Unit(t *testing.T) {
 	mockProxyUsecase := &mockProxyUsecase{}
 	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
 	httpController.Initialize()
-	request := model2.NewRequest(
+	request := pkgmodel.NewRequest(
 		"/chains/main/head",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model2.PUSH,
+		pkgmodel.PUSH,
 		"")
 
 	// When
 	mockProxyUsecase.
 		On("Proxy", &request).
-		Return("no response from proxy", false, nil).
+		Return("no response from proxy", false, errors.ErrNoProxyResponse).
 		Once()
 
 	rr := httptest.NewRecorder()
@@ -136,10 +137,10 @@ func TestHttpController_ContainsRightPath_WhenPOSTRequest_Unit(t *testing.T) {
 	mockProxyUsecase := &mockProxyUsecase{}
 	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
 	httpController.Initialize()
-	request := model2.NewRequest(
+	request := pkgmodel.NewRequest(
 		"/chains/main/number",
 		"123e4567-e89b-12d3-a456-426655440000",
-		model2.PUSH,
+		pkgmodel.PUSH,
 		"")
 
 	// When

@@ -2,12 +2,14 @@ package rest
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/gamegos/jsend"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
+	modelerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
 	// Used for the output objects to be found by Swagger
 	_ "github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
 	// Used for the health object to be found by Swagger
@@ -24,20 +26,17 @@ type Controller struct {
 	router *chi.Mux
 	pu     usecases.ProjectUsecaseInterface
 	hu     usecases.HealthUsecaseInterface
-	mu     usecases.MetricUsecaseInterface
 }
 
 // NewRestController returns a new rest controller
 func NewRestController(
 	router *chi.Mux,
 	pu usecases.ProjectUsecaseInterface,
-	hu usecases.HealthUsecaseInterface,
-	mu usecases.MetricUsecaseInterface) *Controller {
+	hu usecases.HealthUsecaseInterface) *Controller {
 	return &Controller{
 		router: router,
 		pu:     pu,
 		hu:     hu,
-		mu:     mu,
 	}
 }
 
@@ -65,8 +64,7 @@ func (rc *Controller) Initialize() {
 			r.Post("/", rc.PostProject)
 
 			r.Route("/{uuid}", func(r chi.Router) {
-				r.Get("/", rc.GetProject)
-				r.Get("/metrics", rc.GetMetric)
+				r.Get("/", rc.GetProjectWithMetrics)
 				// r.Put("/", rc.UpdateProject)
 				// r.Delete("/", rc.DeleteProject)
 			})
@@ -113,52 +111,35 @@ func (rc *Controller) PostProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p, errSaving := rc.pu.SaveProject(inputProject.Name)
+	p, errSaving := rc.pu.CreateProject(inputProject.Name)
 	if errSaving != nil {
 		_, _ = jsend.Wrap(w).Data(errSaving.Error()).Status(http.StatusBadRequest).Send()
 		return
 	}
 
-	_, _ = jsend.Wrap(w).Data(p).Status(http.StatusCreated).Send()
+	w.Header().Add("Location", p.UUID)
+	_, _ = jsend.Wrap(w).Status(http.StatusCreated).Send()
 }
 
-// GetProject godoc
-// @Summary Get a Project
+// GetProjectWithMetrics godoc
+// @Summary Get a Project with the associated
 // @Produce json
-// @Param uuid path string true "Project ID"
-// @Success 200 {object} outputs.ProjectOutput
+// @Param uuid path string true "Project UUID"
+// @Success 200 {object} outputs.ProjectOutputWithMetrics
 // @Router /projects/{uuid} [get]
-func (rc *Controller) GetProject(w http.ResponseWriter, r *http.Request) {
+func (rc *Controller) GetProjectWithMetrics(w http.ResponseWriter, r *http.Request) {
 	uuid := chi.URLParam(r, "uuid")
 
-	p, err := rc.pu.FindProject(uuid)
+	p, m, err := rc.pu.FindProjectAndMetrics(uuid)
+	if errors.Is(err, modelerrors.ErrProjectNotFound) {
+		_, _ = jsend.Wrap(w).Data(err.Error()).Status(http.StatusNotFound).Send()
+		return
+	}
 	if err != nil {
 		_, _ = jsend.Wrap(w).Data(err.Error()).Status(http.StatusBadRequest).Send()
 		return
 	}
-	po := outputs.NewProjectOutputFromProject(p)
 
-	_, _ = jsend.Wrap(w).Data(po).Status(http.StatusOK).Send()
-}
-
-// GetMetric godoc
-// @Summary Get metrics associated to a project ID
-// @Produce json
-// @Param uuid path string true "Project ID"
-// @Success 200 {object} outputs.MetricOutput
-// @Router /projects/{uuid}/metrics [get]
-func (rc *Controller) GetMetric(w http.ResponseWriter, r *http.Request) {
-	uuid := chi.URLParam(r, "uuid")
-	p, err := rc.mu.CountRequests(uuid)
-
-	if err != nil {
-		_, _ = jsend.Wrap(w).Data(err.Error()).Status(http.StatusBadRequest).Send()
-		return
-	}
-	po := outputs.MetricOutput{
-		UUID:          uuid,
-		RequestsCount: p,
-	}
-
+	po := outputs.NewProjectOutputWithMetrics(p, m)
 	_, _ = jsend.Wrap(w).Data(po).Status(http.StatusOK).Send()
 }

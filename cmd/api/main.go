@@ -40,15 +40,14 @@ func main() {
 
 	// Repositories
 	pg := database.NewPostgresProjectRepository(database.Connection)
-	pm := pkgdatabase.NewPostgresMetricRepository(database.Connection)
+	pm := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
 
 	// Use cases
-	pu := usecases.NewProjectUsecase(pg)
+	pu := usecases.NewProjectUsecase(pg, pm)
 	hu := usecases.NewHealthUsecase(pg)
-	mu := usecases.NewMetricUsecase(pm)
 
 	// HTTP API
-	restController := rest.NewRestController(r, pu, hu, mu)
+	restController := rest.NewRestController(r, pu, hu)
 	restController.Initialize()
 	restController.Run(config.APIConfig.Server.Port)
 }

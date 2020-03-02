@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/repository"
+	"github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
+	"github.com/sirupsen/logrus"
 )
 
 type postgresProjectRepository struct {
@@ -46,7 +48,8 @@ func (pg postgresProjectRepository) FindByUUID(uuid string) (*model.Project, err
 		Scan(&r.ID, &r.Name, &r.UUID)
 
 	if err != nil {
-		return nil, fmt.Errorf("project %s not found: %s", uuid, err)
+		logrus.Errorf("project %s not found: %s", uuid, err)
+		return nil, errors.ErrProjectNotFound
 	}
 
 	return &r, nil

@@ -1,11 +1,12 @@
 package usecases
 
 import (
-	"fmt"
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/repository"
+	"github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	pkgrepository "github.com/octo-technology/tezos-link/backend/pkg/domain/repository"
+	"github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
 	"github.com/sirupsen/logrus"
 	"regexp"
 	"strings"
@@ -16,7 +17,7 @@ import (
 type ProxyUsecase struct {
 	cache       repository.BlockchainRepository
 	proxy       repository.BlockchainRepository
-	metricsRepo pkgrepository.MetricRepository
+	metricsRepo pkgrepository.MetricsRepository
 	whitelisted []*regexp.Regexp
 	blacklisted []*regexp.Regexp
 	dontCache   []*regexp.Regexp
@@ -34,7 +35,7 @@ const NoProxyResponse = "no response from proxy"
 func NewProxyUsecase(
 	cache repository.BlockchainRepository,
 	proxy repository.BlockchainRepository,
-	metricsRepo pkgrepository.MetricRepository) *ProxyUsecase {
+	metricsRepo pkgrepository.MetricsRepository) *ProxyUsecase {
 	return &ProxyUsecase{
 		cache:       cache,
 		proxy:       proxy,
@@ -63,26 +64,27 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (response string, toRawP
 			r, err = p.proxy.Get(request)
 			logrus.Info("received response from node: ", string(r.([]byte)))
 			if err != nil {
-				return NoProxyResponse, false, fmt.Errorf("could not request to proxy: %s", err)
+				logrus.Errorf("could not request to proxy: %s", err)
+				return errors.ErrNoProxyResponse.Error(), false, errors.ErrNoProxyResponse
 			}
 
 			_ = p.cache.Add(request, r)
 		}
 
 		// TODO first check if the project UUID is existing
-		p.saveMetric(request)
+		p.saveMetrics(request)
 		return string(r.([]byte)), false, nil
 	}
 
-	p.saveMetric(request)
+	p.saveMetrics(request)
 	return "", true, nil
 }
 
-func (p *ProxyUsecase) saveMetric(request *pkgmodel.Request) {
-	metric := pkgmodel.NewMetric(request, time.Now())
-	err := p.metricsRepo.Save(&metric)
+func (p *ProxyUsecase) saveMetrics(request *pkgmodel.Request) {
+	metrics := inputs.NewMetricsInput(request, time.Now())
+	err := p.metricsRepo.Save(&metrics)
 	if err != nil {
-		logrus.Errorf("could not save metric: %s", err)
+		logrus.Errorf("could not save metrics: %s", err)
 	}
 }
 

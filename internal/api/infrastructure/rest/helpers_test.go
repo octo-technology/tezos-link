@@ -14,14 +14,17 @@ type mockProjectUsecase struct {
 	mock.Mock
 }
 
-func (m *mockProjectUsecase) SaveProject(name string) (*model.Project, error) {
+func (m *mockProjectUsecase) CreateProject(name string) (*model.Project, error) {
 	args := m.Called(name)
-	return nil, args.Error(0)
+	if args.Get(0) != nil {
+		return args.Get(0).(*model.Project), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
-func (m *mockProjectUsecase) FindProject(uuid string) (*model.Project, error) {
+func (m *mockProjectUsecase) FindProjectAndMetrics(uuid string) (*model.Project, *model.Metrics, error) {
 	args := m.Called(uuid)
-	return args.Get(0).(*model.Project), nil
+	return args.Get(0).(*model.Project), args.Get(1).(*model.Metrics), args.Error(2)
 }
 
 type mockHealthUsecase struct {
@@ -31,15 +34,6 @@ type mockHealthUsecase struct {
 func (m *mockHealthUsecase) Health() *model.Health {
 	args := m.Called()
 	return args.Get(0).(*model.Health)
-}
-
-type mockMetricUsecase struct {
-	mock.Mock
-}
-
-func (m *mockMetricUsecase) CountRequests(uuid string) (int, error) {
-	args := m.Called(uuid)
-	return args.Int(0), args.Error(1)
 }
 
 func withRouter(router *chi.Mux, f func(t *testing.T, router *chi.Mux)) func(t *testing.T) {
@@ -59,29 +53,14 @@ func executeRequest(req *http.Request, handler *chi.Mux) *httptest.ResponseRecor
 	return rr
 }
 
-func buildControllerWithProjectUseCaseError(error error, ucMethod string) *Controller {
+func buildControllerWithProjectUseCaseError(project *model.Project, error error, ucMethod string) *Controller {
 	mockHealthUsecase := &mockHealthUsecase{}
 	mockProjectUsecase := &mockProjectUsecase{}
-	mockMetricUsecase := &mockMetricUsecase{}
 	mockProjectUsecase.
 		On(ucMethod, mock.Anything).
-		Return(error).
+		Return(project, error).
 		Twice()
-	rcc := NewRestController(chi.NewRouter(), mockProjectUsecase, mockHealthUsecase, mockMetricUsecase)
-	rcc.Initialize()
-
-	return rcc
-}
-
-func buildControllerWithProjectUseCaseReturning(project *model.Project, ucMethod string) *Controller {
-	mockHealthUsecase := &mockHealthUsecase{}
-	mockProjectUsecase := &mockProjectUsecase{}
-	mockMetricUsecase := &mockMetricUsecase{}
-	mockProjectUsecase.
-		On(ucMethod, mock.Anything).
-		Return(project).
-		Twice()
-	rcc := NewRestController(chi.NewRouter(), mockProjectUsecase, mockHealthUsecase, mockMetricUsecase)
+	rcc := NewRestController(chi.NewRouter(), mockProjectUsecase, mockHealthUsecase)
 	rcc.Initialize()
 
 	return rcc
@@ -90,12 +69,11 @@ func buildControllerWithProjectUseCaseReturning(project *model.Project, ucMethod
 func buildControllerWitHealthUseCaseReturning(health *model.Health, ucMethod string) *Controller {
 	mockProjectUsecase := &mockProjectUsecase{}
 	mockHealthUsecase := &mockHealthUsecase{}
-	mockMetricUsecase := &mockMetricUsecase{}
 	mockHealthUsecase.
 		On(ucMethod, mock.Anything).
 		Return(health).
 		Twice()
-	rcc := NewRestController(chi.NewRouter(), mockProjectUsecase, mockHealthUsecase, mockMetricUsecase)
+	rcc := NewRestController(chi.NewRouter(), mockProjectUsecase, mockHealthUsecase)
 	rcc.Initialize()
 
 	return rcc

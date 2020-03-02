@@ -2,6 +2,7 @@ package usecases
 
 import (
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	"github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -19,16 +20,16 @@ func (m *mockBlockchainRepository) Add(request *pkgmodel.Request, response inter
 	return nil
 }
 
-type mockMetricRepository struct {
+type mockMetricsRepository struct {
 	mock.Mock
 }
 
-func (m *mockMetricRepository) Save(metric *pkgmodel.Metric) error {
-	args := m.Called(metric)
+func (m *mockMetricsRepository) Save(metrics *inputs.MetricsInput) error {
+	args := m.Called(metrics)
 	return args.Error(0)
 }
 
-func (m *mockMetricRepository) Count(uuid string) (int, error) {
+func (m *mockMetricsRepository) Count(uuid string) (int, error) {
 	args := m.Called(uuid)
 	return args.Int(0), args.Error(1)
 }
