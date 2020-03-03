@@ -23,6 +23,8 @@ resource "aws_instance" "tz_node" {
 
   associate_public_ip_address = true
 
+  iam_instance_profile = "tzlink_backup_access"
+
   vpc_security_group_ids = [ aws_security_group.tezos_node.id ]
 
   user_data=templatefile("${path.module}/user_data.tpl", {})
