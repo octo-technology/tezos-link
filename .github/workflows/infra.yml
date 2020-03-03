@@ -5,6 +5,7 @@ on:
     paths:
     - '**.tf'
     - '**.hcl'
+    - '.github/workflows/infra.yml'
 
 jobs:
 
@@ -28,7 +29,7 @@ jobs:
     - name: Setup Terragrunt
       uses: autero1/action-terragrunt@v0.1.0
       with:
-        terragrunt_version: 0.21.20
+        terragrunt_version: 0.21.4
     - name: Validate-all
       run: |
         cd ./infra/terragrunt
