@@ -3,7 +3,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/octo-technology/tezos-link)](https://goreportcard.com/report/github.com/octo-technology/tezos-link)
 
-Tezos link is a gateway to access on the Tezos network.
+Tezos link is a gateway to access to the Tezos network aiming to improve developer experience when developing Tezos dApps.
 
 # Table of Contents
 
