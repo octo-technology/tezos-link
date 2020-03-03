@@ -28,18 +28,18 @@ jobs:
     - name: 'validate network module'
       uses: hashicorp/terraform-github-actions@master
       with:
-        tf_actions_version: 0.12.13
+        tf_actions_version: 0.12.20
         tf_actions_subcommand: 'validate'
         tf_actions_working_dir: './infra/terraform/modules/network'
     - name: 'validate blockchain_backup module'
       uses: hashicorp/terraform-github-actions@master
       with:
-        tf_actions_version: 0.12.13
+        tf_actions_version: 0.12.20
         tf_actions_subcommand: 'validate'
         tf_actions_working_dir: './infra/terraform/modules/blockchain_backup'
     - name: 'validate tezos_node module'
       uses: hashicorp/terraform-github-actions@master
       with:
-        tf_actions_version: 0.12.13
+        tf_actions_version: 0.12.20
         tf_actions_subcommand: 'validate'
         tf_actions_working_dir: './infra/terraform/modules/tezos_node'
