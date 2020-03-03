@@ -9,12 +9,12 @@ variable "ENV" {
 }
 
 variable "PROJECT_NAME" {
-  type = string
+  type    = string
   default = "tezos-link"
 }
 
 variable "BUILD_WITH" {
-  type = string
+  type    = string
   default = "terraform"
 }
 

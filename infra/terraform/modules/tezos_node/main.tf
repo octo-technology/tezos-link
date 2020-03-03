@@ -25,9 +25,9 @@ resource "aws_instance" "tz_node" {
 
   iam_instance_profile = "tzlink_backup_access"
 
-  vpc_security_group_ids = [ aws_security_group.tezos_node.id ]
+  vpc_security_group_ids = [aws_security_group.tezos_node.id]
 
-  user_data=templatefile("${path.module}/user_data.tpl", {})
+  user_data = templatefile("${path.module}/user_data.tpl", {})
 
   tags = {
     Name        = format("tzlink-%s", var.ENV)
@@ -38,10 +38,10 @@ resource "aws_instance" "tz_node" {
 }
 
 resource "aws_elb" "tz_farm" {
-  name = format("tzlink-%s-farm", var.ENV)
-  subnets = tolist(data.aws_subnet_ids.tzlink.ids)
-  internal = true
-  security_groups = [ aws_security_group.tezos_node_lb.id ]
+  name            = format("tzlink-%s-farm", var.ENV)
+  subnets         = tolist(data.aws_subnet_ids.tzlink.ids)
+  internal        = true
+  security_groups = [aws_security_group.tezos_node_lb.id]
 
   listener {
     instance_port     = 8000
@@ -58,7 +58,7 @@ resource "aws_elb" "tz_farm" {
     interval            = 30
   }
 
-  instances                   = [ aws_instance.tz_node.id ]
+  instances                   = [aws_instance.tz_node.id]
   cross_zone_load_balancing   = true
   idle_timeout                = 400
   connection_draining         = true

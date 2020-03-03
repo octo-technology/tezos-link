@@ -1,16 +1,16 @@
 data "aws_iam_policy_document" "tzlink_trusted_entity" {
-    statement {
-        sid = "1"
+  statement {
+    sid = "1"
 
-        actions = [ "sts:AssumeRole" ]
+    actions = ["sts:AssumeRole"]
 
-        principals {
-            type = "Service"
-            identifiers = ["ec2.amazonaws.com"]
-        }
-
-        effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
     }
+
+    effect = "Allow"
+  }
 }
 
 data "aws_iam_policy_document" "tzlink_backup_access" {
