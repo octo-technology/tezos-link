@@ -43,15 +43,20 @@ The repository is currently following this organization:
 
 ## API
 
-### Dependencies
-
-* `PostgreSQL` (version == 9.6)
-
+REST API to manage projects and get project's metrics.
 
 ### Dependencies
 
 * `PostgreSQL` (setup with 9.6)
 
+## Proxy
+
+- HTTP proxy in front of the nodes
+- In-memory (LRU) cache
+
+### Dependencies
+
+* `PostgreSQL` (setup with 9.6)
 
 ## Build all services
 
