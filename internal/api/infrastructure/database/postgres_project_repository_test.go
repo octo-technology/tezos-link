@@ -14,7 +14,7 @@ func TestPostgresProjectRepository_FindByUUID_Unit(t *testing.T) {
 
 	pgr := NewPostgresProjectRepository(pg)
 	expectedProject := model.NewProject(1, "New Project", "A_KEY")
-	s, err := pgr.Save(expectedProject.Name, expectedProject.UUID)
+	s, err := pgr.Save(expectedProject.Title, expectedProject.UUID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -39,8 +39,8 @@ func TestPostgresProjectRepository_FindAll_Unit(t *testing.T) {
 	pgr := NewPostgresProjectRepository(pg)
 	expectedFirstProject := model.NewProject(1, "New Project", "A_KEY")
 	expectedSecondProject := model.NewProject(2, "New Project 2", "A_SECOND_KEY")
-	_, _ = pgr.Save(expectedFirstProject.Name, expectedFirstProject.UUID)
-	_, _ = pgr.Save(expectedSecondProject.Name, expectedSecondProject.UUID)
+	_, _ = pgr.Save(expectedFirstProject.Title, expectedFirstProject.UUID)
+	_, _ = pgr.Save(expectedSecondProject.Title, expectedSecondProject.UUID)
 
 	// When
 	p, err := pgr.FindAll()

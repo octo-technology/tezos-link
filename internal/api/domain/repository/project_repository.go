@@ -6,7 +6,7 @@ import "github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 type ProjectRepository interface {
 	FindAll() ([]*model.Project, error)
 	FindByUUID(uuid string) (*model.Project, error)
-	Save(name string, key string) (*model.Project, error)
+	Save(title string, key string) (*model.Project, error)
 	UpdateByID(project *model.Project) error
 	DeleteByID(project *model.Project) error
 	Ping() error

@@ -21,8 +21,8 @@ func NewPostgresProjectRepository(connection *sql.DB) repository.ProjectReposito
 }
 
 // FindAll returns all projects
-func (pg *postgresProjectRepository) FindAll() ([]*model.Project, error) {
-	rows, err := pg.connection.Query("SELECT id, name, uuid FROM projects")
+func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
+	rows, err := pg.connection.Query("SELECT id, title, uuid FROM projects")
 	if err != nil {
 		return nil, fmt.Errorf("no projects found: %s", err)
 	}
@@ -30,7 +30,7 @@ func (pg *postgresProjectRepository) FindAll() ([]*model.Project, error) {
 	var r []*model.Project
 	for rows.Next() {
 		cur := model.Project{}
-		err := rows.Scan(&cur.ID, &cur.Name, &cur.UUID)
+		err := rows.Scan(&cur.ID, &cur.Title, &cur.UUID)
 		if err != nil {
 			return nil, fmt.Errorf("could not map projects: %s", err)
 		}
@@ -44,8 +44,8 @@ func (pg *postgresProjectRepository) FindAll() ([]*model.Project, error) {
 func (pg *postgresProjectRepository) FindByUUID(uuid string) (*model.Project, error) {
 	r := model.Project{}
 	err := pg.connection.
-		QueryRow("SELECT id, name, uuid FROM projects WHERE uuid = $1", uuid).
-		Scan(&r.ID, &r.Name, &r.UUID)
+		QueryRow("SELECT id, title, uuid FROM projects WHERE uuid = $1", uuid).
+		Scan(&r.ID, &r.Title, &r.UUID)
 
 	if err != nil {
 		logrus.Errorf("project %s not found: %s", uuid, err)
@@ -56,15 +56,15 @@ func (pg *postgresProjectRepository) FindByUUID(uuid string) (*model.Project, er
 }
 
 // Save insert a new project
-func (pg *postgresProjectRepository) Save(name string, uuid string) (*model.Project, error) {
+func (pg postgresProjectRepository) Save(title string, uuid string) (*model.Project, error) {
 	r := model.Project{}
 
 	err := pg.connection.
-		QueryRow("INSERT INTO projects(name, uuid) VALUES ($1, $2) RETURNING id, name, uuid", name, uuid).
-		Scan(&r.ID, &r.Name, &r.UUID)
+		QueryRow("INSERT INTO projects(title, uuid) VALUES ($1, $2) RETURNING id, title, uuid", title, uuid).
+		Scan(&r.ID, &r.Title, &r.UUID)
 
 	if err != nil {
-		return nil, fmt.Errorf("could not insert project %s: %s", name, err)
+		return nil, fmt.Errorf("could not insert project %s: %s", title, err)
 	}
 
 	return &r, nil

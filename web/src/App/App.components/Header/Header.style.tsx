@@ -24,7 +24,7 @@ export const HeaderLogo = styled.div`
 export const HeaderMenu = styled.div`
   position: absolute;
   top: 14px;
-  left: 40px;
+  left: 60px;
   display: grid;
   grid-template-columns: 80px 80px 80px;
   grid-gap: 10px;
@@ -39,3 +39,9 @@ export const HeaderLoggedOut = styled.div`
   grid-gap: 10px;
 `
 
+export const Beta = styled.span`
+  vertical-align: 25px;
+  margin-left: -2px;
+  color: grey;
+  font-size: 0.8em;
+`

@@ -12,6 +12,7 @@ require (
 	github.com/docker/go-units v0.4.0 // indirect
 	github.com/gamegos/jsend v0.0.0-20151011171802-f47e169f3d76
 	github.com/go-chi/chi v4.0.3+incompatible
+	github.com/go-chi/cors v1.0.0
 	github.com/golang-migrate/migrate v3.5.4+incompatible
 	github.com/golang-migrate/migrate/v4 v4.8.0
 	github.com/google/uuid v1.1.1

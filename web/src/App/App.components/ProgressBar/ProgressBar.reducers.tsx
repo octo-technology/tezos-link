@@ -5,18 +5,17 @@ const initialState = {
 }
 
 export function progressBarReducers(state = initialState, action: any) {
-  switch (action.type) {
-    case SHOW_PROGRESS_BAR:
-      return {
-        ...state,
-        loading: true
-      }
-    case HIDE_PROGRESS_BAR:
-      return {
-        ...state,
-        loading: false
-      }
-    default:
-      return state
+  if (action.type === SHOW_PROGRESS_BAR) {
+    return {
+      ...state,
+      loading: true
+    }
+  } else if (action.type === HIDE_PROGRESS_BAR) {
+    return {
+      ...state,
+      loading: false
+    }
+  } else {
+    return state
   }
 }

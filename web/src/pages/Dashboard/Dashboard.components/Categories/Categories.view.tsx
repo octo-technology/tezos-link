@@ -1,8 +1,15 @@
 import * as PropTypes from 'prop-types'
 import * as React from 'react'
 
-//prettier-ignore
-import { CategoriesCategory, CategoriesCategoryData, CategoriesCategoryDescription, CategoriesCategoryIcon, CategoriesCategoryTitle, CategoriesSlider, CategoriesStyled } from './Categories.style'
+import {
+  CategoriesCategory,
+  CategoriesCategoryData,
+  CategoriesCategoryDescription,
+  CategoriesCategoryIcon,
+  CategoriesCategoryTitle,
+  CategoriesSlider,
+  CategoriesStyled
+} from './Categories.style'
 
 type Category = {
   title: string

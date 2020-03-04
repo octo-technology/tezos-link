@@ -64,6 +64,7 @@ REST API to manage projects and get project's metrics.
 
 * `GNU Make` (setup with 3.81)
 * `Golang` (setup with 1.13)
+* `yarn`
 
 ### How to
 
@@ -86,6 +87,7 @@ $> make build
 For integrations tests only:
 * `Docker`
 * `docker-compose`
+* `yarn`
 
 ### How to
 
@@ -112,6 +114,7 @@ $> docker-compose down
 
 * `Docker`
 * `docker-compose`
+* `yarn`
 
 ### How to
 

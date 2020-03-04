@@ -50,7 +50,7 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 	client := &http.Client{}
 	newProject, _ := json.Marshal(inputs.NewProject{
-		Name: "New Project",
+		Title: "New Project",
 	})
 
 	// 0. Create a project
@@ -118,7 +118,7 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 	_ = r.Body.Close()
 
 	// There should be only 1 request
-	assert.Equal(t, string(b), `{"data":{"name":"New Project","uuid":"`+uuid+`","metrics":{"requestsCount":1}},"status":"success"}`)
+	assert.Equal(t, string(b), `{"data":{"title":"New Project","uuid":"`+uuid+`","metrics":{"requestsCount":1}},"status":"success"}`)
 }
 
 func testProxyUsecaseFunc(

@@ -7,20 +7,19 @@ const initialState = {
 }
 
 export function toasterReducers(state = initialState, action: any) {
-  switch (action.type) {
-    case SHOW_TOASTER:
-      return {
-        ...state,
-        status: action.status,
-        title: action.title,
-        message: action.message
-      }
-    case HIDE_TOASTER:
-      return {
-        ...state,
-        status: undefined
-      }
-    default:
-      return state
+  if (action.type === SHOW_TOASTER) {
+    return {
+      ...state,
+      status: action.status,
+      title: action.title,
+      message: action.message
+    }
+  } else if (action.type === HIDE_TOASTER) {
+    return {
+      ...state,
+      status: undefined
+    }
+  } else {
+    return state
   }
 }

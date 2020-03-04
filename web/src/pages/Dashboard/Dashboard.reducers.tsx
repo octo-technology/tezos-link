@@ -1,17 +1,16 @@
-import { SET_POSTS } from './Dashboard.actions'
+import { SET_METRICS } from './Dashboard.actions'
 
 const initialState = {
-  posts: []
+  metrics: {}
 }
 
-export function postReducers(state = initialState, action: any) {
-  switch (action.type) {
-    case SET_POSTS:
-      return {
-        ...state,
-        posts: action.posts
-      }
-    default:
-      return state
+export function metricsReducers(state = initialState, action: any) {
+  if (action.type === SET_METRICS) {
+    return {
+      ...state,
+      metrics: action.metrics
+    }
+  } else {
+    return state
   }
 }

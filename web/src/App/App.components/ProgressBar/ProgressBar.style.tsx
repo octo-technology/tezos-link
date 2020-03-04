@@ -1,10 +1,6 @@
-import styled, { keyframes } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { primaryColor } from '../../../styles'
-
-export const EndProgressBarAnimation = keyframes`
-
-`
 
 export const ProgressBarStyled = styled.div`
   position: fixed;

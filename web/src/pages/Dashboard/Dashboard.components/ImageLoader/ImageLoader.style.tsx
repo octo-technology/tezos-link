@@ -1,12 +1,12 @@
 import styled, { keyframes } from 'styled-components/macro'
 
-const ImageLoaderAnimation = keyframes`
+const GraphLoaderAnimation = keyframes`
 to {
     background-position: 350% 0, var(--soft-image-position), 0 0;
   }
 `
 
-export const ImageLoaderStyled = styled.div`
+export const GraphLoaderStyled = styled.div`
   width: 100%;
   height: 100%;
 
@@ -31,10 +31,10 @@ export const ImageLoaderStyled = styled.div`
   background-size: var(--soft-blur-size), var(--soft-image-width) var(--soft-image-height), 100% 100%;
   background-position: -150% 0, var(--soft-image-position), 0 0;
   background-repeat: no-repeat;
-  animation: ${ImageLoaderAnimation} 1.5s infinite;
+  animation: ${GraphLoaderAnimation} 1.5s infinite;
 `
 
-export const ImageLoaderImg = styled.img`
+export const GraphLoaderImg = styled.img`
   width: 100%;
   height: 100%;
   opacity: 0;
@@ -42,6 +42,6 @@ export const ImageLoaderImg = styled.img`
   will-change: opacity;
 
   &.loaded {
-    opacity: 1;
+    opacity: 0;
   }
 `
