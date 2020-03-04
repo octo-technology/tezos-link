@@ -34,6 +34,7 @@ rm -rf /var/lib/docker/volumes/mainnet_node_data.tar.gz
 cat > tezos-snap.sh << EOF
 #!/bin/bash -e
 
+mkdir .tezos-mainnet
 cp /.tezos-mainnet/docker-compose.yml .tezos-mainnet/docker-compose.yml 
 
 echo "> Stop the node for snapshot"
