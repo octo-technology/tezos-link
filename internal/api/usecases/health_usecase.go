@@ -8,7 +8,7 @@ import (
 
 // HealthUsecase contains the project repository to do the health check
 type HealthUsecase struct {
-	repo repository.ProjectRepository
+	projectRepo repository.ProjectRepository
 }
 
 // HealthUsecaseInterface contains all available methods of the health use-case
@@ -19,13 +19,13 @@ type HealthUsecaseInterface interface {
 // NewHealthUsecase returns a new health use-case
 func NewHealthUsecase(repo repository.ProjectRepository) *HealthUsecase {
 	return &HealthUsecase{
-		repo: repo,
+		projectRepo: repo,
 	}
 }
 
 // Health checks and returns true if the app can ping the database
 func (hu *HealthUsecase) Health() *model.Health {
-	err := hu.repo.Ping()
+	err := hu.projectRepo.Ping()
 
 	if err != nil {
 		logrus.Error("Could not ping DB", err)

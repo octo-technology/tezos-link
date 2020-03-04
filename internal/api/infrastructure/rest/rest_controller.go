@@ -65,6 +65,7 @@ func (rc *Controller) Initialize() {
 
 			r.Route("/{uuid}", func(r chi.Router) {
 				r.Get("/", rc.GetProjectWithMetrics)
+				// TODO: To implement
 				// r.Put("/", rc.UpdateProject)
 				// r.Delete("/", rc.DeleteProject)
 			})

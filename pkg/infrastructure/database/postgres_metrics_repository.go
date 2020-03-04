@@ -39,16 +39,16 @@ func (pg postgresMetricsRepository) Save(metrics *inputs.MetricsInput) error {
 
 // Count count request for a specified project uuid
 func (pg postgresMetricsRepository) Count(uuid string) (int, error) {
-	var n int
+	var count int
 
 	err := pg.connection.
 		QueryRow("SELECT COUNT(*) FROM metrics WHERE uuid = $1", uuid).
-		Scan(&n)
+		Scan(&count)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		logrus.Errorf("could not count requests for UUID %s: %s", uuid, err)
 		return -1, modelerrors.ErrProjectNotFound
 	}
 
-	return n, nil
+	return count, nil
 }

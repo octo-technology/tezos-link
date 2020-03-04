@@ -35,19 +35,19 @@ func init() {
 }
 
 func main() {
-	r := chi.NewRouter()
+	router := chi.NewRouter()
 	runMigrations()
 
 	// Repositories
-	pg := database.NewPostgresProjectRepository(database.Connection)
-	pm := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
+	projectRepo := database.NewPostgresProjectRepository(database.Connection)
+	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
 
 	// Use cases
-	pu := usecases.NewProjectUsecase(pg, pm)
-	hu := usecases.NewHealthUsecase(pg)
+	projectUsecase := usecases.NewProjectUsecase(projectRepo, metricsRepo)
+	healthUsecase := usecases.NewHealthUsecase(projectRepo)
 
 	// HTTP API
-	restController := rest.NewRestController(r, pu, hu)
+	restController := rest.NewRestController(router, projectUsecase, healthUsecase)
 	restController.Initialize()
 	restController.Run(config.APIConfig.Server.Port)
 }
@@ -55,7 +55,7 @@ func main() {
 func runMigrations() {
 	m, err := migrate.New(
 		config.APIConfig.Migration.Path,
-		config.APIConfig.Db.Url)
+		config.APIConfig.Database.Url)
 	if err != nil {
 		log.Fatal("Could not apply db migration: ", err)
 	}

@@ -24,6 +24,8 @@ func TestPostgresMetricsRepository_Save_Unit(t *testing.T) {
 
 	// When
 	err := pgr.Save(&aMetric)
+
+	// Then
 	if err != nil {
 		t.Fatal(err)
 	}

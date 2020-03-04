@@ -37,7 +37,6 @@ func init() {
 		}
 	}
 
-	// We will configure the database in a next version
 	database.Configure()
 }
 
@@ -47,24 +46,24 @@ func main() {
 		log.Fatal(fmt.Sprintf("could not read blockchain node reverse url from configuration: %s", err))
 	}
 	logrus.Info("proxying requests to node: ", reverseURL)
-	rp := httputil.NewSingleHostReverseProxy(reverseURL)
+	reverseProxy := httputil.NewSingleHostReverseProxy(reverseURL)
 
 	// Repositories
-	cb := cache.NewLruBlockchainRepository()
-	pb := proxy.NewProxyBlockchainRepository()
-	pm := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
+	lruRepo := cache.NewLruBlockchainRepository()
+	proxyRepo := proxy.NewProxyBlockchainRepository()
+	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
 
 	// Use cases
-	pu := usecases.NewProxyUsecase(cb, pb, pm)
+	proxyUsecase := usecases.NewProxyUsecase(lruRepo, proxyRepo, metricsRepo)
 
 	// HTTP API
-	srv := http.Server{
+	server := http.Server{
 		Addr:         ":" + strconv.Itoa(config.ProxyConfig.Server.Port),
 		ReadTimeout:  time.Duration(config.ProxyConfig.Proxy.ReadTimeout) * time.Second,
 		WriteTimeout: time.Duration(config.ProxyConfig.Proxy.WriteTimeout) * time.Second,
 		IdleTimeout:  time.Duration(config.ProxyConfig.Proxy.IdleTimeout) * time.Second,
 	}
-	httpController := httpinfra.NewHTTPController(pu, rp, &srv)
+	httpController := httpinfra.NewHTTPController(proxyUsecase, reverseProxy, &server)
 	httpController.Initialize()
 	httpController.Run()
 }

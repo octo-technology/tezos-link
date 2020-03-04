@@ -24,7 +24,12 @@ func (m *mockProjectUsecase) CreateProject(name string) (*model.Project, error) 
 
 func (m *mockProjectUsecase) FindProjectAndMetrics(uuid string) (*model.Project, *model.Metrics, error) {
 	args := m.Called(uuid)
-	return args.Get(0).(*model.Project), args.Get(1).(*model.Metrics), args.Error(2)
+
+	project := args.Get(0).(*model.Project)
+	metrics := args.Get(1).(*model.Metrics)
+	err := args.Error(2)
+
+	return project, metrics, err
 }
 
 type mockHealthUsecase struct {

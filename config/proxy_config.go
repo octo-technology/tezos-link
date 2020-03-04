@@ -17,7 +17,7 @@ type ProxyConf struct {
 	Server struct {
 		Port int
 	}
-	Db struct {
+	Database struct {
 		Url string
 	}
 	Proxy struct {

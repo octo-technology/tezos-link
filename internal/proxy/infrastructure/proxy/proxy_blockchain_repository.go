@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/repository"
-	model2 "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
@@ -28,7 +28,7 @@ func NewProxyBlockchainRepository() repository.BlockchainRepository {
 	}
 }
 
-func (p proxyBlockchainRepository) Get(request *model2.Request) (interface{}, error) {
+func (p proxyBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, error) {
 	url := p.baseURL + request.Path
 
 	req, err := http.NewRequest("OBTAIN", url, nil)
@@ -55,6 +55,6 @@ func (p proxyBlockchainRepository) Get(request *model2.Request) (interface{}, er
 	return b, nil
 }
 
-func (p proxyBlockchainRepository) Add(request *model2.Request, response interface{}) error {
+func (p proxyBlockchainRepository) Add(request *pkgmodel.Request, response interface{}) error {
 	panic("not implemented")
 }

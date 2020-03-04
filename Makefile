@@ -44,7 +44,9 @@ clean-app:
 build-docker: build-unix
 	docker-compose build
 run:
-	docker-compose up -d postgres node $(API) $(PROXY) && cd web && yarn start
+	docker-compose up -d postgres node $(API) $(PROXY)
+	cd web
+	yarn start
 	cd -
 down:
 	docker-compose down

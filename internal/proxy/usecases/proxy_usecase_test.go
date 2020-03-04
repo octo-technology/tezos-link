@@ -86,14 +86,14 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var fb []byte
-	fb, err = ioutil.ReadAll(r.Body)
+	var b []byte
+	b, err = ioutil.ReadAll(r.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
 	_ = r.Body.Close()
 
-	assert.Equal(t, string(fb), `{
+	assert.Equal(t, string(b), `{
   "ports" : [ 1090 ],
   "version" : "5.9.0",
   "artifactId" : "mockserver-core",
@@ -111,15 +111,14 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var sb []byte
-	sb, err = ioutil.ReadAll(r.Body)
+	b, err = ioutil.ReadAll(r.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
 	_ = r.Body.Close()
 
 	// There should be only 1 request
-	assert.Equal(t, string(sb), `{"data":{"name":"New Project","uuid":"`+uuid+`","metrics":{"requestsCount":1}},"status":"success"}`)
+	assert.Equal(t, string(b), `{"data":{"name":"New Project","uuid":"`+uuid+`","metrics":{"requestsCount":1}},"status":"success"}`)
 }
 
 func testProxyUsecaseFunc(

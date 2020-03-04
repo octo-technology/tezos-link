@@ -21,7 +21,7 @@ func NewPostgresProjectRepository(connection *sql.DB) repository.ProjectReposito
 }
 
 // FindAll returns all projects
-func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
+func (pg *postgresProjectRepository) FindAll() ([]*model.Project, error) {
 	rows, err := pg.connection.Query("SELECT id, name, uuid FROM projects")
 	if err != nil {
 		return nil, fmt.Errorf("no projects found: %s", err)
@@ -41,7 +41,7 @@ func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
 }
 
 // FindByUUID finds a project by uuid
-func (pg postgresProjectRepository) FindByUUID(uuid string) (*model.Project, error) {
+func (pg *postgresProjectRepository) FindByUUID(uuid string) (*model.Project, error) {
 	r := model.Project{}
 	err := pg.connection.
 		QueryRow("SELECT id, name, uuid FROM projects WHERE uuid = $1", uuid).
@@ -56,7 +56,7 @@ func (pg postgresProjectRepository) FindByUUID(uuid string) (*model.Project, err
 }
 
 // Save insert a new project
-func (pg postgresProjectRepository) Save(name string, uuid string) (*model.Project, error) {
+func (pg *postgresProjectRepository) Save(name string, uuid string) (*model.Project, error) {
 	r := model.Project{}
 
 	err := pg.connection.
@@ -71,17 +71,17 @@ func (pg postgresProjectRepository) Save(name string, uuid string) (*model.Proje
 }
 
 // UpdateByID update a project by id
-func (pg postgresProjectRepository) UpdateByID(project *model.Project) error {
+func (pg *postgresProjectRepository) UpdateByID(project *model.Project) error {
 	panic("implement me")
 }
 
 // DeleteByID delete a project by id
-func (pg postgresProjectRepository) DeleteByID(project *model.Project) error {
+func (pg *postgresProjectRepository) DeleteByID(project *model.Project) error {
 	panic("implement me")
 }
 
 // Ping ping the database
-func (pg postgresProjectRepository) Ping() error {
+func (pg *postgresProjectRepository) Ping() error {
 	err := pg.connection.Ping()
 	if err != nil {
 		return err

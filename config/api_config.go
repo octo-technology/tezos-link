@@ -15,7 +15,7 @@ type APIConf struct {
 		Hostname string
 		Port     int
 	}
-	Db struct {
+	Database struct {
 		Url string
 	}
 	Migration struct {
