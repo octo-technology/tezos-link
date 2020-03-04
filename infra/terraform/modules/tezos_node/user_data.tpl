@@ -31,7 +31,7 @@ mainnet.sh node start --rpc-port 8000 --history-mode archive
 
 rm -rf /var/lib/docker/volumes/mainnet_node_data.tar.gz
 
-cat > tezos-snap.sh << EOF
+cat > export-tezos-snap.sh << EOF
 #!/bin/bash -e
 
 mkdir .tezos-mainnet
