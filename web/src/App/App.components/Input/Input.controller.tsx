@@ -2,8 +2,10 @@ import * as PropTypes from 'prop-types'
 import * as React from 'react'
 
 import { InputView } from './Input.view'
+import { RefObject } from 'react'
 
 type InputProps = {
+  inputRef?: RefObject<HTMLInputElement>
   icon?: string
   placeholder: string
   name?: string
@@ -14,9 +16,20 @@ type InputProps = {
   type: string
 }
 
-export const Input = ({ icon, placeholder, name, value, onChange, onBlur, inputStatus, type }: InputProps) => {
+export const Input = ({
+  inputRef,
+  icon,
+  placeholder,
+  name,
+  value,
+  onChange,
+  onBlur,
+  inputStatus,
+  type
+}: InputProps) => {
   return (
     <InputView
+      inputRef={inputRef}
       type={type}
       icon={icon}
       name={name}
@@ -30,6 +43,7 @@ export const Input = ({ icon, placeholder, name, value, onChange, onBlur, inputS
 }
 
 Input.propTypes = {
+  inputRef: PropTypes.any,
   icon: PropTypes.string,
   placeholder: PropTypes.string,
   name: PropTypes.string,
@@ -41,6 +55,7 @@ Input.propTypes = {
 }
 
 Input.defaultProps = {
+  inputRef: undefined,
   icon: undefined,
   placeholder: undefined,
   name: undefined,

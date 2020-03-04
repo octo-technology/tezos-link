@@ -52,7 +52,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Project"
+                            "$ref": "#/definitions/model.ProjectWithMetrics"
                         }
                     }
                 }
@@ -61,16 +61,16 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Create a Project",
+                "summary": "Create a ProjectWithMetrics",
                 "parameters": [
                     {
-                        "description": "New Project",
+                        "description": "New ProjectWithMetrics",
                         "name": "new-project",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/inputs.NewProject"
+                            "$ref": "#/definitions/inputs.SignInProject"
                         }
                     }
                 ],
@@ -85,11 +85,11 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a Project",
+                "summary": "Get a ProjectWithMetrics",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Project ID",
+                        "description": "ProjectWithMetrics ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -99,7 +99,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Project"
+                            "$ref": "#/definitions/model.ProjectWithMetrics"
                         }
                     }
                 }
@@ -107,7 +107,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "inputs.NewProject": {
+        "inputs.SignInProject": {
             "type": "object",
             "properties": {
                 "title": {
@@ -123,7 +123,7 @@ var doc = `{
                 }
             }
         },
-        "model.Project": {
+        "model.ProjectWithMetrics": {
             "type": "object",
             "properties": {
                 "id": {

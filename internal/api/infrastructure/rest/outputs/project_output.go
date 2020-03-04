@@ -4,7 +4,7 @@ import "github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 
 // ProjectOutputWithMetrics contains the fields to represent a project
 type ProjectOutputWithMetrics struct {
-	Name    string        `json:"name"`
+	Title   string        `json:"title"`
 	UUID    string        `json:"uuid"`
 	Metrics MetricsOutput `json:"metrics"`
 }
@@ -12,7 +12,7 @@ type ProjectOutputWithMetrics struct {
 // NewProjectOutputWithMetrics returns a new project with metrics
 func NewProjectOutputWithMetrics(project *model.Project, metrics *model.Metrics) ProjectOutputWithMetrics {
 	return ProjectOutputWithMetrics{
-		Name:    project.Name,
+		Title:   project.Title,
 		UUID:    project.UUID,
 		Metrics: NewMetricsOutput(metrics),
 	}

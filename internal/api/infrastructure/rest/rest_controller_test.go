@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
+	modelerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"strings"
@@ -17,14 +18,20 @@ func TestRestController_PostProject_Unit(t *testing.T) {
 	p := model.NewProject(1, "PROJECT_NAME", "AN_UUID")
 	rc := buildControllerWithProjectUseCaseError(&p, nil, "CreateProject")
 	rcWithError := buildControllerWithProjectUseCaseError(nil, errors.New("error from the DB"), "CreateProject")
+	rcWithEmptyNameError := buildControllerWithProjectUseCaseError(nil, modelerrors.ErrNoProjectName, "CreateProject")
 
 	jsonBody, _ := json.Marshal(inputs.NewProject{
-		Name: "New Project",
+		Title: "New ProjectWithMetrics",
 	})
+	unexpectedJSONBody := `{"BADDDDD":"BAD_KEY"}`
 
 	// Then
 	t.Run("With expected JSON body", withRouter(rc.router,
 		testPostProjectFunc(string(jsonBody), http.StatusCreated, `{"data":null,"status":"success"}`)))
+	t.Run("With unexpected JSON body", withRouter(rc.router,
+		testPostProjectFunc(unexpectedJSONBody, http.StatusBadRequest, `{"data":"json: unknown field \"BADDDDD\"","status":"fail"}`)))
+	t.Run("With empty JSON body", withRouter(rcWithEmptyNameError.router,
+		testPostProjectFunc("{}", http.StatusBadRequest, `{"data":"project name not defined","status":"fail"}`)))
 	t.Run("With empty body", withRouter(rc.router,
 		testPostProjectFunc("", http.StatusBadRequest, `{"data":"EOF","status":"fail"}`)))
 	t.Run("With a use case error", withRouter(rcWithError.router,
@@ -46,7 +53,7 @@ func testPostProjectFunc(jsonInput string, expectedStatus int, expectedResponse 
 
 func TestRestController_GetProject_Unit(t *testing.T) {
 	// Given
-	p := model.NewProject(123, "A Project", "A_UUID_666")
+	p := model.NewProject(123, "A ProjectWithMetrics", "A_UUID_666")
 	m := model.NewMetrics(3)
 
 	mockProjectUsecase := &mockProjectUsecase{}
@@ -67,7 +74,7 @@ func TestRestController_GetProject_Unit(t *testing.T) {
 
 	// Then
 	assert.Equal(t, http.StatusOK, requestResponse.Code, "Bad status code")
-	assert.Equal(t, `{"data":{"name":"A Project","uuid":"A_UUID_666","metrics":{"requestsCount":3}},"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
+	assert.Equal(t, `{"data":{"title":"A ProjectWithMetrics","uuid":"A_UUID_666","metrics":{"requestsCount":3}},"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
 }
 
 func TestRestController_GetHealth_Unit(t *testing.T) {

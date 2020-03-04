@@ -1,28 +1,47 @@
 import * as React from 'react'
 
-import {ProjectTokenCard, ProjectTokenStyled} from './ProjectToken.style'
-import {Input} from '../../../../App/App.components/Input/Input.controller'
-import * as PropTypes from "prop-types";
+import { ProjectTokenCard, ProjectTokenStyled } from './ProjectToken.style'
+import { Input } from '../../../../App/App.components/Input/Input.controller'
+import * as PropTypes from 'prop-types'
+import { Button } from '../../../../App/App.components/Button/Button.controller'
+import { RefObject } from 'react'
 
 type ProjectTokenViewProps = {
-    token: string
+  token: string
+  copySuccess: string
+  copyToClipboard: () => void
+  textAreaRef: RefObject<HTMLInputElement>
 }
 
-export const ProjectTokenView = ({token}: ProjectTokenViewProps) => {
+export const ProjectTokenView = ({ token, copySuccess, copyToClipboard, textAreaRef }: ProjectTokenViewProps) => {
   return (
     <ProjectTokenStyled>
       <ProjectTokenCard>
-          Your private token:
-        <Input value={token} name="token" onChange={() => {}} onBlur={() => {}} />
+        Your private token:
+        <Input
+          inputRef={textAreaRef}
+          icon="password"
+          value={token}
+          name="token"
+          onChange={() => {}}
+          onBlur={() => {}}
+        />
+        {/* Logical shortcut for only displaying the
+             button if the copy command exists */
+          document.queryCommandSupported('copy') && (
+            <div>
+              <Button onClick={copyToClipboard} text={copySuccess || 'Copy to clipboard'} icon="copy" type="button" />
+            </div>
+          )}
       </ProjectTokenCard>
     </ProjectTokenStyled>
   )
 }
 
 ProjectTokenView.propTypes = {
-    token: PropTypes.string
+  token: PropTypes.string
 }
 
 ProjectTokenView.defaultProps = {
-    token: undefined,
+  token: undefined
 }

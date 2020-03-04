@@ -2,8 +2,10 @@ import * as React from 'react'
 import * as PropTypes from 'prop-types'
 
 import { InputStyled, InputComponent, InputSatus, InputIcon } from './Input.style'
+import { RefObject } from 'react'
 
 type InputViewProps = {
+  inputRef?: RefObject<HTMLInputElement>
   icon?: string
   placeholder: string
   name?: string
@@ -14,10 +16,21 @@ type InputViewProps = {
   type: string
 }
 
-export const InputView = ({ icon, placeholder, name, value, onChange, onBlur, inputStatus, type }: InputViewProps) => (
+export const InputView = ({
+  inputRef,
+  icon,
+  placeholder,
+  name,
+  value,
+  onChange,
+  onBlur,
+  inputStatus,
+  type
+}: InputViewProps) => (
   <InputStyled>
     {icon && <InputIcon alt={icon} src={`/icons/${icon}.svg`} />}
     <InputComponent
+      ref={inputRef}
       type={type}
       name={name}
       className={inputStatus}
@@ -32,6 +45,7 @@ export const InputView = ({ icon, placeholder, name, value, onChange, onBlur, in
 )
 
 InputView.propTypes = {
+  inputRef: PropTypes.any,
   icon: PropTypes.string,
   placeholder: PropTypes.string,
   name: PropTypes.string,
@@ -43,6 +57,7 @@ InputView.propTypes = {
 }
 
 InputView.defaultProps = {
+  inputRef: undefined,
   icon: undefined,
   placeholder: undefined,
   name: undefined,

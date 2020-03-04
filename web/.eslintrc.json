@@ -37,11 +37,17 @@
     "react": {
       "version": "latest"
     },
-    "import/resolver": "webpack"
+    "import/no-unresolved": [0, false],
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".ts", ".tsx", ".d.ts"]
+      }
+    }
   },
   "plugins": ["@typescript-eslint/eslint-plugin", "import", "prettier", "standard", "react", "jsx-a11y", "security"],
   "rules": {
-    "@typescript-eslint/member-delimiter-style": {
+    "@typescript-eslint/member-delimiter-style": [0, {
       "multiline": {
         "delimiter": "none",
         "requireLast": false
@@ -49,9 +55,15 @@
       "singleline": {
         "delimiter": "comma",
         "requireLast": false
+      }}],
+    "@typescript-eslint/explicit-function-return-type": [
+      0,
+      {
+        "allowExpressions": true
       }
-    },
+    ],
     "no-console": "off",
+    "indent": ["error", 2],
     "react/jsx-filename-extension": [
       1,
       {
@@ -61,6 +73,7 @@
     "react/jsx-uses-react": 1,
     "react/jsx-uses-vars": 1,
     "react/prop-types": 0,
-    "prettier/prettier": 1
+    "prettier/prettier": 1,
+    "semi": [2, "never"]
   }
 }

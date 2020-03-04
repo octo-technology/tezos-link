@@ -7,6 +7,7 @@ import (
 	"github.com/gamegos/jsend"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
 	modelerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
@@ -49,6 +50,15 @@ func NewRestController(
 
 // Initialize initialize the routes
 func (rc *Controller) Initialize() {
+	cors := cors.New(cors.Options{
+		// TODO Filter to only allow tezoslink.io origin
+		// AllowedOrigins: []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		AllowedOrigins: []string{"*"},
+		ExposedHeaders: []string{"Location"},
+		MaxAge:         300, // Maximum value not ignored by any of major browsers
+	})
+
+	rc.router.Use(cors.Handler)
 	rc.router.Use(middleware.RequestID)
 	rc.router.Use(middleware.Logger)
 	rc.router.Use(middleware.Recoverer)
@@ -98,21 +108,23 @@ func (rc *Controller) GetHealth(w http.ResponseWriter, r *http.Request) {
 }
 
 // PostProject godoc
-// @Summary Create a Project
+// @Summary Create a ProjectWithMetrics
 // @Produce json
-// @Param new-project body inputs.NewProject true "New Project"
+// @Param new-project body inputs.SignInProject true "New ProjectWithMetrics"
 // @Success 201
 // @Failure 400
 // @Router /projects [post]
 func (rc *Controller) PostProject(w http.ResponseWriter, r *http.Request) {
 	var inputProject inputs.NewProject
-	errDecoding := json.NewDecoder(r.Body).Decode(&inputProject)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	errDecoding := decoder.Decode(&inputProject)
 	if errDecoding != nil {
 		_, _ = jsend.Wrap(w).Data(errDecoding.Error()).Status(http.StatusBadRequest).Send()
 		return
 	}
 
-	p, errSaving := rc.pu.CreateProject(inputProject.Name)
+	p, errSaving := rc.pu.CreateProject(inputProject.Title)
 	if errSaving != nil {
 		_, _ = jsend.Wrap(w).Data(errSaving.Error()).Status(http.StatusBadRequest).Send()
 		return
@@ -123,9 +135,9 @@ func (rc *Controller) PostProject(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetProjectWithMetrics godoc
-// @Summary Get a Project with the associated
+// @Summary Get a ProjectWithMetrics with the associated
 // @Produce json
-// @Param uuid path string true "Project UUID"
+// @Param uuid path string true "ProjectWithMetrics UUID"
 // @Success 200 {object} outputs.ProjectOutputWithMetrics
 // @Router /projects/{uuid} [get]
 func (rc *Controller) GetProjectWithMetrics(w http.ResponseWriter, r *http.Request) {

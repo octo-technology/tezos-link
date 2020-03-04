@@ -1,38 +1,55 @@
 import * as PropTypes from 'prop-types'
 import * as React from 'react'
-import { Button } from 'src/App/App.components/Button/Button.controller'
+import { Button } from '../../App/App.components/Button/Button.controller'
 
 import { Categories } from './Dashboard.components/Categories/Categories.controller'
 import { ProjectToken } from './Dashboard.components/ProjectToken/ProjectToken.controller'
-import { postsMock } from './Dashboard.mock'
-//prettier-ignore
-import { DashboardHeader, DashboardLeftSide, DashboardRightSide, DashboardStyled, DashboardTitle } from './Dashboard.style'
+import {
+  DashboardHeader,
+  DashboardLeftSide,
+  DashboardRightSide,
+  DashboardStyled,
+  DashboardTitle
+} from './Dashboard.style'
+import { ProjectWithMetrics } from '../../entities/ProjectWithMetrics'
+import { RequestsCounterView } from './Dashboard.components/RequestsCounter/RequestsCounter.view'
+import { NoRequestInfoView } from './Dashboard.components/NoRequestInfo/NoRequestInfo.view'
+import { ProjectNameView } from './Dashboard.components/ProjectName/ProjectName.view'
 
-export const DashboardView = () => (
+type DashboardViewProps = { project: ProjectWithMetrics; loading: boolean }
+
+export const DashboardView = ({ loading, project }: DashboardViewProps) => (
   <DashboardStyled>
     <DashboardLeftSide>
       <DashboardHeader>
         <DashboardTitle>
           <h1>Dashboard</h1>
         </DashboardTitle>
-        <Button text="Active" color="secondary"/>
+        <Button text="Mainnet" color="secondary" />
       </DashboardHeader>
-      Some charts here...
+      {loading ? (
+        'Loading...'
+      ) : (
+        <>
+          {project.metrics.requestsCount === 0 ? <NoRequestInfoView /> : <></>}
+          <RequestsCounterView count={project.metrics.requestsCount} />
+        </>
+      )}
     </DashboardLeftSide>
     <DashboardRightSide>
-      <ProjectToken token="EFJKFE7837REHFEBH"/>
+      <ProjectNameView name={project.title} />
+      <ProjectToken token={project.uuid} />
       <Categories />
     </DashboardRightSide>
   </DashboardStyled>
 )
 
 DashboardView.propTypes = {
-  posts: PropTypes.array,
-  loading: PropTypes.bool,
-  fetchMoreCallback: PropTypes.func.isRequired
+  project: PropTypes.any,
+  loading: PropTypes.bool
 }
 
 DashboardView.defaultProps = {
-  posts: postsMock,
+  metrics: {},
   loading: true
 }

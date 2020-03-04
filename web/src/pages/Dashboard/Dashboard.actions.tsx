@@ -1,8 +1,8 @@
-export const SET_POSTS = 'SET_POSTS'
+export const SET_METRICS = 'SET_METRICS'
 
-export const setPosts = (posts: [any]) => (dispatch: any) => {
+export const setMetrics = (metrics: [any]) => (dispatch: any) => {
   dispatch({
-    type: SET_POSTS,
-    posts
+    type: SET_METRICS,
+    metrics: metrics
   })
 }

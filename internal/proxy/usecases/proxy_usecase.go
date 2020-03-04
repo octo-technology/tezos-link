@@ -72,6 +72,7 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (response string, toRawP
 		}
 
 		// TODO first check if the project UUID is existing
+		// TODO save the fact that it is cached from the LRU or not
 		p.saveMetrics(request)
 		return string(r.([]byte)), false, nil
 	}

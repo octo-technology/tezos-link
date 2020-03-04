@@ -12,6 +12,24 @@ const Dashboard = lazy(() =>
   ).then(({ Dashboard }) => ({ default: Dashboard }))
 )
 
+const NewProject = lazy(() =>
+  import(
+    /*
+      webpackChunkName: "new-project",
+      webpackPrefetch: true
+      */ '../pages/NewProject/NewProject.controller'
+  ).then(({ NewProject }) => ({ default: NewProject }))
+)
+
+const SignInProject = lazy(() =>
+  import(
+    /*
+      webpackChunkName: "sign-in-project",
+      webpackPrefetch: true
+      */ '../pages/SignInProject/SignInProject.controller'
+  ).then(({ SignInProject }) => ({ default: SignInProject }))
+)
+
 const NotFound = lazy(() =>
   import(
     /*
@@ -21,13 +39,22 @@ const NotFound = lazy(() =>
   ).then(({ NotFound }) => ({ default: NotFound }))
 )
 
+const ProjectNotFound = lazy(() =>
+  import(
+    /*
+  webpackChunkName: "project-not-found",
+  webpackPrefetch: true
+  */ '../pages/ProjectNotFound/ProjectNotFound.view'
+  ).then(({ ProjectNotFound }) => ({ default: ProjectNotFound }))
+)
+
 const Home = lazy(() =>
-    import(
-        /*
+  import(
+    /*
       webpackChunkName: "home",
       webpackPrefetch: true
       */ '../pages/Home/Home.view'
-        ).then(({ Home }) => ({ default: Home }))
+  ).then(({ Home }) => ({ default: Home }))
 )
 
 export const AppView = () => (
@@ -35,11 +62,14 @@ export const AppView = () => (
     <Suspense fallback={<div>Loading...</div>}>
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route exact path="/project/:projectId" component={Dashboard}/>
+        <Route exact path="/project/:projectId" component={Dashboard} />
+        <Route exact path="/new-project" component={NewProject} />
+        <Route exact path="/sign-in-project" component={SignInProject} />
+        <Route exact path="/project-not-found" component={ProjectNotFound} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
   </AppStyled>
 )
 
-//<LoggedOutRoute exact path="/login" component={Login} />
+// <LoggedOutRoute exact path="/login" component={Login} />

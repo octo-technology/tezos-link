@@ -42,27 +42,27 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Project'
+            $ref: '#/definitions/model.ProjectWithMetrics'
       summary: Get all Projects
     post:
       parameters:
-      - description: New Project
+      - description: New ProjectWithMetrics
         in: body
         name: new-project
         required: true
         schema:
-          $ref: '#/definitions/inputs.NewProject'
+          $ref: '#/definitions/inputs.SignInProject'
           type: object
       produces:
       - application/json
       responses:
         "201": {}
         "400": {}
-      summary: Create a Project
+      summary: Create a ProjectWithMetrics
   /projects/{id}:
     get:
       parameters:
-      - description: Project ID
+      - description: ProjectWithMetrics ID
         in: path
         name: id
         required: true
@@ -73,6 +73,6 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Project'
-      summary: Get a Project
+            $ref: '#/definitions/model.ProjectWithMetrics'
+      summary: Get a ProjectWithMetrics
 swagger: "2.0"

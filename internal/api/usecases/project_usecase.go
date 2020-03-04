@@ -33,6 +33,13 @@ func NewProjectUsecase(rp repository.ProjectRepository, mr pkgrepository.Metrics
 // CreateProject create and save a new project
 func (pu *ProjectUsecase) CreateProject(name string) (*model.Project, error) {
 	p, err := pu.projectRepo.Save(name, uuid.New().String())
+	if name == "" {
+		logrus.Error("empty project name", name)
+		return nil, modelerrors.ErrNoProjectName
+	}
+
+	// TODO Add the creation date
+	p, err = pu.projectRepo.Save(name, uuid.New().String())
 	if err != nil {
 		logrus.Error("Could not save project", name)
 		return nil, err

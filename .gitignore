@@ -1,7 +1,7 @@
 # General
 .DS_Store
 
-# Project
+# ProjectWithMetrics
 bin/*
 **/node_modules
 **/dist
