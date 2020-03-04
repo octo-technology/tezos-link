@@ -32,21 +32,53 @@ mainnet.sh node start --rpc-port 8000 --history-mode archive
 rm -rf /var/lib/docker/volumes/mainnet_node_data.tar.gz
 
 cat > tezos-snap.sh << EOF
-#!/bin/bash -ex
+#!/bin/bash -e
 
 cp /.tezos-mainnet/docker-compose.yml .tezos-mainnet/docker-compose.yml 
 
+echo "> Stop the node for snapshot"
 mainnet.sh stop
 
 cd /var/lib/docker/volumes
+echo "> Copy mainnet_node_data in archive"
 sudo cp -r mainnet_node_data archive
 
+echo "> Restart the node"
 mainnet.sh node start --rpc-port 8000 --history-mode archive
 
+echo "> Remove files:"
+
+echo -n "- peers.json "
+if [ -e "./archive/_data/data/peers.json" ]; then
+  sudo rm -f ./archive/_data/data/peers.json
+  echo "removed"
+else
+  echo "absent. (doing nothing)"
+fi
+
+echo -n "- identity.json "
+if [ -e "./archive/_data/data/identity.json" ]; then
+  sudo rm -f ./archive/_data/data/identity.json
+  echo "removed"
+else
+  echo "absent. (doing nothing)"
+fi
+
+echo -n "- config.json "
+if [ -e "./archive/_data/data/config.json" ]; then
+  sudo rm -f ./archive/_data/data/config.json
+  echo "removed"
+else
+  echo "absent. (doing nothing)"
+fi
+
+echo "> Generate mainnet_node_data.tar.gz from archive"
 sudo tar zcvf mainnet_node_data.tar.gz ./archive
 
-sudo aws s3 cp ./mainnet_node_data.tar.gz s3://tzlink-blockchain-data-dev
+echo "> Send to S3 bucket mainnet_node_data.tar.gz"
+aws s3 cp ./mainnet_node_data.tar.gz s3://tzlink-blockchain-data-dev
 
+echo "> Clear temporary files"
 sudo rm -rf archive mainnet_node_data.tar.gz
 EOF
 
