@@ -11,6 +11,7 @@ import (
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/database"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest"
 	"github.com/octo-technology/tezos-link/backend/internal/api/usecases"
+	pkgdatabase "github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database"
 	"log"
 	"strings"
 )
@@ -24,7 +25,7 @@ func init() {
 	if *configPath == "" {
 		log.Fatal("Program argument --conf is required")
 	} else {
-		_, err := config.ParseBackendConf(*configPath)
+		_, err := config.ParseAPIConf(*configPath)
 		if err != nil {
 			log.Fatalf("Could not load config from %s. Reason: %s", *configPath, err)
 		}
@@ -34,26 +35,27 @@ func init() {
 }
 
 func main() {
-	r := chi.NewRouter()
+	router := chi.NewRouter()
 	runMigrations()
 
 	// Repositories
-	pg := database.NewPostgresProjectRepository(database.Connection)
+	projectRepo := database.NewPostgresProjectRepository(database.Connection)
+	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
 
 	// Use cases
-	pu := usecases.NewProjectUsecase(pg)
-	hu := usecases.NewHealthUsecase(pg)
+	projectUsecase := usecases.NewProjectUsecase(projectRepo, metricsRepo)
+	healthUsecase := usecases.NewHealthUsecase(projectRepo)
 
 	// HTTP API
-	restController := rest.NewRestController(r, pu, hu)
+	restController := rest.NewRestController(router, projectUsecase, healthUsecase)
 	restController.Initialize()
-	restController.Run(config.BackendConfig.Server.Port)
+	restController.Run(config.APIConfig.Server.Port)
 }
 
 func runMigrations() {
 	m, err := migrate.New(
-		config.BackendConfig.Migration.Path,
-		config.BackendConfig.Db.Url)
+		config.APIConfig.Migration.Path,
+		config.APIConfig.Database.Url)
 	if err != nil {
 		log.Fatal("Could not apply db migration: ", err)
 	}

@@ -17,6 +17,9 @@ type ProxyConf struct {
 	Server struct {
 		Port int
 	}
+	Database struct {
+		Url string
+	}
 	Proxy struct {
 		ReadTimeout        int
 		WriteTimeout       int

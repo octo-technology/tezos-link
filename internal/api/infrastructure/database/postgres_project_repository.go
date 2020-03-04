@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/repository"
+	"github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
+	"github.com/sirupsen/logrus"
 )
 
 type postgresProjectRepository struct {
@@ -19,8 +21,8 @@ func NewPostgresProjectRepository(connection *sql.DB) repository.ProjectReposito
 }
 
 // FindAll returns all projects
-func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
-	rows, err := pg.connection.Query("SELECT id, name, key FROM projects")
+func (pg *postgresProjectRepository) FindAll() ([]*model.Project, error) {
+	rows, err := pg.connection.Query("SELECT id, name, uuid FROM projects")
 	if err != nil {
 		return nil, fmt.Errorf("no projects found: %s", err)
 	}
@@ -28,7 +30,7 @@ func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
 	var r []*model.Project
 	for rows.Next() {
 		cur := model.Project{}
-		err := rows.Scan(&cur.ID, &cur.Name, &cur.Key)
+		err := rows.Scan(&cur.ID, &cur.Name, &cur.UUID)
 		if err != nil {
 			return nil, fmt.Errorf("could not map projects: %s", err)
 		}
@@ -38,27 +40,28 @@ func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
 	return r, nil
 }
 
-// FindByID finds a project by id
-func (pg postgresProjectRepository) FindByID(id int64) (*model.Project, error) {
+// FindByUUID finds a project by uuid
+func (pg *postgresProjectRepository) FindByUUID(uuid string) (*model.Project, error) {
 	r := model.Project{}
 	err := pg.connection.
-		QueryRow("SELECT id, name, key FROM projects WHERE id = $1", id).
-		Scan(&r.ID, &r.Name, &r.Key)
+		QueryRow("SELECT id, name, uuid FROM projects WHERE uuid = $1", uuid).
+		Scan(&r.ID, &r.Name, &r.UUID)
 
 	if err != nil {
-		return nil, fmt.Errorf("project %d not found: %s", id, err)
+		logrus.Errorf("project %s not found: %s", uuid, err)
+		return nil, errors.ErrProjectNotFound
 	}
 
 	return &r, nil
 }
 
-// Save save a new project
-func (pg postgresProjectRepository) Save(name string, key string) (*model.Project, error) {
+// Save insert a new project
+func (pg *postgresProjectRepository) Save(name string, uuid string) (*model.Project, error) {
 	r := model.Project{}
 
 	err := pg.connection.
-		QueryRow("INSERT INTO projects(name, key) VALUES ($1, $2) RETURNING id, name, key", name, key).
-		Scan(&r.ID, &r.Name, &r.Key)
+		QueryRow("INSERT INTO projects(name, uuid) VALUES ($1, $2) RETURNING id, name, uuid", name, uuid).
+		Scan(&r.ID, &r.Name, &r.UUID)
 
 	if err != nil {
 		return nil, fmt.Errorf("could not insert project %s: %s", name, err)
@@ -68,17 +71,17 @@ func (pg postgresProjectRepository) Save(name string, key string) (*model.Projec
 }
 
 // UpdateByID update a project by id
-func (pg postgresProjectRepository) UpdateByID(project *model.Project) error {
+func (pg *postgresProjectRepository) UpdateByID(project *model.Project) error {
 	panic("implement me")
 }
 
 // DeleteByID delete a project by id
-func (pg postgresProjectRepository) DeleteByID(project *model.Project) error {
+func (pg *postgresProjectRepository) DeleteByID(project *model.Project) error {
 	panic("implement me")
 }
 
 // Ping ping the database
-func (pg postgresProjectRepository) Ping() error {
+func (pg *postgresProjectRepository) Ping() error {
 	err := pg.connection.Ping()
 	if err != nil {
 		return err

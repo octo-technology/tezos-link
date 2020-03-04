@@ -4,8 +4,8 @@ import (
 	"fmt"
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/octo-technology/tezos-link/backend/config"
-	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/model"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/repository"
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"log"
 )
 
@@ -25,7 +25,7 @@ func NewLruBlockchainRepository() repository.BlockchainRepository {
 	}
 }
 
-func (l lruBlockchainRepository) Get(request *model.Request) (interface{}, error) {
+func (l lruBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, error) {
 	val, ok := l.cache.Get(request.Path)
 	if !ok {
 		return nil, fmt.Errorf("could not get cache for path: %s", request.Path)
@@ -34,7 +34,7 @@ func (l lruBlockchainRepository) Get(request *model.Request) (interface{}, error
 	return val, nil
 }
 
-func (l lruBlockchainRepository) Add(request *model.Request, response interface{}) error {
+func (l lruBlockchainRepository) Add(request *pkgmodel.Request, response interface{}) error {
 	l.cache.Add(request.Path, response)
 
 	return nil
