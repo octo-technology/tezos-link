@@ -29,7 +29,7 @@ export const NewProject = () => {
       }
     })
       .then(function(response: any) {
-        dispatch(showToaster(SUCCESS, 'Welcome!', 'ProjectWithMetrics created'))
+        dispatch(showToaster(SUCCESS, 'Welcome!', 'Project created'))
         setRedirectURL(response.headers.location)
         setRedirect(true)
         dispatch(hideProgressBar())
@@ -41,10 +41,10 @@ export const NewProject = () => {
         setLoading(false)
 
         if (error.response) {
-          dispatch(showToaster(ERROR, 'ProjectWithMetrics creation error', error.response.data.data))
+          dispatch(showToaster(ERROR, 'Project creation error', error.response.data.data))
           setErrors(error.response.data)
         } else {
-          dispatch(showToaster(ERROR, 'ProjectWithMetrics creation error', error.message))
+          dispatch(showToaster(ERROR, 'Project creation error', error.message))
           setErrors(error.message)
         }
       })

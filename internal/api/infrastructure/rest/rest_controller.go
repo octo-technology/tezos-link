@@ -108,9 +108,9 @@ func (rc *Controller) GetHealth(w http.ResponseWriter, r *http.Request) {
 }
 
 // PostProject godoc
-// @Summary Create a ProjectWithMetrics
+// @Summary Create a Project
 // @Produce json
-// @Param new-project body inputs.SignInProject true "New ProjectWithMetrics"
+// @Param new-project body inputs.NewProject true "New Project"
 // @Success 201
 // @Failure 400
 // @Router /projects [post]
@@ -135,9 +135,9 @@ func (rc *Controller) PostProject(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetProjectWithMetrics godoc
-// @Summary Get a ProjectWithMetrics with the associated
+// @Summary Get a Project with the associated metrics
 // @Produce json
-// @Param uuid path string true "ProjectWithMetrics UUID"
+// @Param uuid path string true "Project UUID"
 // @Success 200 {object} outputs.ProjectOutputWithMetrics
 // @Router /projects/{uuid} [get]
 func (rc *Controller) GetProjectWithMetrics(w http.ResponseWriter, r *http.Request) {

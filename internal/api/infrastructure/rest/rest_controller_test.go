@@ -21,7 +21,7 @@ func TestRestController_PostProject_Unit(t *testing.T) {
 	rcWithEmptyNameError := buildControllerWithProjectUseCaseError(nil, modelerrors.ErrNoProjectName, "CreateProject")
 
 	jsonBody, _ := json.Marshal(inputs.NewProject{
-		Title: "New ProjectWithMetrics",
+		Title: "New Project",
 	})
 	unexpectedJSONBody := `{"BADDDDD":"BAD_KEY"}`
 
@@ -53,7 +53,7 @@ func testPostProjectFunc(jsonInput string, expectedStatus int, expectedResponse 
 
 func TestRestController_GetProject_Unit(t *testing.T) {
 	// Given
-	p := model.NewProject(123, "A ProjectWithMetrics", "A_UUID_666")
+	p := model.NewProject(123, "A Project", "A_UUID_666")
 	m := model.NewMetrics(3)
 
 	mockProjectUsecase := &mockProjectUsecase{}
@@ -74,7 +74,7 @@ func TestRestController_GetProject_Unit(t *testing.T) {
 
 	// Then
 	assert.Equal(t, http.StatusOK, requestResponse.Code, "Bad status code")
-	assert.Equal(t, `{"data":{"title":"A ProjectWithMetrics","uuid":"A_UUID_666","metrics":{"requestsCount":3}},"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
+	assert.Equal(t, `{"data":{"title":"A Project","uuid":"A_UUID_666","metrics":{"requestsCount":3}},"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
 }
 
 func TestRestController_GetHealth_Unit(t *testing.T) {

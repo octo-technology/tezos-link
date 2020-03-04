@@ -10,5 +10,5 @@ export const signInProjectValidator = yup.object().shape({
       message: uuidMessage,
       excludeEmptyString: true
     })
-    .required(requiredMessage('ProjectWithMetrics ID'))
+    .required(requiredMessage('Project ID'))
 })

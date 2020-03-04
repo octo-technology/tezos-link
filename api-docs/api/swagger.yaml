@@ -10,11 +10,19 @@ definitions:
       connectedToDb:
         type: boolean
     type: object
-  model.Project:
+  outputs.MetricsOutput:
     properties:
-      id:
+      requestsCount:
         type: integer
+    type: object
+  outputs.ProjectOutputWithMetrics:
+    properties:
+      metrics:
+        $ref: '#/definitions/outputs.MetricsOutput'
+        type: object
       title:
+        type: string
+      uuid:
         type: string
     type: object
 info:
@@ -35,36 +43,27 @@ paths:
             $ref: '#/definitions/model.Health'
       summary: get application health
   /projects:
-    get:
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.ProjectWithMetrics'
-      summary: Get all Projects
     post:
       parameters:
-      - description: New ProjectWithMetrics
+      - description: New Project
         in: body
         name: new-project
         required: true
         schema:
-          $ref: '#/definitions/inputs.SignInProject'
+          $ref: '#/definitions/inputs.NewProject'
           type: object
       produces:
       - application/json
       responses:
         "201": {}
         "400": {}
-      summary: Create a ProjectWithMetrics
-  /projects/{id}:
+      summary: Create a Project
+  /projects/{uuid}:
     get:
       parameters:
-      - description: ProjectWithMetrics ID
+      - description: Project UUID
         in: path
-        name: id
+        name: uuid
         required: true
         type: string
       produces:
@@ -73,6 +72,6 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.ProjectWithMetrics'
-      summary: Get a ProjectWithMetrics
+            $ref: '#/definitions/outputs.ProjectOutputWithMetrics'
+      summary: Get a Project with the associated metrics
 swagger: "2.0"

@@ -26,20 +26,6 @@
             }
         },
         "/projects": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get all Projects",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Project"
-                        }
-                    }
-                }
-            },
             "post": {
                 "produces": [
                     "application/json"
@@ -63,17 +49,17 @@
                 }
             }
         },
-        "/projects/{id}": {
+        "/projects/{uuid}": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a Project",
+                "summary": "Get a Project with the associated metrics",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Project ID",
-                        "name": "id",
+                        "description": "Project UUID",
+                        "name": "uuid",
                         "in": "path",
                         "required": true
                     }
@@ -82,7 +68,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Project"
+                            "$ref": "#/definitions/outputs.ProjectOutputWithMetrics"
                         }
                     }
                 }
@@ -106,13 +92,25 @@
                 }
             }
         },
-        "model.Project": {
+        "outputs.MetricsOutput": {
             "type": "object",
             "properties": {
-                "id": {
+                "requestsCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "outputs.ProjectOutputWithMetrics": {
+            "type": "object",
+            "properties": {
+                "metrics": {
+                    "type": "object",
+                    "$ref": "#/definitions/outputs.MetricsOutput"
                 },
                 "title": {
+                    "type": "string"
+                },
+                "uuid": {
                     "type": "string"
                 }
             }

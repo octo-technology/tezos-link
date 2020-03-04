@@ -122,7 +122,7 @@ func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, receivedR
 func optionsHeaders(w http.ResponseWriter) {
 	w.Header().Set("Allow", "OPTIONS, PUSH")
 	w.Header().Set("Accept", "application/json")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Title, Cache-Control")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control")
 	w.Header().Set("Access-Control-Allow-Methods", "PUSH")
 	w.Header().Set("Content-Type", "application/json")
 }
