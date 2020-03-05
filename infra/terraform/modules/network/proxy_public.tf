@@ -2,7 +2,7 @@
 
 resource "aws_subnet" "public_proxy_a" {
   vpc_id            = aws_vpc.tzlink.id
-  cidr_block        = cidrsubnet(var.SUBNET_TZ_PUBLIC_proxy_CIDR, 1, 0)
+  cidr_block        = cidrsubnet(var.SUBNET_TZ_PUBLIC_PROXY_CIDR, 1, 0)
   availability_zone = "${var.REGION}a"
 
   map_public_ip_on_launch = true
@@ -33,7 +33,7 @@ resource "aws_nat_gateway" "public_proxy_a" {
 
 resource "aws_subnet" "public_proxy_b" {
   vpc_id            = aws_vpc.tzlink.id
-  cidr_block        = cidrsubnet(var.SUBNET_TZ_PUBLIC_proxy_CIDR, 1, 1)
+  cidr_block        = cidrsubnet(var.SUBNET_TZ_PUBLIC_PROXY_CIDR, 1, 1)
   availability_zone = "${var.REGION}b"
 
   map_public_ip_on_launch = true

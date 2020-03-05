@@ -27,3 +27,13 @@ variable "SUBNET_TZ_FARM_CIDR" {
   type    = string
   default = "10.1.0.0/24"
 }
+
+variable "SUBNET_TZ_PUBLIC_PROXY_CIDR" {
+  type    = string
+  default = "10.1.1.0/24"
+}
+
+variable "SUBNET_TZ_PRIVATE_PROXY_CIDR" {
+  type    = string
+  default = "10.1.2.0/24"
+}
