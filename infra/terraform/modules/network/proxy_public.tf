@@ -21,7 +21,7 @@ resource "aws_route_table_association" "public_to_proxy_a" {
 
 resource "aws_eip" "gateway_public_proxy_a" {
   vpc        = true
-  depends_on = [ aws_internet_gateway.tzlink ]
+  depends_on = [aws_internet_gateway.tzlink]
 }
 
 resource "aws_nat_gateway" "public_proxy_a" {
@@ -52,7 +52,7 @@ resource "aws_route_table_association" "public_to_proxy_b" {
 
 resource "aws_eip" "gateway_public_proxy_b" {
   vpc        = true
-  depends_on = [ aws_internet_gateway.tzlink ]
+  depends_on = [aws_internet_gateway.tzlink]
 }
 
 resource "aws_nat_gateway" "public_proxy_b" {
