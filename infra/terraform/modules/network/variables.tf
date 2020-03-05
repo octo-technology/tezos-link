@@ -37,3 +37,8 @@ variable "SUBNET_TZ_PRIVATE_PROXY_CIDR" {
   type    = string
   default = "10.1.2.0/24"
 }
+
+variable "SUBNET_TZ_PRIVATE_DATABASE_CIDR" {
+  type    = string
+  default = "10.1.3.0/24"
+}
