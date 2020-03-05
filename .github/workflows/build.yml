@@ -1,8 +1,9 @@
-name: Deploy
+name: Build
 on:
   push:
     branches-ignore:
-      - 'master'  
+      - 'master'
+      - 'infra/**'
 
 jobs:
 
