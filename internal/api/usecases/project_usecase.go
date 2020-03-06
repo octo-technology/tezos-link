@@ -80,7 +80,8 @@ func (pu *ProjectUsecase) FindProjectAndMetrics(uuid string, from time.Time, to 
 }
 
 func buildFullDateRangeFromRequests(from time.Time, to time.Time, computedRequests []*pkgmodel.RequestsByDayMetrics) []*pkgmodel.RequestsByDayMetrics {
-	numberOfDays := int(to.Sub(from).Hours() / 24)
+	oneDay := 24
+	numberOfDays := int(to.Sub(from).Hours()) / oneDay
 	fullRequestArray := make([]*pkgmodel.RequestsByDayMetrics, 0, numberOfDays)
 
 	oneDayMore := from.AddDate(0, 0, 1)
