@@ -7,7 +7,9 @@ import (
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
 	modelerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"net/http"
 	"strings"
 	"testing"
@@ -53,12 +55,15 @@ func testPostProjectFunc(jsonInput string, expectedStatus int, expectedResponse 
 
 func TestRestController_GetProject_Unit(t *testing.T) {
 	// Given
+	firstMetrics := pkgmodel.NewRequestsByDayMetrics("2014", "11", "1", 4)
+	secondMetrics := pkgmodel.NewRequestsByDayMetrics("2014", "11", "12", 5)
+	stubMetrics := []*pkgmodel.RequestsByDayMetrics{firstMetrics, secondMetrics}
 	p := model.NewProject(123, "A Project", "A_UUID_666")
-	m := model.NewMetrics(3)
+	m := model.NewMetrics(3, stubMetrics)
 
 	mockProjectUsecase := &mockProjectUsecase{}
 	mockProjectUsecase.
-		On("FindProjectAndMetrics", "A_UUID_666").
+		On("FindProjectAndMetrics", "A_UUID_666", mock.Anything, mock.Anything).
 		Return(&p, &m, nil).
 		Once()
 	mockHealthUsecase := &mockHealthUsecase{}
@@ -74,7 +79,7 @@ func TestRestController_GetProject_Unit(t *testing.T) {
 
 	// Then
 	assert.Equal(t, http.StatusOK, requestResponse.Code, "Bad status code")
-	assert.Equal(t, `{"data":{"title":"A Project","uuid":"A_UUID_666","metrics":{"requestsCount":3}},"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
+	assert.Equal(t, `{"data":{"title":"A Project","uuid":"A_UUID_666","metrics":{"requestsCount":3,"requestsByDay":[{"date":"2014-11-1","value":4},{"date":"2014-11-12","value":5}]}},"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
 }
 
 func TestRestController_GetHealth_Unit(t *testing.T) {

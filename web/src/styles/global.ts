@@ -47,12 +47,10 @@ body {
   margin: 0;
   padding: 0;
   background-color: ${backgroundColor};
-  /* background-image: url(/logo.svg);
+  background-image: url(/background.svg);
   background-repeat: no-repeat;
   background-attachment: scroll;
-  background-position-x: 190%;
-  background-position-y: 70%;
-  background-size: 150%; */
+  background-size: 100%;
   color: ${textColor};
   font-size: 14px;
   -webkit-font-smoothing: antialiased;

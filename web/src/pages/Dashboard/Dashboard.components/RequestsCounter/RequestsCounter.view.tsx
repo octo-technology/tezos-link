@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { RequestsCounterCard, BigNumber } from './RequestsCounter.style'
+import { RequestsCounterCard, BigNumber, RequestsCounterStyled } from './RequestsCounter.style'
 import * as PropTypes from 'prop-types'
 
 type RequestsCounterViewProps = {
@@ -8,10 +8,11 @@ type RequestsCounterViewProps = {
 
 export const RequestsCounterView = ({ count }: RequestsCounterViewProps) => {
   return (
-    <RequestsCounterCard>
-      <BigNumber>{count}</BigNumber>
-      {' '} requests
-    </RequestsCounterCard>
+    <RequestsCounterStyled>
+      <RequestsCounterCard>
+        <BigNumber>{count}</BigNumber> requests
+      </RequestsCounterCard>
+    </RequestsCounterStyled>
   )
 }
 

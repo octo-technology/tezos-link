@@ -11,6 +11,8 @@ import (
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
 	modelerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
+	"time"
+
 	// Used for the output objects to be found by Swagger
 	_ "github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
 	// Used for the health object to be found by Swagger
@@ -143,7 +145,9 @@ func (rc *Controller) PostProject(w http.ResponseWriter, r *http.Request) {
 func (rc *Controller) GetProjectWithMetrics(w http.ResponseWriter, r *http.Request) {
 	uuid := chi.URLParam(r, "uuid")
 
-	p, m, err := rc.pu.FindProjectAndMetrics(uuid)
+	now := time.Now()
+	nowMinusOneMonth := now.AddDate(0, -1, 0)
+	p, m, err := rc.pu.FindProjectAndMetrics(uuid, nowMinusOneMonth, now)
 	if errors.Is(err, modelerrors.ErrProjectNotFound) {
 		_, _ = jsend.Wrap(w).Data(err.Error()).Status(http.StatusNotFound).Send()
 		return

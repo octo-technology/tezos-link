@@ -19,7 +19,7 @@ export const HeaderView: any = ({ router }: any) => {
     <HeaderStyled>
       <HeaderLogo>
         <Link to="/">
-          <img alt="Tezos Link" src="/logo.svg" />
+          <img alt="Tezos Link" src="/link_logo.svg" />
           <Beta>alpha</Beta>
         </Link>
         <HeaderMenu>

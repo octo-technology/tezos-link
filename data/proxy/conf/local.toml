@@ -7,7 +7,7 @@ port = 1090
 [server]
 port = 8001
 
-[db]
+[database]
 url = "postgres://user:pass@postgres:5432/tezoslink?sslmode=disable"
 
 [proxy]

@@ -15,7 +15,8 @@ export const Dashboard = () => {
     title: '',
     uuid: '',
     metrics: {
-      requestsCount: 0
+      requestsCount: 0,
+      requestsByDay: []
     }
   })
 

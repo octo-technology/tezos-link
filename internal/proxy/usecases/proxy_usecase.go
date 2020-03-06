@@ -25,7 +25,7 @@ type ProxyUsecase struct {
 
 // ProxyUsecaseInterface contains all methods implemented by the proxyRepo use-case
 type ProxyUsecaseInterface interface {
-	Proxy(request *pkgmodel.Request) (response string, toRawProxy bool, err error)
+	Proxy(request *pkgmodel.Request) (string, bool, error)
 }
 
 // NoProxyResponse is the error message when there is no response from the proxyRepo
@@ -33,12 +33,12 @@ const NoProxyResponse = "no response from proxy"
 
 // NewProxyUsecase returns a new proxy use-case
 func NewProxyUsecase(
-	cache repository.BlockchainRepository,
-	proxy repository.BlockchainRepository,
+	cacheRepo repository.BlockchainRepository,
+	proxyRepo repository.BlockchainRepository,
 	metricsRepo pkgrepository.MetricsRepository) *ProxyUsecase {
 	return &ProxyUsecase{
-		cacheRepo:   cache,
-		proxyRepo:   proxy,
+		cacheRepo:   cacheRepo,
+		proxyRepo:   proxyRepo,
 		metricsRepo: metricsRepo,
 		whitelisted: setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedMethods),
 		blacklisted: setupRegexpFor(config.ProxyConfig.Proxy.BlockedMethods),
@@ -47,34 +47,34 @@ func NewProxyUsecase(
 }
 
 // Proxy proxy an http request to the right repositories
-func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (response string, toRawProxy bool, err error) {
+func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 	logrus.Info("received proxy request for path: ", request.Path)
-	r := []byte("call blacklisted")
+	response := []byte("call blacklisted")
 
 	if !p.isAllowed(request.Path) {
 		logrus.Debug("not allowed to proxy on the path: ", request.Path)
-		return string(r), false, nil
+		return string(response), false, nil
 	}
 
 	if request.Action == pkgmodel.OBTAIN && p.isCacheable(request.Path) {
-		r, err := p.cacheRepo.Get(request)
+		response, err := p.cacheRepo.Get(request)
 		if err != nil {
 			logrus.Info("path not cached, fetching to node: ", request.Path)
 
-			r, err = p.proxyRepo.Get(request)
-			logrus.Info("received response from node: ", string(r.([]byte)))
+			response, err = p.proxyRepo.Get(request)
+			logrus.Info("received response from node: ", string(response.([]byte)))
 			if err != nil {
 				logrus.Errorf("could not request to proxy: %s", err)
 				return errors.ErrNoProxyResponse.Error(), false, errors.ErrNoProxyResponse
 			}
 
-			_ = p.cacheRepo.Add(request, r)
+			_ = p.cacheRepo.Add(request, response)
 		}
 
 		// TODO first check if the project UUID is existing
 		// TODO save the fact that it is cached from the LRU or not
 		p.saveMetrics(request)
-		return string(r.([]byte)), false, nil
+		return string(response.([]byte)), false, nil
 	}
 
 	p.saveMetrics(request)

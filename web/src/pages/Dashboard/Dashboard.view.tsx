@@ -15,6 +15,7 @@ import { ProjectWithMetrics } from '../../entities/ProjectWithMetrics'
 import { RequestsCounterView } from './Dashboard.components/RequestsCounter/RequestsCounter.view'
 import { NoRequestInfoView } from './Dashboard.components/NoRequestInfo/NoRequestInfo.view'
 import { ProjectNameView } from './Dashboard.components/ProjectName/ProjectName.view'
+import { RequestsByDayLineView } from './Dashboard.components/RequestsByDayLine/RequestsByDayLine.view'
 
 type DashboardViewProps = { project: ProjectWithMetrics; loading: boolean }
 
@@ -32,6 +33,7 @@ export const DashboardView = ({ loading, project }: DashboardViewProps) => (
       ) : (
         <>
           {project.metrics.requestsCount === 0 ? <NoRequestInfoView /> : <></>}
+          <RequestsByDayLineView requestsByDay={project.metrics.requestsByDay}/>
           <RequestsCounterView count={project.metrics.requestsCount} />
         </>
       )}

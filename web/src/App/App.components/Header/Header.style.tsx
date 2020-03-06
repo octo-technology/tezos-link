@@ -41,7 +41,7 @@ export const HeaderLoggedOut = styled.div`
 
 export const Beta = styled.span`
   vertical-align: 25px;
-  margin-left: -2px;
+  margin-left: 0px;
   color: grey;
   font-size: 0.8em;
 `
