@@ -36,6 +36,9 @@ jobs:
     - name: Unit test
       run: make unit-test
       
+    - name: Run services
+      run: make run
+      
     - name: Integration test
       run: make integration-test
       
