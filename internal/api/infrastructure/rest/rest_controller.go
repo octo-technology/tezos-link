@@ -26,20 +26,20 @@ import (
 
 // Controller represents a REST controller
 type Controller struct {
-	router *chi.Mux
-	pu     usecases.ProjectUsecaseInterface
-	hu     usecases.HealthUsecaseInterface
+	router         *chi.Mux
+	projectUsecase usecases.ProjectUsecaseInterface
+	healthUsecase  usecases.HealthUsecaseInterface
 }
 
 // NewRestController returns a new rest controller
 func NewRestController(
 	router *chi.Mux,
-	pu usecases.ProjectUsecaseInterface,
-	hu usecases.HealthUsecaseInterface) *Controller {
+	projectUsecase usecases.ProjectUsecaseInterface,
+	healthUsecase usecases.HealthUsecaseInterface) *Controller {
 	return &Controller{
-		router: router,
-		pu:     pu,
-		hu:     hu,
+		router:         router,
+		projectUsecase: projectUsecase,
+		healthUsecase:  healthUsecase,
 	}
 }
 
@@ -105,7 +105,7 @@ func (rc *Controller) Run(port int) {
 // @Success 200 {object} model.Health
 // @Router /health [get]
 func (rc *Controller) GetHealth(w http.ResponseWriter, r *http.Request) {
-	h := rc.hu.Health()
+	h := rc.healthUsecase.Health()
 	_, _ = jsend.Wrap(w).Data(h).Status(http.StatusOK).Send()
 }
 
@@ -126,7 +126,7 @@ func (rc *Controller) PostProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p, errSaving := rc.pu.CreateProject(inputProject.Title)
+	p, errSaving := rc.projectUsecase.CreateProject(inputProject.Title)
 	if errSaving != nil {
 		_, _ = jsend.Wrap(w).Data(errSaving.Error()).Status(http.StatusBadRequest).Send()
 		return
@@ -147,7 +147,7 @@ func (rc *Controller) GetProjectWithMetrics(w http.ResponseWriter, r *http.Reque
 
 	now := time.Now()
 	nowMinusOneMonth := now.AddDate(0, -1, 0)
-	p, m, err := rc.pu.FindProjectAndMetrics(uuid, nowMinusOneMonth, now)
+	p, m, err := rc.projectUsecase.FindProjectAndMetrics(uuid, nowMinusOneMonth, now)
 	if errors.Is(err, modelerrors.ErrProjectNotFound) {
 		_, _ = jsend.Wrap(w).Data(err.Error()).Status(http.StatusNotFound).Send()
 		return
