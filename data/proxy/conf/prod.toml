@@ -1,0 +1,22 @@
+debug = true
+
+[proxy]
+readTimeout = 1
+writeTimeout = 5
+idleTimeout = 120
+whitelistedMethods = [
+  "/chains/main/blocks(.*?)",
+  "/mockserver/status"
+]
+blockedMethods = [
+  "(.*?)context/contracts$",
+  "/monitor(.*?)",
+  "/network(.*?)",
+]
+dontCache = [
+  "(.*?)/head/(.*?)",
+  "/chains/main/blocks$",
+]
+rateLimitPeriod = 100
+rateLimitCount = 1000
+cacheMaxItems = 2000
