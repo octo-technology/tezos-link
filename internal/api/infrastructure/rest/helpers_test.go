@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 type mockProjectUsecase struct {
@@ -22,8 +23,8 @@ func (m *mockProjectUsecase) CreateProject(name string) (*model.Project, error) 
 	return nil, args.Error(1)
 }
 
-func (m *mockProjectUsecase) FindProjectAndMetrics(uuid string) (*model.Project, *model.Metrics, error) {
-	args := m.Called(uuid)
+func (m *mockProjectUsecase) FindProjectAndMetrics(uuid string, from time.Time, to time.Time) (*model.Project, *model.Metrics, error) {
+	args := m.Called(uuid, from, to)
 
 	project := args.Get(0).(*model.Project)
 	metrics := args.Get(1).(*model.Metrics)

@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+import { FadeInFromLeft } from '../../../../styles'
 
 export const NoRequestInfoCard = styled.div`
   margin-bottom: 20px;
@@ -7,3 +8,5 @@ export const NoRequestInfoCard = styled.div`
   background: white;
   box-shadow: 0 1px 10px rgba(237, 29, 36, 0.2);
 `
+
+export const NoRequestInfoStyled = styled(FadeInFromLeft)``

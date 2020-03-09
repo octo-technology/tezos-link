@@ -36,8 +36,5 @@ jobs:
     - name: Unit test
       run: make unit-test
       
-    - name: Integration test
-      run: make integration-test
-      
     - name: Build
       run: make build-unix

@@ -5,7 +5,7 @@ debug = true
 hostname = "localhost"
 port = 8000
 
-[db]
+[database]
 url = "postgres://user:pass@postgres:5432/tezoslink?sslmode=disable"
 
 [migration]

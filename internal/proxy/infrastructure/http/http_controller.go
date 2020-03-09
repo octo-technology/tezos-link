@@ -24,7 +24,7 @@ import (
 // Controller represent an http proxy controller
 type Controller struct {
 	router       *chi.Mux
-	uc           usecases.ProxyUsecaseInterface
+	proxyUsecase usecases.ProxyUsecaseInterface
 	reverseProxy *httputil.ReverseProxy
 	httpServer   *http.Server
 	UUIDRegexp   *regexp.Regexp
@@ -37,7 +37,7 @@ const (
 // NewHTTPController returns a new http controller
 func NewHTTPController(uc usecases.ProxyUsecaseInterface, rp *httputil.ReverseProxy, srv *http.Server) *Controller {
 	return &Controller{
-		uc:           uc,
+		proxyUsecase: uc,
 		reverseProxy: rp,
 		httpServer:   srv,
 		UUIDRegexp:   regexp.MustCompile(uuidRegex),
@@ -77,7 +77,7 @@ func handleProxying(p *Controller, basePath string) func(w http.ResponseWriter, 
 			receivedRequest.RemoteAddr)
 		logrus.Debug(request.Action, request.Path, request.UUID, request.RemoteAddr)
 
-		r, toRawProxy, err := p.uc.Proxy(&request)
+		r, toRawProxy, err := p.proxyUsecase.Proxy(&request)
 		if err != nil {
 			logrus.Error(fmt.Sprintf("could not proxy request: %s", err))
 		}

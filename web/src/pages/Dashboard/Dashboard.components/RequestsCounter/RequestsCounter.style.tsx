@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { Card } from 'src/styles'
+import { Card, FadeInFromLeft } from "src/styles";
 
 export const RequestsCounterCard = styled(Card)`
   margin-bottom: 20px;
@@ -10,3 +10,5 @@ export const RequestsCounterCard = styled(Card)`
 export const BigNumber = styled.span`
   font-size: 4em;
 `
+
+export const RequestsCounterStyled = styled(FadeInFromLeft)``

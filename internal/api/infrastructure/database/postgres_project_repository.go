@@ -70,16 +70,6 @@ func (pg postgresProjectRepository) Save(title string, uuid string) (*model.Proj
 	return &r, nil
 }
 
-// UpdateByID update a project by id
-func (pg *postgresProjectRepository) UpdateByID(project *model.Project) error {
-	panic("implement me")
-}
-
-// DeleteByID delete a project by id
-func (pg *postgresProjectRepository) DeleteByID(project *model.Project) error {
-	panic("implement me")
-}
-
 // Ping ping the database
 func (pg *postgresProjectRepository) Ping() error {
 	err := pg.connection.Ping()
