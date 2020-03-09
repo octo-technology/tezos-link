@@ -4,8 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/BurntSushi/toml"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"log"
+	"os"
+	"strconv"
 )
 
 type ProxyConf struct {
@@ -45,9 +48,39 @@ func ParseProxyConf(cfg string) (*ProxyConf, error) {
 			return nil, errors.New("could not read TOML config")
 		}
 	}
+
+	dbUrl := getEnv("DATABASE_URL", "postgres:5432")
+	dbUser := getEnv("DATABASE_USERNAME", "user")
+	dbPass := getEnv("DATABASE_PASSWORD", "pass")
+	dbTable := getEnv("DATABASE_TABLE", "tezoslink?sslmode=disable")
+	dbParam := getEnv("DATABASE_ADDITIONAL_PARAMETER", "sslmode=disable")
+	conf.Database.Url = fmt.Sprintf("postgres://%s:%s@%s/%s?%s", dbUser, dbPass, dbUrl, dbTable, dbParam)
+
+	conf.Tezos.Host = getEnv("TEZOS_HOST", "node")
+	tezosPort, err := strconv.Atoi(getEnv("TEZOS_PORT", "1090"))
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	conf.Tezos.Port = tezosPort
+
+	serverPort, err := strconv.Atoi(getEnv("SERVER_PORT", "8001"))
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	conf.Server.Port = serverPort
+
 	ProxyConfig = conf
 	if conf.Debug {
 		log.Println("Read config: ", fmt.Sprintf("%+v", conf))
 	}
+
 	return &conf, nil
+}
+
+func getEnv(key string, defaultVal string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+
+	return defaultVal
 }

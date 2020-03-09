@@ -1,7 +1,15 @@
 FROM alpine:latest
 
-ENV API_PORT 8001
 ENV ENV local
+ENV DATABASE_URL postgres:5432
+ENV DATABASE_USERNAME user
+ENV DATABASE_PASSWORD pass
+ENV DATABASE_TABLE tezoslink
+ENV DATABASE_ADDITIONAL_PARAMETER sslmode=disable
+ENV TEZOS_HOST node
+ENV TEZOS_PORT 1090
+ENV SERVER_PORT 8001
+
 RUN apk --no-cache add ca-certificates
 
 RUN adduser -D proxy
