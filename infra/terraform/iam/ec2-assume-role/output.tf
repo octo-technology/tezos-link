@@ -5,7 +5,3 @@ output "trusted_entity" {
 output "backup_access" {
   value = data.aws_iam_policy_document.tzlink_backup_access.json
 }
-
-output "personal_access" {
-  value = data.aws_iam_policy_document.tzlink_backup_personal_access.json
-}

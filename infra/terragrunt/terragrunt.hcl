@@ -15,7 +15,8 @@ terraform {
 
     required_var_files = [
       "${get_parent_terragrunt_dir()}/../${get_env("TF_VAR_ENV", "dev")}.tfvars",
-      "${get_parent_terragrunt_dir()}/../common.tfvars"
+      "${get_parent_terragrunt_dir()}/../common.tfvars",
+      "${get_parent_terragrunt_dir()}/../vaulted.tfvars"
     ]
   }
 }

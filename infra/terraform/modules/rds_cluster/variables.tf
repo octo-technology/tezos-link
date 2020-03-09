@@ -1,6 +1,6 @@
 variable "REGION" {
   type    = string
-  default = "europe-west-1"
+  default = "eu-west-1"
 }
 
 variable "ENV" {
@@ -23,22 +23,20 @@ variable "VPC_CIDR" {
   default = "10.1.0.0/16"
 }
 
-variable "SUBNET_TZ_FARM_CIDR" {
+variable "DATABASE_URL" {
   type    = string
-  default = "10.1.0.0/24"
+  default = "database.example.nop"
 }
 
-variable "SUBNET_TZ_PUBLIC_PROXY_CIDR" {
-  type    = string
-  default = "10.1.1.0/24"
+variable "DATABASE_USERNAME" {
+  type = string
 }
 
-variable "SUBNET_TZ_PRIVATE_PROXY_CIDR" {
-  type    = string
-  default = "10.1.2.0/24"
+variable "DATABASE_PASSWORD" {
+  type = string
 }
 
-variable "SUBNET_TZ_PRIVATE_DATABASE_CIDR" {
+variable "DATABASE_TABLE" {
   type    = string
-  default = "10.1.3.0/24"
+  default = "tezoslink"
 }
