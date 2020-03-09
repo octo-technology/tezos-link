@@ -54,12 +54,3 @@
     }
   }
 ]
-
-- `DATABASE_URL` (default: `postgres:5432`)
-- `DATABASE_USERNAME` (default: `user`)
-- `DATABASE_PASSWORD` (default: `pass`)
-- `DATABASE_TABLE` (default: `tezoslink`)
-- `DATABASE_ADDITIONAL_PARAMETER` (default: `sslmode=disable`)
-- `TEZOS_HOST` (default: `node`)
-- `TEZOS_PORT` (default: `1090`)
-- `SERVER_PORT` (default: `8001`)

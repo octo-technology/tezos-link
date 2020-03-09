@@ -19,9 +19,16 @@ resource "aws_alb_target_group" "proxy" {
   target_type = "ip"
 
   stickiness {
+    enabled         = true
     type            = "lb_cookie"
     cookie_duration = 600
-    enabled         = true
+  }
+
+  health_check {
+    enabled  = true
+    path     = "/health"
+    port     = var.PROXY_PORT
+    protocol = "HTTP"
   }
 
   tags = {

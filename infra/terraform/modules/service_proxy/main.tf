@@ -19,13 +19,13 @@ resource "aws_ecs_task_definition" "proxy" {
       task_cpu    = var.PROXY_CPU,
       task_memory = var.PROXY_MEMORY,
 
-      database_url      = var.DATABASE_URL
-      database_username = var.DATABASE_USERNAME
-      database_password = var.DATABASE_PASSWORD
-      database_table    = var.DATABASE_TABLE
+      database_url      = var.DATABASE_URL,
+      database_username = var.DATABASE_USERNAME,
+      database_password = var.DATABASE_PASSWORD,
+      database_table    = var.DATABASE_TABLE,
 
-      tezos_host = var.TEZOS_FARM_URL
-      tezos_port = var.TEZOS_FARM_PORT
+      tezos_hostname = var.TEZOS_FARM_URL,
+      tezos_port     = var.TEZOS_FARM_PORT,
 
       environment_config = var.PROXY_CONFIGURATION_FILE,
 
