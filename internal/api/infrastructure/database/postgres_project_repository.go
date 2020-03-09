@@ -28,47 +28,47 @@ func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
 		return nil, fmt.Errorf("no projects found: %s", err)
 	}
 
-	var r []*model.Project
+	var projects []*model.Project
 	for rows.Next() {
-		cur := model.Project{}
-		err := rows.Scan(&cur.ID, &cur.Title, &cur.UUID, &cur.CreationDate)
+		cursor := model.Project{}
+		err := rows.Scan(&cursor.ID, &cursor.Title, &cursor.UUID, &cursor.CreationDate)
 		if err != nil {
 			return nil, fmt.Errorf("could not map projects: %s", err)
 		}
-		r = append(r, &cur)
+		projects = append(projects, &cursor)
 	}
 
-	return r, nil
+	return projects, nil
 }
 
 // FindByUUID finds a project by uuid
 func (pg *postgresProjectRepository) FindByUUID(uuid string) (*model.Project, error) {
-	r := model.Project{}
+	project := model.Project{}
 	err := pg.connection.
 		QueryRow("SELECT id, title, uuid, creation_date FROM projects WHERE uuid = $1", uuid).
-		Scan(&r.ID, &r.Title, &r.UUID, &r.CreationDate)
+		Scan(&project.ID, &project.Title, &project.UUID, &project.CreationDate)
 
 	if err != nil {
 		logrus.Errorf("project %s not found: %s", uuid, err)
 		return nil, errors.ErrProjectNotFound
 	}
 
-	return &r, nil
+	return &project, nil
 }
 
 // Save insert a new project
 func (pg postgresProjectRepository) Save(title string, uuid string, creationDate time.Time) (*model.Project, error) {
-	r := model.Project{}
+	project := model.Project{}
 
 	err := pg.connection.
 		QueryRow("INSERT INTO projects(title, uuid, creation_date) VALUES ($1, $2, $3) RETURNING id, title, uuid, creation_date", title, uuid, creationDate).
-		Scan(&r.ID, &r.Title, &r.UUID, &r.CreationDate)
+		Scan(&project.ID, &project.Title, &project.UUID, &project.CreationDate)
 
 	if err != nil {
 		return nil, fmt.Errorf("could not insert project %s: %s", title, err)
 	}
 
-	return &r, nil
+	return &project, nil
 }
 
 // Ping ping the database
