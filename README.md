@@ -52,12 +52,11 @@ REST API to manage projects and get project's metrics.
 ### Environment variables
 
 - `DATABASE_URL` (default: `postgres:5432`)
-- `DATABASE_USERNAME` (i.e `user`)
-- `DATABASE_PASSWORD` (i.e `pass`)
-- `DATABASE_TABLE` (i.e `tezoslink`)
-- `TEZOS_HOST` (i.e `localhost`)
-- `TEZOS_PORT` (i.e `1090`)
-- `SERVER_PORT` (i.e `8001`)
+- `DATABASE_USERNAME` (default: `user`)
+- `DATABASE_PASSWORD` (default: `pass`)
+- `DATABASE_TABLE` (default: `tezoslink`)
+- `SERVER_HOST` (default: `localhost`)
+- `SERVER_PORT` (default: `8000`)
 
 ## Proxy
 
@@ -70,12 +69,13 @@ REST API to manage projects and get project's metrics.
 
 ### Environment variables
 
-- `DATABASE_URL` (i.e `postgres:5432`)
-- `DATABASE_USERNAME` (i.e `user`)
-- `DATABASE_PASSWORD` (i.e `pass`)
-- `DATABASE_TABLE` (i.e `tezoslink`)
-- `SERVER_HOST` (i.e `localhost`)
-- `SERVER_PORT` (i.e `8000`)
+- `DATABASE_URL` (default: `postgres:5432`)
+- `DATABASE_USERNAME` (default: `user`)
+- `DATABASE_PASSWORD` (default: `pass`)
+- `DATABASE_TABLE` (default: `tezoslink`)
+- `TEZOS_HOST` (default: `node`)
+- `TEZOS_PORT` (default: `1090`)
+- `SERVER_PORT` (default: `8001`)
 
 ## Build all services
 
