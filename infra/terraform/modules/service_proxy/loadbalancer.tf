@@ -26,7 +26,7 @@ resource "aws_alb_target_group" "proxy" {
 
   health_check {
     enabled  = true
-    path     = "/health"
+    path     = "/v1/ad9df43d-a00a-4ded-b13b-dec1816402ad/chains/main/blocks/head"
     port     = var.PROXY_PORT
     protocol = "HTTP"
   }
