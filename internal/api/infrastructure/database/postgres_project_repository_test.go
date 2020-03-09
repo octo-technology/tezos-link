@@ -4,6 +4,7 @@ import (
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func TestPostgresProjectRepository_FindByUUID_Unit(t *testing.T) {
@@ -13,8 +14,9 @@ func TestPostgresProjectRepository_FindByUUID_Unit(t *testing.T) {
 	defer pool.Purge(resource)
 
 	pgr := NewPostgresProjectRepository(pg)
-	expectedProject := model.NewProject(1, "New Project", "A_KEY")
-	s, err := pgr.Save(expectedProject.Title, expectedProject.UUID)
+	creationDate := time.Now().Truncate(time.Millisecond).UTC()
+	expectedProject := model.NewProject(1, "New Project", "A_KEY", creationDate)
+	_, err := pgr.Save(expectedProject.Title, expectedProject.UUID, creationDate)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,8 +28,11 @@ func TestPostgresProjectRepository_FindByUUID_Unit(t *testing.T) {
 	}
 
 	// Then
-	assert.Equal(t, &expectedProject, p, "Bad project")
-	assert.Equal(t, &expectedProject, s, "Bad project")
+	assert.Equal(t, expectedProject.CreationDate.String(), p.CreationDate.String(), "Bad project")
+	assert.Equal(t, expectedProject.UUID, p.UUID, "Bad project")
+	assert.Equal(t, expectedProject.ID, p.ID, "Bad project")
+	assert.Equal(t, expectedProject.Title, p.Title, "Bad project")
+	assert.Equal(t, "Etc/UTC", p.CreationDate.Location().String(), "Bad project")
 }
 
 func TestPostgresProjectRepository_FindAll_Unit(t *testing.T) {
@@ -36,11 +41,13 @@ func TestPostgresProjectRepository_FindAll_Unit(t *testing.T) {
 	pg, resource := GetPostgresClient(*pool)
 	defer pool.Purge(resource)
 
+	creationDate := time.Now().Truncate(time.Millisecond).UTC()
+
 	pgr := NewPostgresProjectRepository(pg)
-	expectedFirstProject := model.NewProject(1, "New Project", "A_KEY")
-	expectedSecondProject := model.NewProject(2, "New Project 2", "A_SECOND_KEY")
-	_, _ = pgr.Save(expectedFirstProject.Title, expectedFirstProject.UUID)
-	_, _ = pgr.Save(expectedSecondProject.Title, expectedSecondProject.UUID)
+	expectedFirstProject := model.NewProject(1, "New Project", "A_KEY", creationDate)
+	expectedSecondProject := model.NewProject(2, "New Project 2", "A_SECOND_KEY", creationDate.Add(2 * time.Second).Truncate(time.Millisecond))
+	_, _ = pgr.Save(expectedFirstProject.Title, expectedFirstProject.UUID, creationDate)
+	_, _ = pgr.Save(expectedSecondProject.Title, expectedSecondProject.UUID, creationDate.Add(2 * time.Second).Truncate(time.Millisecond))
 
 	// When
 	p, err := pgr.FindAll()
@@ -50,6 +57,15 @@ func TestPostgresProjectRepository_FindAll_Unit(t *testing.T) {
 
 	// Then
 	firstProject, secondProject := p[0], p[1]
-	assert.Equal(t, &expectedFirstProject, firstProject, "Bad project")
-	assert.Equal(t, &expectedSecondProject, secondProject, "Bad project")
+	assert.Equal(t, expectedFirstProject.CreationDate.String(), firstProject.CreationDate.String(), "Bad project")
+	assert.Equal(t, expectedFirstProject.UUID, firstProject.UUID, "Bad project")
+	assert.Equal(t, expectedFirstProject.ID, firstProject.ID, "Bad project")
+	assert.Equal(t, expectedFirstProject.Title, firstProject.Title, "Bad project")
+	assert.Equal(t, "Etc/UTC", firstProject.CreationDate.Location().String(), "Bad project")
+
+	assert.Equal(t, expectedSecondProject.CreationDate.String(), secondProject.CreationDate.String(), "Bad project")
+	assert.Equal(t, expectedSecondProject.UUID, secondProject.UUID, "Bad project")
+	assert.Equal(t, expectedSecondProject.ID, secondProject.ID, "Bad project")
+	assert.Equal(t, expectedSecondProject.Title, secondProject.Title, "Bad project")
+	assert.Equal(t, "Etc/UTC", secondProject.CreationDate.Location().String(), "Bad project")
 }

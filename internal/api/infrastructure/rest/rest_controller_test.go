@@ -13,11 +13,13 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestRestController_PostProject_Unit(t *testing.T) {
 	// Given
-	p := model.NewProject(1, "PROJECT_NAME", "AN_UUID")
+	creationDate := time.Now().UTC()
+	p := model.NewProject(1, "PROJECT_NAME", "AN_UUID", creationDate)
 	rc := buildControllerWithProjectUseCaseError(&p, nil, "CreateProject")
 	rcWithError := buildControllerWithProjectUseCaseError(nil, errors.New("error from the DB"), "CreateProject")
 	rcWithEmptyNameError := buildControllerWithProjectUseCaseError(nil, modelerrors.ErrNoProjectName, "CreateProject")
@@ -58,10 +60,10 @@ func TestRestController_GetProject_Unit(t *testing.T) {
 	firstRequestsMetrics := pkgmodel.NewRequestsByDayMetrics("2014", "11", "1", 4)
 	secondRequestsMetrics := pkgmodel.NewRequestsByDayMetrics("2014", "11", "12", 5)
 	rpcUsage := pkgmodel.NewRPCUsageMetrics("/dummy/path", 3)
-
+	creationDate := time.Now().UTC()
 	stubRPCUSageMetrics := []*pkgmodel.RPCUsageMetrics{rpcUsage}
 	stubRequestsMetrics := []*pkgmodel.RequestsByDayMetrics{firstRequestsMetrics, secondRequestsMetrics}
-	p := model.NewProject(123, "A Project", "A_UUID_666")
+	p := model.NewProject(123, "A Project", "A_UUID_666", creationDate)
 	m := model.NewMetrics(3, stubRequestsMetrics, stubRPCUSageMetrics)
 
 	mockProjectUsecase := &mockProjectUsecase{}

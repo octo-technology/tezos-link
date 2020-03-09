@@ -145,7 +145,7 @@ func (rc *Controller) PostProject(w http.ResponseWriter, r *http.Request) {
 func (rc *Controller) GetProjectWithMetrics(w http.ResponseWriter, r *http.Request) {
 	uuid := chi.URLParam(r, "uuid")
 
-	now := time.Now()
+	now := time.Now().UTC()
 	nowMinusOneMonth := now.AddDate(0, -1, 0)
 	project, metrics, err := rc.projectUsecase.FindProjectAndMetrics(uuid, nowMinusOneMonth, now)
 	if errors.Is(err, modelerrors.ErrProjectNotFound) {
