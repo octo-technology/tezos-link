@@ -53,7 +53,8 @@ func ParseProxyConf(cfg string) (*ProxyConf, error) {
 	dbUser := getEnv("DATABASE_USERNAME", "user")
 	dbPass := getEnv("DATABASE_PASSWORD", "pass")
 	dbTable := getEnv("DATABASE_TABLE", "tezoslink?sslmode=disable")
-	conf.Database.Url = fmt.Sprintf("postgres://%s:%s@%s/%s", dbUser, dbPass, dbUrl, dbTable)
+	dbParam := getEnv("DATABASE_ADDITIONAL_PARAMETER", "sslmode=disable")
+	conf.Database.Url = fmt.Sprintf("postgres://%s:%s@%s/%s?%s", dbUser, dbPass, dbUrl, dbTable, dbParam)
 
 	conf.Tezos.Host = getEnv("TEZOS_HOST", "node")
 	tezosPort, err := strconv.Atoi(getEnv("TEZOS_PORT", "1090"))

@@ -45,7 +45,8 @@ func ParseAPIConf(cfg string) (*APIConf, error) {
 	dbUser := getEnv("DATABASE_USERNAME", "user")
 	dbPass := getEnv("DATABASE_PASSWORD", "pass")
 	dbTable := getEnv("DATABASE_TABLE", "tezoslink?sslmode=disable")
-	conf.Database.Url = fmt.Sprintf("postgres://%s:%s@%s/%s", dbUser, dbPass, dbUrl, dbTable)
+	dbParam := getEnv("DATABASE_ADDITIONAL_PARAMETER", "sslmode=disable")
+	conf.Database.Url = fmt.Sprintf("postgres://%s:%s@%s/%s?%s", dbUser, dbPass, dbUrl, dbTable, dbParam)
 
 	conf.Server.Hostname = getEnv("SERVER_HOST", "localhost")
 	serverPort, err := strconv.Atoi(getEnv("SERVER_PORT", "8001"))

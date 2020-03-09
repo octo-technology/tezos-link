@@ -55,6 +55,7 @@ REST API to manage projects and get project's metrics.
 - `DATABASE_USERNAME` (default: `user`)
 - `DATABASE_PASSWORD` (default: `pass`)
 - `DATABASE_TABLE` (default: `tezoslink`)
+- `DATABASE_ADDITIONAL_PARAMETER` (default: `sslmode=disable`)
 - `SERVER_HOST` (default: `localhost`)
 - `SERVER_PORT` (default: `8000`)
 
@@ -73,6 +74,7 @@ REST API to manage projects and get project's metrics.
 - `DATABASE_USERNAME` (default: `user`)
 - `DATABASE_PASSWORD` (default: `pass`)
 - `DATABASE_TABLE` (default: `tezoslink`)
+- `DATABASE_ADDITIONAL_PARAMETER` (default: `sslmode=disable`)
 - `TEZOS_HOST` (default: `node`)
 - `TEZOS_PORT` (default: `1090`)
 - `SERVER_PORT` (default: `8001`)
