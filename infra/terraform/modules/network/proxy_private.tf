@@ -17,7 +17,7 @@ resource "aws_subnet" "private_proxy_a" {
 resource "aws_route" "private_proxy_to_gateway_a" {
   route_table_id         = aws_route_table.tzlink_private_proxy_a.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_nat_gateway.public_proxy_a.id
+  nat_gateway_id             = aws_nat_gateway.public_proxy_a.id
 }
 
 resource "aws_route_table" "tzlink_private_proxy_a" {
@@ -60,7 +60,7 @@ resource "aws_subnet" "private_proxy_b" {
 resource "aws_route" "private_proxy_to_gateway_b" {
   route_table_id         = aws_route_table.tzlink_private_proxy_b.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_nat_gateway.public_proxy_b.id
+  nat_gateway_id             = aws_nat_gateway.public_proxy_b.id
 }
 
 resource "aws_route_table" "tzlink_private_proxy_b" {
