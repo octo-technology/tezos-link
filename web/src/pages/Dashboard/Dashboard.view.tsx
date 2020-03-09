@@ -2,7 +2,6 @@ import * as PropTypes from 'prop-types'
 import * as React from 'react'
 import { Button } from '../../App/App.components/Button/Button.controller'
 
-import { Categories } from './Dashboard.components/Categories/Categories.controller'
 import { ProjectToken } from './Dashboard.components/ProjectToken/ProjectToken.controller'
 import {
   DashboardHeader,
@@ -12,10 +11,9 @@ import {
   DashboardTitle
 } from './Dashboard.style'
 import { ProjectWithMetrics } from '../../entities/ProjectWithMetrics'
-import { RequestsCounterView } from './Dashboard.components/RequestsCounter/RequestsCounter.view'
-import { NoRequestInfoView } from './Dashboard.components/NoRequestInfo/NoRequestInfo.view'
 import { ProjectNameView } from './Dashboard.components/ProjectName/ProjectName.view'
 import { RequestsByDayLineView } from './Dashboard.components/RequestsByDayLine/RequestsByDayLine.view'
+import { RPCUsagePieView } from './Dashboard.components/RPCUsagePie/RPCUsagePie.view'
 
 type DashboardViewProps = { project: ProjectWithMetrics; loading: boolean }
 
@@ -32,16 +30,14 @@ export const DashboardView = ({ loading, project }: DashboardViewProps) => (
         'Loading...'
       ) : (
         <>
-          {project.metrics.requestsCount === 0 ? <NoRequestInfoView /> : <></>}
-          <RequestsByDayLineView requestsByDay={project.metrics.requestsByDay}/>
-          <RequestsCounterView count={project.metrics.requestsCount} />
+          <RequestsByDayLineView requestsByDay={project.metrics.requestsByDay} />
+          <RPCUsagePieView rpcUsage={project.metrics.rpcUsage} rpcTotalCount={project.metrics.requestsCount} />
         </>
       )}
     </DashboardLeftSide>
     <DashboardRightSide>
       <ProjectNameView name={project.title} />
       <ProjectToken token={project.uuid} />
-      <Categories />
     </DashboardRightSide>
   </DashboardStyled>
 )

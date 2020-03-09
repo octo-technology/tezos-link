@@ -4,10 +4,17 @@ export interface ProjectWithMetrics {
   metrics: {
     requestsCount: number
     requestsByDay: RequestByDay[]
+    rpcUsage: RPCUsage[]
   }
 }
 
 export interface RequestByDay {
   date: string
+  value: number
+}
+
+export interface RPCUsage {
+  id: string
+  label: string
   value: number
 }

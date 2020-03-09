@@ -16,7 +16,8 @@ export const Dashboard = () => {
     uuid: '',
     metrics: {
       requestsCount: 0,
-      requestsByDay: []
+      requestsByDay: [],
+      rpcUsage: []
     }
   })
 

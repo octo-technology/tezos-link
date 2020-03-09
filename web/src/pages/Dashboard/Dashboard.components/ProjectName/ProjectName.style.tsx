@@ -2,7 +2,8 @@ import styled from 'styled-components/macro'
 import { Card } from 'src/styles'
 
 export const ProjectNameCard = styled(Card)`
-  margin-bottom: 20px;
-  padding: 20px 20px 15px 20px;
-  font-size: 2em;
+  margin: 18px 0px 22px 0px;
+  padding: 10px 20px 7px 20px;
+  font-size: 1.3em;
+  width: max-content;
 `

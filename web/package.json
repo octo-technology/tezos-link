@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@nivo/line": "^0.61.1",
+    "@nivo/pie": "^0.61.1",
     "@sentry/browser": "^5.11.1",
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
