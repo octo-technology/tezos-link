@@ -165,6 +165,10 @@ All the files related to the infrastructure are based on the `infra` folder.
 
 First, you will need to update the configuration (if needed). To do this, you will find `common.tfvars` and `<env>.tfvars` in the folder `infra/terragrunt`.
 
+> Currently, database password is encrypted inside the file `vaulted.tfvars`. To see it content, you will need ansible-vault and a passphrase to decrypt it with the command `ansible-vault decrypt vaulted.tfvars`.
+>
+> This will be changed soon with AWS Secret Manager.
+
 When they are updated, we will use Terragrunt to deploy our infrastructure by running:
 ```bash
 # To check if all is OK

@@ -29,11 +29,6 @@ resource "aws_route_table" "tzlink_private_proxy_a" {
     Environment = var.ENV
     BuildWith   = var.BUILD_WITH
   }
-
-  # route {
-  #   cidr_block = "0.0.0.0/0"
-  #   gateway_id = aws_nat_gateway.public_proxy_a.id
-  # }
 }
 
 resource "aws_route_table_association" "private_to_proxy_a" {
@@ -72,11 +67,6 @@ resource "aws_route_table" "tzlink_private_proxy_b" {
     Environment = var.ENV
     BuildWith   = var.BUILD_WITH
   }
-
-  # route {
-  #   cidr_block = "0.0.0.0/0"
-  #   gateway_id = aws_nat_gateway.public_proxy_b.id
-  # }
 }
 
 resource "aws_route_table_association" "private_to_proxy_b" {
