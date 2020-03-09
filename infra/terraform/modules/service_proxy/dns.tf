@@ -1,5 +1,5 @@
 data "aws_route53_zone" "tezoslink" {
-  name         = "tezoslink.io."
+  name = "tezoslink.io."
 }
 
 resource "aws_route53_record" "mainnet" {
