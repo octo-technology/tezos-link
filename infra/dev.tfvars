@@ -22,7 +22,7 @@ DATABASE_TABLE = "tezoslink"
 TEZOS_FARM_URL = "internal-tzlink-dev-farm-587823368.eu-west-1.elb.amazonaws.com"
 TEZOS_FARM_PORT = 80
 
-PROXY_CONFIGURATION_FILE = "prod"
+PROXY_CONFIGURATION_FILE = "local"
 
 PROXY_PORT = 8001
 PROXY_CPU = 256
