@@ -19,9 +19,9 @@ resource "aws_alb_target_group" "proxy" {
   target_type = "ip"
 
   stickiness {
-    type = "lb_cookie"
+    type            = "lb_cookie"
     cookie_duration = 600
-    enabled = true
+    enabled         = true
   }
 
   tags = {

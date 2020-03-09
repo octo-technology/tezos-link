@@ -24,10 +24,10 @@ resource "aws_db_instance" "database" {
   storage_type      = "gp2"
 
   name = var.DATABASE_TABLE
-  
+
   backup_retention_period = 7
-  backup_window = "01:00-02:00"
-  skip_final_snapshot = true
+  backup_window           = "01:00-02:00"
+  skip_final_snapshot     = true
 
   apply_immediately = true
 

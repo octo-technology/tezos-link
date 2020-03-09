@@ -32,10 +32,10 @@ resource "aws_security_group" "proxy_ecs_task" {
 
 resource "aws_security_group_rule" "main_ingress_for_proxy" {
 
-  type            = "ingress"
-  from_port       = var.PROXY_PORT
-  to_port         = var.PROXY_PORT
-  protocol        = "tcp"
+  type                     = "ingress"
+  from_port                = var.PROXY_PORT
+  to_port                  = var.PROXY_PORT
+  protocol                 = "tcp"
   source_security_group_id = aws_security_group.proxy_lb.id
 
   security_group_id = aws_security_group.proxy_ecs_task.id

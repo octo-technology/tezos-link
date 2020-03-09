@@ -24,7 +24,7 @@ variable "VPC_CIDR" {
 }
 
 variable "DATABASE_URL" {
-  type = string
+  type    = string
   default = "database.example.nop"
 }
 
@@ -37,6 +37,6 @@ variable "DATABASE_PASSWORD" {
 }
 
 variable "DATABASE_TABLE" {
-  type = string
+  type    = string
   default = "tezoslink"
 }

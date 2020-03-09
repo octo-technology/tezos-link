@@ -12,26 +12,26 @@ resource "aws_ecs_task_definition" "proxy" {
   execution_role_arn = data.aws_iam_role.tzlink_ecs_tasks_access.arn
 
   container_definitions = templatefile("${path.module}/proxy_task_definition.json",
-  {
-    task_name = local.ecs_family,
-    task_image = local.proxy_docker_image,
-    task_port  = var.PROXY_PORT,
-    task_cpu    = var.PROXY_CPU,
-    task_memory = var.PROXY_MEMORY,
+    {
+      task_name   = local.ecs_family,
+      task_image  = local.proxy_docker_image,
+      task_port   = var.PROXY_PORT,
+      task_cpu    = var.PROXY_CPU,
+      task_memory = var.PROXY_MEMORY,
 
-    database_url = var.DATABASE_URL
-    database_username = var.DATABASE_USERNAME
-    database_password = var.DATABASE_PASSWORD
-    database_table = var.DATABASE_TABLE
+      database_url      = var.DATABASE_URL
+      database_username = var.DATABASE_USERNAME
+      database_password = var.DATABASE_PASSWORD
+      database_table    = var.DATABASE_TABLE
 
-    tezos_host = var.TEZOS_FARM_URL
-    tezos_port = var.TEZOS_FARM_PORT
-    
-    environment_config = var.PROXY_CONFIGURATION_FILE,
+      tezos_host = var.TEZOS_FARM_URL
+      tezos_port = var.TEZOS_FARM_PORT
 
-    log_group_name = aws_cloudwatch_log_group.proxy.name,
-    log_group_region = var.REGION,
-    log_group_stream_prefix = local.ecs_task_logs_stream_prefix
+      environment_config = var.PROXY_CONFIGURATION_FILE,
+
+      log_group_name          = aws_cloudwatch_log_group.proxy.name,
+      log_group_region        = var.REGION,
+      log_group_stream_prefix = local.ecs_task_logs_stream_prefix
   })
 }
 
