@@ -18,11 +18,14 @@ func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	firstMetrics := pkgmodel.NewRequestsByDayMetrics("2014", "11", "1", 4)
-	secondMetrics := pkgmodel.NewRequestsByDayMetrics("2014", "11", "12", 5)
-	stubMetrics := []*pkgmodel.RequestsByDayMetrics{firstMetrics, secondMetrics}
+	firstRPCUsage := pkgmodel.NewRPCUsageMetrics("/dummy/path", 3)
+	secondRPCUsage := pkgmodel.NewRPCUsageMetrics("/dummy/another", 10)
+	stubRPCUSageMetrics := []*pkgmodel.RPCUsageMetrics{firstRPCUsage, secondRPCUsage}
+	firstRequestMetrics := pkgmodel.NewRequestsByDayMetrics("2014", "11", "1", 4)
+	secondRequestMetrics := pkgmodel.NewRequestsByDayMetrics("2014", "11", "12", 5)
+	stubRequestsMetrics := []*pkgmodel.RequestsByDayMetrics{firstRequestMetrics, secondRequestMetrics}
 	expRequestsMetrics := []*pkgmodel.RequestsByDayMetrics{
-		firstMetrics,
+		firstRequestMetrics,
 		pkgmodel.NewRequestsByDayMetrics("2014", "11", "2", 0),
 		pkgmodel.NewRequestsByDayMetrics("2014", "11", "3", 0),
 		pkgmodel.NewRequestsByDayMetrics("2014", "11", "4", 0),
@@ -33,9 +36,9 @@ func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 		pkgmodel.NewRequestsByDayMetrics("2014", "11", "9", 0),
 		pkgmodel.NewRequestsByDayMetrics("2014", "11", "10", 0),
 		pkgmodel.NewRequestsByDayMetrics("2014", "11", "11", 0),
-		secondMetrics,
+		secondRequestMetrics,
 	}
-	expMetrics := model.NewMetrics(2, expRequestsMetrics)
+	expMetrics := model.NewMetrics(2, expRequestsMetrics, stubRPCUSageMetrics)
 
 	mockProjectRepository := &mockProjectRepository{}
 	mockProjectRepository.
@@ -51,7 +54,12 @@ func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 
 	mockMetricsRepository.
 		On("FindRequestsByDay", mock.Anything, mock.Anything, mock.Anything).
-		Return(stubMetrics, nil).
+		Return(stubRequestsMetrics, nil).
+		Once()
+
+	mockMetricsRepository.
+		On("CountRPCPathUsage", mock.Anything, mock.Anything, mock.Anything).
+		Return(stubRPCUSageMetrics, nil).
 		Once()
 
 	pu := NewProjectUsecase(mockProjectRepository, mockMetricsRepository)
@@ -65,4 +73,5 @@ func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 	// Then
 	assert.Equal(t, &p, projects)
 	assert.ElementsMatch(t, expMetrics.RequestsByDay, metrics.RequestsByDay)
+	assert.ElementsMatch(t, expMetrics.RPCUSage, metrics.RPCUSage)
 }

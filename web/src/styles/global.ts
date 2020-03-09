@@ -49,7 +49,7 @@ body {
   background-color: ${backgroundColor};
   background-image: url(/background.svg);
   background-repeat: no-repeat;
-  background-attachment: scroll;
+  background-attachment: fixed;
   background-size: 100%;
   color: ${textColor};
   font-size: 14px;

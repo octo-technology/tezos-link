@@ -68,13 +68,18 @@ func (pu *ProjectUsecase) FindProjectAndMetrics(uuid string, from time.Time, to 
 		return nil, nil, err
 	}
 
-	requests, err := pu.metricsRepo.FindRequestsByDay(uuid, from, to)
+	requestsByDay, err := pu.metricsRepo.FindRequestsByDay(uuid, from, to)
 	if err != nil {
 		return nil, nil, err
 	}
-	fullRequestArray := buildFullDateRangeFromRequests(from, to, requests)
+	fullRequestByDayArray := buildFullDateRangeFromRequests(from, to, requestsByDay)
 
-	m := model.NewMetrics(count, fullRequestArray)
+	RPCMetrics, err := pu.metricsRepo.CountRPCPathUsage(uuid, from, to)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	m := model.NewMetrics(count, fullRequestByDayArray, RPCMetrics)
 	logrus.Debug("found project and metrics", p, m)
 	return p, &m, nil
 }

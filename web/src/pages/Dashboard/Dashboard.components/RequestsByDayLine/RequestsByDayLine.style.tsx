@@ -11,5 +11,7 @@ export const RequestsByDayLineViewCard = styled(Card)`
 export const RequestsByDayLineViewStyled = styled(FadeInFromLeft)``
 
 export const RequestsByDayLineViewTitle = styled.span`
-  font-size: 2em;
+  text-transform: uppercase;
+  font-size: large;
+  margin-left: 10px;
 `

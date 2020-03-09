@@ -84,3 +84,27 @@ func (pg postgresMetricsRepository) FindRequestsByDay(uuid string, from time.Tim
 
 	return r, nil
 }
+
+func (pg postgresMetricsRepository) CountRPCPathUsage(uuid string, from time.Time, to time.Time) ([]*model.RPCUsageMetrics, error) {
+	rows, err := pg.connection.Query("SELECT "+
+		"path, "+
+		"COUNT(*) "+
+		"FROM metrics "+
+		"WHERE (uuid = $1) AND (date_request BETWEEN $2 AND $3) "+
+		"GROUP BY 1", uuid, from, to)
+	if err != nil {
+		return nil, fmt.Errorf("could not retrieve metrics: %s", err)
+	}
+
+	var r []*model.RPCUsageMetrics
+	for rows.Next() {
+		cur := model.RPCUsageMetrics{}
+		err := rows.Scan(&cur.Path, &cur.Value)
+		if err != nil {
+			return nil, fmt.Errorf("could not map metrics: %s", err)
+		}
+		r = append(r, &cur)
+	}
+
+	return r, nil
+}
