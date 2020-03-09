@@ -87,7 +87,7 @@ func (pg postgresMetricsRepository) FindRequestsByDay(uuid string, from time.Tim
 
 func (pg postgresMetricsRepository) CountRPCPathUsage(uuid string, from time.Time, to time.Time) ([]*model.RPCUsageMetrics, error) {
 	rows, err := pg.connection.Query("SELECT "+
-		"path, " +
+		"path, "+
 		"COUNT(*) "+
 		"FROM metrics "+
 		"WHERE (uuid = $1) AND (date_request BETWEEN $2 AND $3) "+

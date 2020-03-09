@@ -27,6 +27,6 @@ func TestNewMetricsOutput_Unit(t *testing.T) {
 	assert.Equal(t, 5, metricsOutput.RequestsByDay[1].Value)
 	assert.Equal(t, "2019-03-06", metricsOutput.RequestsByDay[1].Date)
 	assert.Equal(t, "/dummy/path", metricsOutput.RPCUsage[0].Label)
-	assert.Equal(t, "/dummy/path", metricsOutput.RPCUsage[0].Id)
+	assert.Equal(t, "/dummy/path", metricsOutput.RPCUsage[0].ID)
 	assert.Equal(t, 3, metricsOutput.RPCUsage[0].Value)
 }
