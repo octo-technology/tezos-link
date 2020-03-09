@@ -48,11 +48,6 @@ variable "PROXY_MEMORY" {
   default = 250
 }
 
-variable "DATABASE_URL" {
-  type    = string
-  default = "database.example.nop"
-}
-
 variable "DATABASE_USERNAME" {
   type = string
 }
@@ -64,11 +59,6 @@ variable "DATABASE_PASSWORD" {
 variable "DATABASE_TABLE" {
   type    = string
   default = "tezoslink"
-}
-
-variable "TEZOS_FARM_URL" {
-  type    = string
-  default = "farm.example.nop"
 }
 
 variable "TEZOS_FARM_PORT" {

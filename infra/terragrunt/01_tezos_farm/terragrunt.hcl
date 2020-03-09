@@ -11,5 +11,6 @@ terraform {
 }
 
 inputs = {
-  ENABLE_FLOW_LOGS = true
+  INSTANCE_TYPE = "i3.large"
+  KEY_PAIR_NAME = "adbo"
 }

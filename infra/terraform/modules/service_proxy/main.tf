@@ -2,6 +2,14 @@ data "aws_iam_role" "tzlink_ecs_tasks_access" {
   name = "tzlink_ecs_tasks_access"
 }
 
+data "aws_elb" "tz_farm" {
+  name = format("tzlink-%s-farm", var.ENV)
+}
+
+data "aws_db_instance" "database" {
+  db_instance_identifier = format("tzlink-%s-database", var.ENV)
+}
+
 resource "aws_ecs_task_definition" "proxy" {
   family                   = local.ecs_family
   network_mode             = "awsvpc"
@@ -19,12 +27,12 @@ resource "aws_ecs_task_definition" "proxy" {
       task_cpu    = var.PROXY_CPU,
       task_memory = var.PROXY_MEMORY,
 
-      database_url      = var.DATABASE_URL,
+      database_url      = data.aws_db_instance.database.endpoint,
       database_username = var.DATABASE_USERNAME,
       database_password = var.DATABASE_PASSWORD,
-      database_table    = var.DATABASE_TABLE,
+      database_table    = data.aws_db_instance.database.db_name,
 
-      tezos_hostname = var.TEZOS_FARM_URL,
+      tezos_hostname = data.aws_elb.tz_farm.dns_name,
       tezos_port     = var.TEZOS_FARM_PORT,
 
       environment_config = var.PROXY_CONFIGURATION_FILE,
