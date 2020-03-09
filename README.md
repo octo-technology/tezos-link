@@ -51,7 +51,7 @@ REST API to manage projects and get project's metrics.
 
 ### Environment variables
 
-- `DATABASE_URL` (i.e `postgres:5432`)
+- `DATABASE_URL` (default: `postgres:5432`)
 - `DATABASE_USERNAME` (i.e `user`)
 - `DATABASE_PASSWORD` (i.e `pass`)
 - `DATABASE_TABLE` (i.e `tezoslink`)
