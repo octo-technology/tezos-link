@@ -3,9 +3,11 @@ variable "REGION" {
   default = "europe-west-1"
 }
 
-variable "ENV" {
+variable "TZ_NETWORK" {
   type    = string
-  default = "dev"
+  default = "mainnet"
+
+  description = "The current network to deploy in the tezos_node. (possible choice: mainnet, carthagenet)"
 }
 
 variable "PROJECT_NAME" {
