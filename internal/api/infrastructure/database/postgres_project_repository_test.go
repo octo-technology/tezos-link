@@ -14,7 +14,7 @@ func TestPostgresProjectRepository_FindByUUID_Unit(t *testing.T) {
 	defer pool.Purge(resource)
 
 	pgr := NewPostgresProjectRepository(pg)
-	creationDate := time.Now().UTC()
+	creationDate := time.Now().Truncate(time.Millisecond).UTC()
 	expectedProject := model.NewProject(1, "New Project", "A_KEY", creationDate)
 	_, err := pgr.Save(expectedProject.Title, expectedProject.UUID, creationDate)
 	if err != nil {
