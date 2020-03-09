@@ -49,6 +49,16 @@ REST API to manage projects and get project's metrics.
 
 * `PostgreSQL` (setup with 9.6)
 
+### Environment variables
+
+- `DATABASE_URL` (i.e `postgres:5432`)
+- `DATABASE_USERNAME` (i.e `user`)
+- `DATABASE_PASSWORD` (i.e `pass`)
+- `DATABASE_TABLE` (i.e `tezoslink`)
+- `TEZOS_HOST` (i.e `localhost`)
+- `TEZOS_PORT` (i.e `1090`)
+- `SERVER_PORT` (i.e `8001`)
+
 ## Proxy
 
 - HTTP proxy in front of the nodes
@@ -57,6 +67,15 @@ REST API to manage projects and get project's metrics.
 ### Dependencies
 
 * `PostgreSQL` (setup with 9.6)
+
+### Environment variables
+
+- `DATABASE_URL` (i.e `postgres:5432`)
+- `DATABASE_USERNAME` (i.e `user`)
+- `DATABASE_PASSWORD` (i.e `pass`)
+- `DATABASE_TABLE` (i.e `tezoslink`)
+- `SERVER_HOST` (i.e `localhost`)
+- `SERVER_PORT` (i.e `8000`)
 
 ## Build all services
 

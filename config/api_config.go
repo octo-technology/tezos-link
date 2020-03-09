@@ -4,8 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/BurntSushi/toml"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"log"
+	"strconv"
 )
 
 type APIConf struct {
@@ -38,9 +40,26 @@ func ParseAPIConf(cfg string) (*APIConf, error) {
 			return nil, errors.New("Could not read TOML config")
 		}
 	}
+
+	dbUrl := getEnv("DATABASE_URL", "postgres:5432")
+	dbUser := getEnv("DATABASE_USERNAME", "user")
+	dbPass := getEnv("DATABASE_PASSWORD", "pass")
+	dbTable := getEnv("DATABASE_TABLE", "tezoslink?sslmode=disable")
+	conf.Database.Url = fmt.Sprintf("postgres://%s:%s@%s/%s", dbUser, dbPass, dbUrl, dbTable)
+
+	conf.Server.Hostname = getEnv("SERVER_HOST", "localhost")
+	serverPort, err := strconv.Atoi(getEnv("SERVER_PORT", "8001"))
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	conf.Server.Port = serverPort
+
+
 	APIConfig = conf
+
 	if conf.Debug {
 		log.Println("Read config: ", fmt.Sprintf("%+v", conf))
 	}
+
 	return &conf, nil
 }
