@@ -129,3 +129,56 @@ func TestPostgresMetricsRepository_FindRequestsByDay_Unit(t *testing.T) {
 		assert.Equal(t, expectedReps[i], results[i])
 	}
 }
+
+func TestPostgresMetricsRepository_CountRPCPaths_Unit(t *testing.T) {
+	// Given
+	pool := getDockerPool()
+	pg, resource := GetPostgresClient(*pool)
+	defer pool.Purge(resource)
+
+	pgr := NewPostgresMetricsRepository(pg)
+	r := &model.Request{
+		Path:       "/random/path",
+		UUID:       "UUID",
+		Action:     0,
+		RemoteAddr: "0.0.0.0",
+	}
+	marchFixedTime, err := time.Parse(time.RFC3339, "2020-03-05T10:58:56Z")
+	if err != nil {
+		t.Fatal(err)
+	}
+	aprilFixedTime, err := time.Parse(time.RFC3339, "2020-04-05T10:58:56Z")
+	if err != nil {
+		t.Fatal(err)
+	}
+	firstMetric := inputs.NewMetricsInput(r, marchFixedTime)
+	secondMetric := inputs.NewMetricsInput(r, marchFixedTime.Add(time.Duration(66)*time.Second))
+	thirdMetric := inputs.NewMetricsInput(r, aprilFixedTime)
+
+	err = pgr.Save(&firstMetric)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = pgr.Save(&secondMetric)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = pgr.Save(&thirdMetric)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// When
+	results, err := pgr.CountRPCPathUsage("UUID", marchFixedTime, aprilFixedTime)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Then
+	expectedRep := []*model.RPCUsageMetrics{{
+		Path:  "/random/path",
+		Value: 3,
+	}}
+	assert.Equal(t, len(expectedRep), len(results))
+	assert.Equal(t, expectedRep[0], results[0])
+}

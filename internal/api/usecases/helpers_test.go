@@ -50,3 +50,8 @@ func (m *mockMetricsRepository) FindRequestsByDay(uuid string, from time.Time, t
 	args := m.Called(uuid, from, to)
 	return args.Get(0).([]*pkgmodel.RequestsByDayMetrics), args.Error(1)
 }
+
+func (m *mockMetricsRepository) CountRPCPathUsage(uuid string, from time.Time, to time.Time) ([]*pkgmodel.RPCUsageMetrics, error) {
+	args := m.Called(uuid, from, to)
+	return args.Get(0).([]*pkgmodel.RPCUsageMetrics), args.Error(1)
+}

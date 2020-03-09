@@ -147,7 +147,7 @@ func (rc *Controller) GetProjectWithMetrics(w http.ResponseWriter, r *http.Reque
 
 	now := time.Now()
 	nowMinusOneMonth := now.AddDate(0, -1, 0)
-	p, m, err := rc.projectUsecase.FindProjectAndMetrics(uuid, nowMinusOneMonth, now)
+	project, metrics, err := rc.projectUsecase.FindProjectAndMetrics(uuid, nowMinusOneMonth, now)
 	if errors.Is(err, modelerrors.ErrProjectNotFound) {
 		_, _ = jsend.Wrap(w).Data(err.Error()).Status(http.StatusNotFound).Send()
 		return
@@ -157,6 +157,6 @@ func (rc *Controller) GetProjectWithMetrics(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	po := outputs.NewProjectOutputWithMetrics(p, m)
+	po := outputs.NewProjectOutputWithMetrics(project, metrics)
 	_, _ = jsend.Wrap(w).Data(po).Status(http.StatusOK).Send()
 }
