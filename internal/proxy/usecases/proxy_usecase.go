@@ -82,7 +82,7 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 }
 
 func (p *ProxyUsecase) saveMetrics(request *pkgmodel.Request) {
-	metrics := inputs.NewMetricsInput(request, time.Now())
+	metrics := inputs.NewMetricsInput(request, time.Now().UTC())
 	err := p.metricsRepo.Save(&metrics)
 	if err != nil {
 		logrus.Errorf("could not save metrics: %s", err)

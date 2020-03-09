@@ -17,8 +17,8 @@ func (mp *mockProjectRepository) FindByUUID(uuid string) (*model.Project, error)
 	return args.Get(0).(*model.Project), args.Error(1)
 }
 
-func (mp *mockProjectRepository) Save(title string, key string) (*model.Project, error) {
-	args := mp.Called(title, key)
+func (mp *mockProjectRepository) Save(title string, uuid string, creationDate time.Time) (*model.Project, error) {
+	args := mp.Called(title, uuid, creationDate)
 	return args.Get(0).(*model.Project), args.Error(1)
 }
 

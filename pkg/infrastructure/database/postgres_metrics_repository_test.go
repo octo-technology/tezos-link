@@ -20,7 +20,7 @@ func TestPostgresMetricsRepository_Save_Unit(t *testing.T) {
 		UUID:       "UUID",
 		Action:     0,
 		RemoteAddr: "0.0.0.0",
-	}, time.Now())
+	}, time.Now().UTC())
 
 	// When
 	err := pgr.Save(&aMetric)
@@ -44,8 +44,8 @@ func TestPostgresMetricsRepository_Count_Unit(t *testing.T) {
 		Action:     0,
 		RemoteAddr: "0.0.0.0",
 	}
-	firstMetric := inputs.NewMetricsInput(r, time.Now())
-	secondMetric := inputs.NewMetricsInput(r, time.Now().Add(time.Duration(1)*time.Second))
+	firstMetric := inputs.NewMetricsInput(r, time.Now().UTC())
+	secondMetric := inputs.NewMetricsInput(r, time.Now().UTC().Add(time.Duration(1)*time.Second))
 
 	// When there is no row
 	n, err := pgr.CountAll("UUID")

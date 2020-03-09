@@ -7,6 +7,7 @@ import (
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/repository"
 	"github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 type postgresProjectRepository struct {
@@ -22,7 +23,7 @@ func NewPostgresProjectRepository(connection *sql.DB) repository.ProjectReposito
 
 // FindAll returns all projects
 func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
-	rows, err := pg.connection.Query("SELECT id, title, uuid FROM projects")
+	rows, err := pg.connection.Query("SELECT id, title, uuid, creation_date FROM projects")
 	if err != nil {
 		return nil, fmt.Errorf("no projects found: %s", err)
 	}
@@ -30,7 +31,7 @@ func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
 	var r []*model.Project
 	for rows.Next() {
 		cur := model.Project{}
-		err := rows.Scan(&cur.ID, &cur.Title, &cur.UUID)
+		err := rows.Scan(&cur.ID, &cur.Title, &cur.UUID, &cur.CreationDate)
 		if err != nil {
 			return nil, fmt.Errorf("could not map projects: %s", err)
 		}
@@ -44,8 +45,8 @@ func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
 func (pg *postgresProjectRepository) FindByUUID(uuid string) (*model.Project, error) {
 	r := model.Project{}
 	err := pg.connection.
-		QueryRow("SELECT id, title, uuid FROM projects WHERE uuid = $1", uuid).
-		Scan(&r.ID, &r.Title, &r.UUID)
+		QueryRow("SELECT id, title, uuid, creation_date FROM projects WHERE uuid = $1", uuid).
+		Scan(&r.ID, &r.Title, &r.UUID, &r.CreationDate)
 
 	if err != nil {
 		logrus.Errorf("project %s not found: %s", uuid, err)
@@ -56,12 +57,12 @@ func (pg *postgresProjectRepository) FindByUUID(uuid string) (*model.Project, er
 }
 
 // Save insert a new project
-func (pg postgresProjectRepository) Save(title string, uuid string) (*model.Project, error) {
+func (pg postgresProjectRepository) Save(title string, uuid string, creationDate time.Time) (*model.Project, error) {
 	r := model.Project{}
 
 	err := pg.connection.
-		QueryRow("INSERT INTO projects(title, uuid) VALUES ($1, $2) RETURNING id, title, uuid", title, uuid).
-		Scan(&r.ID, &r.Title, &r.UUID)
+		QueryRow("INSERT INTO projects(title, uuid, creation_date) VALUES ($1, $2, $3) RETURNING id, title, uuid, creation_date", title, uuid, creationDate).
+		Scan(&r.ID, &r.Title, &r.UUID, &r.CreationDate)
 
 	if err != nil {
 		return nil, fmt.Errorf("could not insert project %s: %s", title, err)
