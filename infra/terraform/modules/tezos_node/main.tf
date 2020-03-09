@@ -29,15 +29,15 @@ resource "aws_instance" "tz_node" {
   vpc_security_group_ids = [aws_security_group.tezos_node.id]
 
   user_data = templatefile("${path.module}/user_data.tpl", {
-    network = var.TZ_NETWORK
+    network          = var.TZ_NETWORK
     computed_network = var.TZ_NETWORK == "mainnet" ? "babylonnet" : var.TZ_NETWORK
   })
 
   tags = {
-
     Name        = format("tzlink-%s-%d", var.TZ_NETWORK, count.index)
     Project     = var.PROJECT_NAME
     BuildWith   = var.BUILD_WITH
+
   }
 }
 
@@ -69,8 +69,8 @@ resource "aws_elb" "tz_farm" {
   connection_draining_timeout = 400
 
   tags = {
-    Name        = format("tzlink-farm-%s", var.TZ_NETWORK)
-    Project     = var.PROJECT_NAME
-    BuildWith   = var.BUILD_WITH
+    Name      = format("tzlink-farm-%s", var.TZ_NETWORK)
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }

@@ -2,7 +2,7 @@ data "aws_vpc" "tzlink" {
   cidr_block = var.VPC_CIDR
 
   tags = {
-    Name        = "tzlink-dev"
+    Name = "tzlink-dev"
   }
 }
 

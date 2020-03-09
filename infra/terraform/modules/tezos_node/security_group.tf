@@ -32,10 +32,10 @@ resource "aws_security_group" "tezos_node" {
 }
 
 resource "aws_security_group_rule" "rpc_ingress_for_tezos_node" {
-  type        = "ingress"
-  from_port   = 8000
-  to_port     = 8000
-  protocol    = "tcp"
+  type                     = "ingress"
+  from_port                = 8000
+  to_port                  = 8000
+  protocol                 = "tcp"
   source_security_group_id = aws_security_group.tezos_node_lb.id
 
   security_group_id = aws_security_group.tezos_node.id
