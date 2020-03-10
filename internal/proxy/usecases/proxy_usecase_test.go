@@ -6,6 +6,7 @@ import (
 	"github.com/bmizerany/assert"
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
+	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/stretchr/testify/mock"
 	"io/ioutil"
@@ -76,7 +77,7 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 	}
 
 	// 1. Send a dummy request
-	req, err = http.NewRequest("PUT", "http://0.0.0.0:8001/v1/"+uuid+"/mockserver/status", nil)
+	req, err = http.NewRequest("PUT", "http://0.0.0.0:8001/v1/" + uuid + "/mockserver/status", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -101,7 +102,7 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 }`)
 
 	// 2. Get the number of request done by this project UUID
-	req, err = http.NewRequest("GET", "http://0.0.0.0:8000/api/v1/projects/"+uuid, nil)
+	req, err = http.NewRequest("GET", "http://0.0.0.0:8000/api/v1/projects/" + uuid, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -117,8 +118,24 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 	}
 	_ = r.Body.Close()
 
-	// There should be only 1 request
-	assert.Equal(t, string(b), `{"data":{"title":"New Project","uuid":"`+uuid+`","metrics":{"requestsCount":1}},"status":"success"}`)
+	type HTTPOutput struct {
+		Data   outputs.ProjectOutputWithMetrics `json:"data"`
+		Status string                           `json:"status"`
+	}
+	var projectOutputWithMetrics HTTPOutput
+	err = json.Unmarshal(b, &projectOutputWithMetrics)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, "New Project", projectOutputWithMetrics.Data.Title)
+	assert.Equal(t, uuid, projectOutputWithMetrics.Data.UUID)
+	assert.Equal(t, 1, projectOutputWithMetrics.Data.Metrics.RequestsCount)
+	assert.Equal(t, 29, len(projectOutputWithMetrics.Data.Metrics.RequestsByDay))
+	assert.Equal(t, 1, len(projectOutputWithMetrics.Data.Metrics.RPCUsage))
+	assert.Equal(t, 1, projectOutputWithMetrics.Data.Metrics.RPCUsage[0].Value)
+	assert.Equal(t, "/mockserver/status", projectOutputWithMetrics.Data.Metrics.RPCUsage[0].ID)
+	assert.Equal(t, "/mockserver/status", projectOutputWithMetrics.Data.Metrics.RPCUsage[0].Label)
 }
 
 func testProxyUsecaseFunc(
