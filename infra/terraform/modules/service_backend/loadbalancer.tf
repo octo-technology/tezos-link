@@ -1,18 +1,17 @@
 resource "aws_alb" "backend" {
-  name            = format("tzlink-%s-backend", var.ENV)
+  name            = "tzlink-backend"
   subnets         = tolist(data.aws_subnet_ids.tzlink_public_backend.ids)
   security_groups = [aws_security_group.backend_lb.id]
 
   tags = {
-    Name        = format("tzlink-%s-backend", var.ENV)
+    Name        = "tzlink-backend"
     Project     = var.PROJECT_NAME
-    Environment = var.ENV
     BuildWith   = var.BUILD_WITH
   }
 }
 
 resource "aws_alb_target_group" "backend" {
-  name        = format("tzlink-%s-backend", var.ENV)
+  name        = "tzlink-backend"
   port        = var.BACKEND_PORT
   protocol    = "HTTP"
   vpc_id      = data.aws_vpc.tzlink.id
@@ -32,9 +31,8 @@ resource "aws_alb_target_group" "backend" {
   }
 
   tags = {
-    Name        = format("tzlink-%s-backend", var.ENV)
+    Name        = "tzlink-backend"
     Project     = var.PROJECT_NAME
-    Environment = var.ENV
     BuildWith   = var.BUILD_WITH
   }
 
@@ -43,7 +41,7 @@ resource "aws_alb_target_group" "backend" {
 
 resource "aws_alb_listener" "backend" {
   load_balancer_arn = aws_alb.backend.id
-  port              = var.BACKEND_PORT
+  port              = 80
   protocol          = "HTTP"
 
   default_action {

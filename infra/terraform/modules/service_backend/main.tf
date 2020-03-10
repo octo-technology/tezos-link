@@ -3,7 +3,7 @@ data "aws_iam_role" "tzlink_ecs_tasks_access" {
 }
 
 data "aws_db_instance" "database" {
-  db_instance_identifier = format("tzlink-%s-database", var.ENV)
+  db_instance_identifier = "tzlink-database"
 }
 
 resource "aws_ecs_task_definition" "backend" {
