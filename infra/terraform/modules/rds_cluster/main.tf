@@ -1,5 +1,5 @@
 resource "aws_db_subnet_group" "database" {
-  name       = format("tzlink-%s-database", var.ENV)
+  name       = "tzlink-database"
   subnet_ids = tolist(data.aws_subnet_ids.database.ids)
 }
 
@@ -7,7 +7,7 @@ resource "aws_db_instance" "database" {
   engine         = "postgres"
   engine_version = "11.6"
 
-  identifier = format("tzlink-%s-database", var.ENV)
+  identifier = "tzlink-database"
 
   username = var.DATABASE_USERNAME
   password = var.DATABASE_PASSWORD
@@ -37,9 +37,8 @@ resource "aws_db_instance" "database" {
 
 
   tags = {
-    Name        = format("tzlink-%s-database", var.ENV)
+    Name        = "tzlink-database"
     Project     = var.PROJECT_NAME
-    Environment = var.ENV
     BuildWith   = var.BUILD_WITH
   }
 
