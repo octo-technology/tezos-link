@@ -3,7 +3,7 @@ data "aws_iam_role" "tzlink_ecs_tasks_access" {
 }
 
 data "aws_elb" "tz_farm" {
-  name = "tzlink-dev-farm"
+  name = format("tzlink-farm-%s", var.TZ_NETWORK)
 }
 
 data "aws_db_instance" "database" {

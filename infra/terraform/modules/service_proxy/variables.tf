@@ -75,3 +75,10 @@ variable "PROXY_DESIRED_COUNT" {
   type    = number
   default = 0
 }
+
+variable "TZ_NETWORK" {
+  type    = string
+  default = "mainnet"
+
+  description = "The current network to deploy in the tezos_node. (possible choice: mainnet, carthagenet)"
+}

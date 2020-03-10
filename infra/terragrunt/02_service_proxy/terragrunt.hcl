@@ -21,4 +21,5 @@ inputs = {
   PROXY_MEMORY = 512
 
   TEZOS_FARM_PORT = 80
+  TZ_NETWORK = "mainnet"
 }
