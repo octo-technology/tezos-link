@@ -15,9 +15,10 @@ data "aws_ami" "rhel" {
 }
 
 resource "aws_instance" "tz_node" {
+  count         = var.TZ_NODE_NUMBER
   ami           = data.aws_ami.rhel.id
   instance_type = var.INSTANCE_TYPE
-  subnet_id     = tolist(data.aws_subnet_ids.tzlink.ids)[0]
+  subnet_id     = tolist(data.aws_subnet_ids.tzlink.ids)[count.index % 2]
 
   key_name = var.KEY_PAIR_NAME
 
@@ -30,7 +31,7 @@ resource "aws_instance" "tz_node" {
   user_data = templatefile("${path.module}/user_data.tpl", {})
 
   tags = {
-    Name        = format("tzlink-%s", var.ENV)
+    Name        = format("tzlink-%s-%d", var.ENV, count.index)
     Project     = var.PROJECT_NAME
     Environment = var.ENV
     BuildWith   = var.BUILD_WITH
@@ -58,7 +59,7 @@ resource "aws_elb" "tz_farm" {
     interval            = 30
   }
 
-  instances                   = [aws_instance.tz_node.id]
+  instances                   = tolist(aws_instance.tz_node.*.id)
   cross_zone_load_balancing   = true
   idle_timeout                = 400
   connection_draining         = true
