@@ -23,27 +23,27 @@ variable "VPC_CIDR" {
   default = "10.1.0.0/16"
 }
 
-variable "PROXY_DOCKER_IMAGE_NAME" {
+variable "API_DOCKER_IMAGE_NAME" {
   type    = string
   default = "louptheronlth/tezos-link"
 }
 
-variable "PROXY_DOCKER_IMAGE_VERSION" {
+variable "API_DOCKER_IMAGE_VERSION" {
   type    = string
-  default = "proxy-dev"
+  default = "backend-dev"
 }
 
-variable "PROXY_PORT" {
+variable "API_PORT" {
   type    = number
   default = 8001
 }
 
-variable "PROXY_CPU" {
+variable "API_CPU" {
   type    = number
   default = 1024 # 1 vCPU
 }
 
-variable "PROXY_MEMORY" {
+variable "API_MEMORY" {
   type    = number
   default = 250
 }
@@ -61,17 +61,22 @@ variable "DATABASE_TABLE" {
   default = "tezoslink"
 }
 
+variable "TEZOS_FARM_URL" {
+  type    = string
+  default = "farm.example.nop"
+}
+
 variable "TEZOS_FARM_PORT" {
   type    = string
   default = 80
 }
 
-variable "PROXY_CONFIGURATION_FILE" {
+variable "API_CONFIGURATION_FILE" {
   type    = string
   default = "dev"
 }
 
-variable "PROXY_DESIRED_COUNT" {
+variable "API_DESIRED_COUNT" {
   type    = number
   default = 0
 }
