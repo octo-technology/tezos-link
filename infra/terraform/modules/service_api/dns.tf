@@ -8,8 +8,8 @@ resource "aws_route53_record" "api" {
   type    = "A"
 
   alias {
-    name                   = aws_alb.backend.dns_name
-    zone_id                = aws_alb.backend.zone_id
+    name                   = aws_alb.api.dns_name
+    zone_id                = aws_alb.api.zone_id
     evaluate_target_health = false
   }
 }

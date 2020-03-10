@@ -7,7 +7,7 @@ data "aws_vpc" "tzlink" {
   }
 }
 
-data "aws_subnet_ids" "tzlink_public_backend" {
+data "aws_subnet_ids" "tzlink_public_ecs" {
   vpc_id = data.aws_vpc.tzlink.id
 
   tags = {
@@ -15,7 +15,7 @@ data "aws_subnet_ids" "tzlink_public_backend" {
   }
 }
 
-data "aws_subnet_ids" "tzlink_private_backend" {
+data "aws_subnet_ids" "tzlink_private_ecs" {
   vpc_id = data.aws_vpc.tzlink.id
 
   tags = {
