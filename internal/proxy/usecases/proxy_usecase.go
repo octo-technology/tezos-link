@@ -62,11 +62,11 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 			logrus.Info("path not cached, fetching to node: ", request.Path)
 
 			response, err = p.proxyRepo.Get(request)
-			logrus.Info("received response from node: ", string(response.([]byte)))
 			if err != nil {
 				logrus.Errorf("could not request to proxy: %s", err)
 				return errors.ErrNoProxyResponse.Error(), false, errors.ErrNoProxyResponse
 			}
+			logrus.Info("received response from node: ", string(response.([]byte)))
 
 			_ = p.cacheRepo.Add(request, response)
 		}
