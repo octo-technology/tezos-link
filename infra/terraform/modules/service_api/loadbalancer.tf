@@ -4,9 +4,9 @@ resource "aws_alb" "api" {
   security_groups = [aws_security_group.api_lb.id]
 
   tags = {
-    Name        = "tzlink-api"
-    Project     = var.PROJECT_NAME
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-api"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 
@@ -31,9 +31,9 @@ resource "aws_alb_target_group" "api" {
   }
 
   tags = {
-    Name        = "tzlink-api"
-    Project     = var.PROJECT_NAME
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-api"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 
   depends_on = [aws_alb.api]

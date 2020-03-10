@@ -4,9 +4,9 @@ resource "aws_alb" "proxy" {
   security_groups = [aws_security_group.proxy_lb.id]
 
   tags = {
-    Name        = "tzlink-proxy"
-    Project     = var.PROJECT_NAME
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-proxy"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 
@@ -31,9 +31,9 @@ resource "aws_alb_target_group" "proxy" {
   }
 
   tags = {
-    Name        = "tzlink-proxy"
-    Project     = var.PROJECT_NAME
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-proxy"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 
   depends_on = [aws_alb.proxy]

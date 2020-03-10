@@ -37,9 +37,9 @@ resource "aws_db_instance" "database" {
 
 
   tags = {
-    Name        = "tzlink-database"
-    Project     = var.PROJECT_NAME
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-database"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 
   depends_on = [aws_db_subnet_group.database]
