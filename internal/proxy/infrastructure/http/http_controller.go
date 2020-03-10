@@ -3,6 +3,7 @@ package http
 import (
 	"errors"
 	"fmt"
+	"github.com/gamegos/jsend"
 	"github.com/go-chi/chi"
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/usecases"
@@ -48,7 +49,12 @@ func NewHTTPController(uc usecases.ProxyUsecaseInterface, rp *httputil.ReversePr
 func (p *Controller) Initialize() {
 	basePath := "v1/"
 	middleware := setupLimiterMiddleware()
-	http.Handle("/"+basePath, middleware.Handler(http.HandlerFunc(handleProxying(p, basePath))))
+	http.Handle("/" + basePath, middleware.Handler(http.HandlerFunc(handleProxying(p, basePath))))
+	http.Handle("/health", http.HandlerFunc(p.GetHealth))
+}
+
+func (p *Controller) GetHealth(w http.ResponseWriter, r *http.Request) {
+	_, _ = jsend.Wrap(w).Status(http.StatusOK).Send()
 }
 
 // Run runs the controller

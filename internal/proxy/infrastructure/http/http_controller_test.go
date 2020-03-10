@@ -157,3 +157,25 @@ func TestHttpController_ContainsRightPath_WhenPOSTRequest_Unit(t *testing.T) {
 	assert.Equal(t, http.StatusOK, rr.Code, "Bad status code")
 	assert.Equal(t, "", getStringWithoutNewLine(rr.Body.String()), "Bad body")
 }
+
+func TestHttpController_GetHealth_Unit(t *testing.T) {
+	// Given
+	http.DefaultServeMux = new(http.ServeMux)
+	req, err := http.NewRequest("GET", "/health", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mockProxyUsecase := &mockProxyUsecase{}
+	httpController := NewHTTPController(mockProxyUsecase, nil, &http.Server{})
+	httpController.Initialize()
+
+	// When
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(httpController.GetHealth)
+	handler.ServeHTTP(rr, req)
+
+	// Then
+	expectedResponse := `{"data":null,"status":"success"}`
+	assert.Equal(t, http.StatusOK, rr.Code, "Bad status code")
+	assert.Equal(t, expectedResponse, getStringWithoutNewLine(rr.Body.String()), "Bad body")
+}
