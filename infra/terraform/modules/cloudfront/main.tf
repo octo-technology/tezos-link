@@ -17,15 +17,15 @@ resource "aws_s3_bucket" "tz_front" {
 EOF
 
   tags = {
-    Name        = "tezoslink-front"
-    Project     = var.PROJECT_NAME
-    BuildWith   = var.BUILD_WITH
+    Name      = "tezoslink-front"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 
 resource "aws_cloudfront_distribution" "tz_front" {
-  enabled             = true
-  is_ipv6_enabled     = true
+  enabled         = true
+  is_ipv6_enabled = true
 
   default_root_object = "index.html"
 
@@ -64,8 +64,8 @@ resource "aws_cloudfront_distribution" "tz_front" {
 
   viewer_certificate {
     #cloudfront_default_certificate = true
-    acm_certificate_arn = "arn:aws:acm:us-east-1:609827314188:certificate/05558bc2-3703-49ab-ae81-e22ea2ea437e"
-    ssl_support_method  = "sni-only"
+    acm_certificate_arn      = "arn:aws:acm:us-east-1:609827314188:certificate/05558bc2-3703-49ab-ae81-e22ea2ea437e"
+    ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2018"
   }
 
