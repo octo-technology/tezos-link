@@ -2,7 +2,7 @@ import * as PropTypes from 'prop-types'
 import * as React from 'react'
 import { Button } from '../../App/App.components/Button/Button.controller'
 
-import { ProjectToken } from './Dashboard.components/ProjectToken/ProjectToken.controller'
+import { ProjectTokenView } from './Dashboard.components/ProjectToken/ProjectToken.view'
 import {
   DashboardHeader,
   DashboardLeftSide,
@@ -37,7 +37,7 @@ export const DashboardView = ({ loading, project }: DashboardViewProps) => (
     </DashboardLeftSide>
     <DashboardRightSide>
       <ProjectNameView name={project.title} />
-      <ProjectToken token={project.uuid} />
+      <ProjectTokenView token={project.uuid} />
     </DashboardRightSide>
   </DashboardStyled>
 )

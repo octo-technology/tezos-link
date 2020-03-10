@@ -1,14 +1,14 @@
 import * as React from 'react'
 
-import { ProjectTokenView } from './ProjectToken.view'
 import * as PropTypes from 'prop-types'
 import { useRef, useState } from 'react'
+import { TokenCopyView } from './TokenCopy.view'
 
-type ProjectTokenProps = {
+type TokenCopyProps = {
   token: string
 }
 
-export const ProjectToken = ({ token }: ProjectTokenProps) => {
+export const TokenCopy = ({ token }: TokenCopyProps) => {
   const [copySuccess, setCopySuccess] = useState('')
   const textAreaRef = useRef(null)
 
@@ -20,7 +20,7 @@ export const ProjectToken = ({ token }: ProjectTokenProps) => {
   }
 
   return (
-    <ProjectTokenView
+    <TokenCopyView
       token={token}
       copyToClipboard={copyToClipboard}
       copySuccess={copySuccess}
@@ -29,10 +29,10 @@ export const ProjectToken = ({ token }: ProjectTokenProps) => {
   )
 }
 
-ProjectToken.propTypes = {
+TokenCopy.propTypes = {
   token: PropTypes.string
 }
 
-ProjectToken.defaultProps = {
+TokenCopy.defaultProps = {
   token: undefined
 }

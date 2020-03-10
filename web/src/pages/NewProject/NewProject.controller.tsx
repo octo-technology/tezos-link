@@ -53,7 +53,7 @@ export const NewProject = () => {
   return (
     <>
       {redirect ? (
-        <Redirect to={`project/${redirectURL}`} />
+        <Redirect to={`project/${redirectURL}?first-time`} />
       ) : (
         <NewProjectView handleSubmitForm={handleSubmitForm} loading={loading} />
       )}
