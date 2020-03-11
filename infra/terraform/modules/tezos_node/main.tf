@@ -28,6 +28,8 @@ resource "aws_instance" "tz_node" {
 
   vpc_security_group_ids = [aws_security_group.tezos_node.id]
 
+  monitoring = true
+
   user_data = templatefile("${path.module}/user_data.tpl", {
     network          = var.TZ_NETWORK
     computed_network = var.TZ_NETWORK == "mainnet" ? "babylonnet" : var.TZ_NETWORK
