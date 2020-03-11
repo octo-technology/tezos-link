@@ -3,7 +3,7 @@ data "aws_iam_role" "tzlink_ecs_tasks_access" {
 }
 
 data "aws_elb" "tz_farm" {
-  name = "tzlink-dev-farm"
+  name = format("tzlink-farm-%s", var.TZ_NETWORK)
 }
 
 data "aws_db_instance" "database" {
@@ -52,7 +52,7 @@ resource "aws_ecs_service" "proxy" {
 
   network_configuration {
     security_groups = [aws_security_group.proxy_ecs_task.id]
-    subnets         = tolist(data.aws_subnet_ids.tzlink_private_proxy.ids)
+    subnets         = tolist(data.aws_subnet_ids.tzlink_private_ecs.ids)
   }
 
   load_balancer {

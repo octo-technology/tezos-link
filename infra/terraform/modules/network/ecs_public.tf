@@ -7,10 +7,9 @@ resource "aws_subnet" "public_proxy_a" {
 
   map_public_ip_on_launch = true
   tags = {
-    Name        = format("tzlink-%s-public-proxy-a", var.ENV)
-    Project     = var.PROJECT_NAME
-    Environment = var.ENV
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-public-ecs-a"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 
@@ -38,10 +37,9 @@ resource "aws_subnet" "public_proxy_b" {
 
   map_public_ip_on_launch = true
   tags = {
-    Name        = format("tzlink-%s-public-proxy-b", var.ENV)
-    Project     = var.PROJECT_NAME
-    Environment = var.ENV
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-public-ecs-b"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 

@@ -1,6 +1,6 @@
 resource "aws_security_group" "proxy_lb" {
-  name        = "proxy_loadbalancer"
-  description = "Security group for loadbalancer"
+  name        = format("proxy_%s_loadbalancer", var.TZ_NETWORK)
+  description = format("Security group for loadbalancer (network %s)", var.TZ_NETWORK)
   vpc_id      = data.aws_vpc.tzlink.id
 }
 
@@ -25,8 +25,8 @@ resource "aws_security_group_rule" "all_egress_for_loadbalancer" {
 }
 
 resource "aws_security_group" "proxy_ecs_task" {
-  name        = "proxy_ecs_task"
-  description = "Security group for ecs (access only by loadbalancer)"
+  name        = format("proxy_%s_ecs_task", var.TZ_NETWORK)
+  description = format("Security group for proxy %s (access only by loadbalancer)", var.TZ_NETWORK)
   vpc_id      = data.aws_vpc.tzlink.id
 }
 

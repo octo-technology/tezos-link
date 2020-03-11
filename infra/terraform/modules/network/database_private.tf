@@ -5,10 +5,9 @@ resource "aws_subnet" "private_database_a" {
 
   map_public_ip_on_launch = false
   tags = {
-    Name        = format("tzlink-%s-private-database-a", var.ENV)
-    Project     = var.PROJECT_NAME
-    Environment = var.ENV
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-private-database-a"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 
@@ -19,9 +18,8 @@ resource "aws_subnet" "private_database_b" {
 
   map_public_ip_on_launch = false
   tags = {
-    Name        = format("tzlink-%s-private-database-b", var.ENV)
-    Project     = var.PROJECT_NAME
-    Environment = var.ENV
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-private-database-b"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }

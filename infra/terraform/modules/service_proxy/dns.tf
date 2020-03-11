@@ -2,9 +2,9 @@ data "aws_route53_zone" "tezoslink" {
   name = "tezoslink.io."
 }
 
-resource "aws_route53_record" "mainnet" {
+resource "aws_route53_record" "network" {
   zone_id = data.aws_route53_zone.tezoslink.zone_id
-  name    = "mainnet.tezoslink.io"
+  name    = format("%s.tezoslink.io", var.TZ_NETWORK)
   type    = "A"
 
   alias {

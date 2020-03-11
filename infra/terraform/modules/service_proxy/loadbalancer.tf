@@ -1,17 +1,17 @@
 resource "aws_alb" "proxy" {
-  name            = "tzlink-proxy"
-  subnets         = tolist(data.aws_subnet_ids.tzlink_public_proxy.ids)
+  name            = format("tzlink-proxy-%s", var.TZ_NETWORK)
+  subnets         = tolist(data.aws_subnet_ids.tzlink_public_ecs.ids)
   security_groups = [aws_security_group.proxy_lb.id]
 
   tags = {
-    Name      = "tzlink-proxy"
+    Name      = format("tzlink-proxy-%s", var.TZ_NETWORK)
     Project   = var.PROJECT_NAME
     BuildWith = var.BUILD_WITH
   }
 }
 
 resource "aws_alb_target_group" "proxy" {
-  name        = "tzlink-proxy"
+  name        = format("tzlink-proxy-%s", var.TZ_NETWORK)
   port        = var.PROXY_PORT
   protocol    = "HTTP"
   vpc_id      = data.aws_vpc.tzlink.id
@@ -31,7 +31,7 @@ resource "aws_alb_target_group" "proxy" {
   }
 
   tags = {
-    Name      = "tzlink-proxy"
+    Name      = format("tzlink-proxy-%s", var.TZ_NETWORK)
     Project   = var.PROJECT_NAME
     BuildWith = var.BUILD_WITH
   }

@@ -7,10 +7,9 @@ resource "aws_subnet" "private_proxy_a" {
 
   map_public_ip_on_launch = false
   tags = {
-    Name        = format("tzlink-%s-private-proxy-a", var.ENV)
-    Project     = var.PROJECT_NAME
-    Environment = var.ENV
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-private-ecs-a"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 
@@ -24,10 +23,9 @@ resource "aws_route_table" "tzlink_private_proxy_a" {
   vpc_id = aws_vpc.tzlink.id
 
   tags = {
-    Name        = format("tzlink-%s-private-proxy-a", var.ENV)
-    Project     = var.PROJECT_NAME
-    Environment = var.ENV
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-private-ecs-a"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 
@@ -45,10 +43,9 @@ resource "aws_subnet" "private_proxy_b" {
 
   map_public_ip_on_launch = false
   tags = {
-    Name        = format("tzlink-%s-private-proxy-b", var.ENV)
-    Project     = var.PROJECT_NAME
-    Environment = var.ENV
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-private-ecs-b"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 
@@ -62,10 +59,9 @@ resource "aws_route_table" "tzlink_private_proxy_b" {
   vpc_id = aws_vpc.tzlink.id
 
   tags = {
-    Name        = format("tzlink-%s-private-proxy-b", var.ENV)
-    Project     = var.PROJECT_NAME
-    Environment = var.ENV
-    BuildWith   = var.BUILD_WITH
+    Name      = "tzlink-private-ecs-b"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 

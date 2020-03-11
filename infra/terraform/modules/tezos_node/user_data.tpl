@@ -17,35 +17,35 @@ mount /dev/nvme0n1 /var/lib/docker/volumes
 
 cd /var/lib/docker/volumes
 
-aws s3 cp s3://tzlink-blockchain-data-dev/mainnet_node_data.tar.gz mainnet_node_data.tar.gz
-tar xvf mainnet_node_data.tar.gz
-mv archive mainnet_node_data
-chown -R 100:65533 mainnet_node_data
+aws s3 cp s3://tzlink-blockchain-data-dev/${network}_node_data.tar.gz ${network}_node_data.tar.gz
+tar xvf ${network}_node_data.tar.gz
+mv archive ${network}_node_data
+chown -R 100:65533 ${network}_node_data
 
-curl -o /usr/local/bin/mainnet.sh https://gitlab.com/tezos/tezos/raw/babylonnet/scripts/alphanet.sh
-chmod +x /usr/local/bin/mainnet.sh
+curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/${computed_network}/scripts/alphanet.sh
+chmod +x /usr/local/bin/${network}.sh
 
 cd /home/ec2-user
 
-mainnet.sh node start --rpc-port 8000 --history-mode archive
+${network}.sh node start --rpc-port 8000 --history-mode archive
 
-rm -rf /var/lib/docker/volumes/mainnet_node_data.tar.gz
+rm -rf /var/lib/docker/volumes/${network}_node_data.tar.gz
 
 cat > export-tezos-snap.sh << EOF
 #!/bin/bash -e
 
-mkdir .tezos-mainnet
-cp /.tezos-mainnet/docker-compose.yml .tezos-mainnet/docker-compose.yml 
+mkdir .tezos-${network}
+cp /.tezos-${network}/docker-compose.yml .tezos-${network}/docker-compose.yml 
 
 echo "> Stop the node for snapshot"
-mainnet.sh stop
+${network}.sh stop
 
 cd /var/lib/docker/volumes
-echo "> Copy mainnet_node_data in archive"
-sudo cp -r mainnet_node_data archive
+echo "> Copy ${network}_node_data in archive"
+sudo cp -r ${network}_node_data archive
 
 echo "> Restart the node"
-mainnet.sh node start --rpc-port 8000 --history-mode archive
+${network}.sh node start --rpc-port 8000 --history-mode archive
 
 echo "> Remove files:"
 
@@ -73,14 +73,14 @@ else
   echo "absent. (doing nothing)"
 fi
 
-echo "> Generate mainnet_node_data.tar.gz from archive"
-sudo tar zcvf mainnet_node_data.tar.gz ./archive
+echo "> Generate ${network}_node_data.tar.gz from archive"
+sudo tar zcvf ${network}_node_data.tar.gz ./archive
 
-echo "> Send to S3 bucket mainnet_node_data.tar.gz"
-aws s3 cp ./mainnet_node_data.tar.gz s3://tzlink-blockchain-data-dev
+echo "> Send to S3 bucket ${network}_node_data.tar.gz"
+aws s3 cp ./${network}_node_data.tar.gz s3://tzlink-blockchain-data-dev
 
 echo "> Clear temporary files"
-sudo rm -rf archive mainnet_node_data.tar.gz
+sudo rm -rf archive ${network}_node_data.tar.gz
 EOF
 
-chmod +x tezos-snap.sh
+chmod +x export-tezos-snap.sh
