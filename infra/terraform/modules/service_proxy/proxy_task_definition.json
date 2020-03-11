@@ -10,6 +10,13 @@
     ],
     "cpu": ${task_cpu},
     "memory": ${task_memory},
+    "ulimits": [
+      {
+        "name": "nofile",
+        "softLimit": 10000,
+        "hardLimit": 12000
+      }
+    ],
     "environment": [
         {
           "name": "SERVER_PORT",
