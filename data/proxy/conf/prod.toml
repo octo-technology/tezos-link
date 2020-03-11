@@ -18,5 +18,5 @@ dontCache = [
   "/chains/main/blocks$",
 ]
 rateLimitPeriod = 100
-rateLimitCount = 1000
+rateLimitCount = 1000000
 cacheMaxItems = 2000
