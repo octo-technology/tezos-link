@@ -6,7 +6,7 @@ data "aws_vpc" "tzlink" {
   }
 }
 
-data "aws_subnet_ids" "tzlink_public_proxy" {
+data "aws_subnet_ids" "tzlink_public_ecs" {
   vpc_id = data.aws_vpc.tzlink.id
 
   tags = {
@@ -14,7 +14,7 @@ data "aws_subnet_ids" "tzlink_public_proxy" {
   }
 }
 
-data "aws_subnet_ids" "tzlink_private_proxy" {
+data "aws_subnet_ids" "tzlink_private_ecs" {
   vpc_id = data.aws_vpc.tzlink.id
 
   tags = {

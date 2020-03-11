@@ -52,7 +52,7 @@ resource "aws_ecs_service" "proxy" {
 
   network_configuration {
     security_groups = [aws_security_group.proxy_ecs_task.id]
-    subnets         = tolist(data.aws_subnet_ids.tzlink_private_proxy.ids)
+    subnets         = tolist(data.aws_subnet_ids.tzlink_private_ecs.ids)
   }
 
   load_balancer {

@@ -1,6 +1,6 @@
 resource "aws_alb" "proxy" {
   name            = format("tzlink-proxy-%s", var.TZ_NETWORK)
-  subnets         = tolist(data.aws_subnet_ids.tzlink_public_proxy.ids)
+  subnets         = tolist(data.aws_subnet_ids.tzlink_public_ecs.ids)
   security_groups = [aws_security_group.proxy_lb.id]
 
   tags = {
