@@ -2,7 +2,7 @@ resource "aws_ecs_cluster" "cluster" {
   name = "tzlink"
 
   setting {
-    name = "containerInsights"
+    name  = "containerInsights"
     value = "enabled"
   }
 }
