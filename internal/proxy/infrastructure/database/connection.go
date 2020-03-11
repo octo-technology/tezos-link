@@ -15,6 +15,8 @@ func Configure() {
 	if err != nil {
 		log.Fatal("Could not open DB: ", err)
 	}
+	// max_connection RDS is set to ~700
+	con.SetMaxOpenConns(600)
 
 	err = con.Ping()
 	if err != nil {
