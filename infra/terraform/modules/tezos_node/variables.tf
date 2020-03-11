@@ -40,6 +40,21 @@ variable "INSTANCE_TYPE" {
   default = "i3.large"
 }
 
+variable "MIN_INSTANCE_NUMBER" {
+  type    = number
+  default = 1
+}
+
+variable "MAX_INSTANCE_NUMBER" {
+  type    = number
+  default = 3
+}
+
+variable "DESIRED_INSTANCE_NUMBER" {
+  type    = number
+  default = 1
+}
+
 variable "KEY_PAIR_NAME" {
   type    = string
   default = "AWS-TEZOS-KEY"
