@@ -5,7 +5,7 @@ type ModalProps = {
   children: React.ReactElement
 }
 
-export const Modal = ({ children }: ModalProps) => {
+export const ModalContainer = ({ children }: ModalProps) => {
   const modalRoot = document.getElementById('modal')
   const element = document.createElement('div')
 
