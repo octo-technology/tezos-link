@@ -19,9 +19,9 @@ export const TokenCopyView = ({ token, copySuccess, copyToClipboard, textAreaRef
       {/* Logical shortcut for only displaying the
              button if the copy command exists */
         document.queryCommandSupported('copy') && (
-          <div>
+          <span>
             <Button onClick={copyToClipboard} text={copySuccess || 'Copy to clipboard'} icon="copy" type="button" />
-          </div>
+          </span>
         )}
     </>
   )

@@ -102,4 +102,11 @@ code {
   animation-fill-mode: forwards;
   animation-duration: 0.2s;
 }
+
+#confetis {
+  z-index: -1;
+  position: fixed;
+  margin-top: -100px;
+  margin-left: 70px;
+}
 `

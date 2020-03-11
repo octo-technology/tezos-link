@@ -6,10 +6,8 @@ import { DashboardView } from './Dashboard.view'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
-import { Modal } from './Dashboard.components/Modal/Modal.controller'
-import { Code, DashboardModal, DashboardOverlay, ModalTitle } from "./Dashboard.style";
-import { Button } from '../../App/App.components/Button/Button.controller'
-import { TokenCopy } from './Dashboard.components/TokenCopy/TokenCopy.controller'
+import { showConfetis } from './Dashboard.components/Confetis/Confetis.controller'
+import { ModalProjectCreatedView } from './Dashboard.components/ModalProjectCreated/ModalProjectCreated.view'
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
@@ -36,6 +34,9 @@ export const Dashboard = () => {
     const firstTime = params.get('first-time')
     if (firstTime === '') {
       setShowModal(true)
+      setTimeout(() => {
+        showConfetis()
+      }, 500)
     }
   }
 
@@ -64,38 +65,8 @@ export const Dashboard = () => {
 
   return (
     <>
-      {redirect ? <Redirect to={`/project-not-found`} /> : <DashboardView project={project} loading={loading} />}}
-      {showModal ? (
-        <>
-          <DashboardOverlay />
-          <Modal>
-            <DashboardModal>
-              <ModalTitle>Well done!</ModalTitle>
-              <div>
-                <h3>Usage</h3>
-                <p>
-                  We've generated a Project ID for you, this identifier is both your <b>login to this dashboard</b> and
-                  <b> your credential to access the request URL.</b>
-                </p>
-                <p>
-                  <Code>{'curl https://<network>.tezoslink.io/v1/YOUR-PROJECT-ID'}</Code>
-                </p>
-                <h3>Your Project ID</h3>
-                <p>
-                  <b>Make sure to save the following Project ID:</b>
-                  <TokenCopy token={project.uuid} />
-                </p>
-                <p>
-                  <Button color={'secondary'} onClick={closeModal} text="Got it!" />
-                </p>
-              </div>
-            </DashboardModal>
-          </Modal>
-        </>
-      ) : (
-        <></>
-      )}
-      }
+      {redirect ? <Redirect to={`/project-not-found`} /> : <DashboardView project={project} loading={loading} />}
+      {showModal ? <ModalProjectCreatedView uuid={project.uuid} closeModal={closeModal} /> : <></>}
     </>
   )
 }

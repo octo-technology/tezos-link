@@ -1,9 +1,9 @@
 {
-  "name": "@tezos-link/client",
+  "name": "@tezos-link/frontend",
   "version": "1.0.0",
   "description": "Tezos Link frontend",
   "author": "Loup Theron",
-  "license": "APACHE",
+  "license": "Apache",
   "scripts": {
     "start": "PORT=8080 REACT_APP_BACKEND_URL=http://localhost:8000 react-scripts -r @cypress/instrument-cra start && open http://localhost:8080",
     "build": "REACT_APP_BACKEND_URL=http://api.tezoslink.io react-scripts build",
