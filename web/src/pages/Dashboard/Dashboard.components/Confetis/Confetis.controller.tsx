@@ -226,7 +226,7 @@ class Confeti {
     this.rotationv = Math.random() * 2
     this.color = CSS_COLOR_NAMES[Math.floor(Math.random() * CSS_COLOR_NAMES.length)]
     this.opacity = 1
-    this.speedOpacity = Math.random() * 0.3
+    this.speedOpacity = Math.random() * 0.001
   }
 }
 
@@ -259,17 +259,19 @@ export function showConfetis() {
 }
 
 function drawBackground() {
-  if (loopId >= 150) {
+  if (loopId >= 30) {
     confetis = confetis.slice(0, confetis.length - 2)
   }
 
-  if (loopId < 150) {
+  if (loopId < 30) {
     if (confetis.length < amount - 1) {
-      confetis.push(new Confeti())
+      for (let i = 0; i <= 10; i++) {
+        confetis.push(new Confeti())
+      }
     }
   }
 
-  if (loopId < 300) {
+  if (loopId < 150) {
     for (let i = 0; i <= confetis.length - 1; i++) {
       confetis[i].draw()
       confetis[i].update()
@@ -282,7 +284,7 @@ function drawScene() {
 }
 
 function animationLoop() {
-  if (loopId >= 300) {
+  if (loopId >= 150) {
     // @ts-ignore
     canvas.style.zIndex = '-1'
     return cancelAnimationFrame(loopId)

@@ -106,6 +106,7 @@ code {
 #confetis {
   z-index: -1;
   position: fixed;
-  margin-top: -70px;
+  margin-top: -100px;
+  margin-left: 70px;
 }
 `
