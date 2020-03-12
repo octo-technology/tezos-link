@@ -18,7 +18,7 @@ resource "aws_lambda_function" "snapshot_lambda" {
   s3_key           = "v1.0.0/snapshot.zip"
   function_name    = "snapshot"
   role             = data.aws_iam_role.tzlink_lambdas_access.arn
-  handler          = "snapshot"
+  handler          = "main"
   runtime          = "go1.x"
   description      = "Snapshot exporter Lambda"
 

@@ -20,30 +20,40 @@ PROXY_PATH=$(CMD_PATH)/$(PROXY)
 PROXY_CMD=./cmd/$(PROXY)
 PROXY_BIN=./bin/$(PROXY)
 
+# snapshot lambda
+SNAPSHOT=snapshot
+SNAPSHOT_PATH=$(CMD_PATH)/$(SNAPSHOT)
+SNAPSHOT_CMD=./cmd/$(SNAPSHOT)
+SNAPSHOT_BIN=./bin/$(SNAPSHOT)
+
 .PHONY: all build build-unix test clean clean-app run deps docker-images docker-tag docs
 
 all: test build
 build:
 	$(GOBUILD) -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
 	$(GOBUILD) -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
+	$(GOBUILD) -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
 build-frontend:
 	cp docs/* web/public/docs
 	cd web && yarn build
 build-unix:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -a -installsuffix cgo -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
 unit-test:
 	$(GOTEST) -run Unit ./... -v
 integration-test:
-	 $(GOTEST) -run Integration ./... -v
+	$(GOTEST) -run Integration ./... -v
 test-ci:
 	$(GOTEST) ./... -v
 clean : clean-app
 clean-app:
 	$(GOCLEAN) $(API_PATH)
 	$(GOCLEAN) $(PROXY_PATH)
+	$(GOCLEAN) $(SNAPSHOT_PATH)
 	rm -f $(API_BIN)
 	rm -f $(PROXY_BIN)
+	rm -f $(SNAPSHOT_BIN)
 build-docker: build-unix
 	docker-compose build
 run:
@@ -69,6 +79,11 @@ docker-push:
 	docker push ${REGISTRY}:$(PROXY)-dev
 deploy-frontend:
 	aws s3 sync web/build s3://tezoslink-front
+snapshot-deploy:
+	cp bin/snapshot bin/main
+	zip -j bin/snapshot.zip bin/main
+	aws s3 cp $(SNAPSHOT_BIN).zip s3://tzlink-snapshot-lambda-dev/v1.0.0/$(SNAPSHOT).zip
+	rm bin/snapshot.zip bin/main
 docs:
 	if ! which swag; then go get -u github.com/swaggo/swag/cmd/swag ; fi
 	swag init --generalInfo rest_controller.go --dir internal/$(API)/infrastructure/rest --output api-docs/$(API)
