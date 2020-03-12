@@ -17,3 +17,13 @@ variable "BUILD_WITH" {
   type    = string
   default = "terraform"
 }
+
+variable "SNAPSHOT_S3_KEY" {
+  type    = string
+  default = "v1.0.0/snapshot.zip"
+}
+
+variable "NODE_IP" {
+  type    = string
+  default = "0.0.0.0"
+}
