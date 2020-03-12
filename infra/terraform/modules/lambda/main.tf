@@ -25,11 +25,11 @@ resource "archive_file" "snapshot_lambda" {
 }
 
 resource "aws_s3_bucket_object" "snapshot_lambda" {
-  key         = "tzlink-snapshot-lambda.zip"
-  bucket      = aws_s3_bucket.snapshot_lambda.bucket
-  source      = "${path.module}/../../../bin/tzlink-snapshot-lambda-${random_id.zipfile.hex}.zip"
-  etag        = sha256(file("${path.module}/../../../bin/tzlink-snapshot-lambda-${random_id.zipfile.hex}.zip"))
-  depends_on  = ["archive_file.lambda", "aws_s3_bucket.snapshot_lambda"]
+  key        = "tzlink-snapshot-lambda.zip"
+  bucket     = aws_s3_bucket.snapshot_lambda.bucket
+  source     = "${path.module}/../../../bin/tzlink-snapshot-lambda-${random_id.zipfile.hex}.zip"
+  etag       = sha256(file("${path.module}/../../../bin/tzlink-snapshot-lambda-${random_id.zipfile.hex}.zip"))
+  depends_on = ["archive_file.lambda", "aws_s3_bucket.snapshot_lambda"]
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
