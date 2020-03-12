@@ -70,3 +70,11 @@ resource "aws_lambda_function" "snapshot_lambda" {
 
   depends_on = ["aws_s3_bucket_object.snapshot_lambda", "random_id.zipfile", "archive_file.snapshot_lambda"]
 }
+
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_snapshot_lambda" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.snapshot_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.every_twelve_hours.arn
+}
