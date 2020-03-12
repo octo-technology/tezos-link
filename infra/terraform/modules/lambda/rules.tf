@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_event_rule" "every_twelve_hours" {
   name                = "tzlink_snapshot_export_cronjob"
   description         = "Send a snapshot export request"
-  schedule_expression = "cron(0 */12 * * *)"
+  schedule_expression = "rate(12 hours)"
 
   tags = {
     Name      = "tzlink-snapshot-rule"
