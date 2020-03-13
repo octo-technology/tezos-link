@@ -14,20 +14,21 @@ resource "aws_s3_bucket" "snapshot_lambda" {
 }
 
 resource "aws_lambda_function" "snapshot_lambda" {
-  s3_bucket        = aws_s3_bucket.snapshot_lambda.bucket
-  s3_key           = var.SNAPSHOT_S3_KEY
-  function_name    = "snapshot"
-  role             = data.aws_iam_role.tzlink_lambdas_access.arn
-  handler          = "main"
-  runtime          = "go1.x"
-  description      = "Snapshot exporter Lambda"
+  s3_bucket     = aws_s3_bucket.snapshot_lambda.bucket
+  s3_key        = var.SNAPSHOT_S3_KEY
+  function_name = "snapshot"
+  role          = data.aws_iam_role.tzlink_lambdas_access.arn
+  handler       = "main"
+  runtime       = "go1.x"
+  description   = "Snapshot exporter Lambda"
 
   environment {
     variables = {
-      NODE_IP    = var.NODE_IP
-      S3_KEY     = var.SNAPSHOT_S3_KEY
-      S3_BUCKET  = aws_s3_bucket.snapshot_lambda.bucket
-      AWS_REGION = var.REGION
+      NODE_USER     = var.NODE_USER
+      NODE_IP       = var.NODE_IP
+      S3_REGION     = var.REGION
+      S3_BUCKET     = aws_s3_bucket.snapshot_lambda.bucket
+      S3_LAMBDA_KEY = var.S3_LAMBDA_KEY
     }
   }
 }

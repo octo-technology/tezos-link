@@ -27,3 +27,13 @@ variable "NODE_IP" {
   type    = string
   default = "0.0.0.0"
 }
+
+variable "NODE_USER" {
+  type    = string
+  default = "ec2-user"
+}
+
+variable "S3_LAMBDA_KEY" {
+  type    = string
+  default = "snapshot_lambda_key"
+}

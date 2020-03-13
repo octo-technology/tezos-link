@@ -13,6 +13,9 @@ SUBNET_TZ_PRIVATE_DATABASE_CIDR = "10.1.3.0/24"
 
 DATABASE_USERNAME = "administrator"
 
-NODE_IP = "0.0.0.0"
+NODE_USER = "ec2-user"
+NODE_IP = "34.250.204.152"
 
 SNAPSHOT_S3_KEY = "v1.0.0/snapshot.zip"
+
+S3_LAMBDA_KEY = "snapshot_lambda_key"
