@@ -39,7 +39,7 @@ build-frontend:
 build-unix:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -a -installsuffix cgo -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
+	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
 unit-test:
 	$(GOTEST) -run Unit ./... -v
 integration-test:
@@ -79,11 +79,12 @@ docker-push:
 	docker push ${REGISTRY}:$(PROXY)-dev
 deploy-frontend:
 	aws s3 sync web/build s3://tezoslink-front
-snapshot-deploy:
+deploy-lambda:
 	cp bin/snapshot bin/main
 	zip -j bin/snapshot.zip bin/main
 	aws s3 cp $(SNAPSHOT_BIN).zip s3://tzlink-snapshot-lambda-dev/v1.0.0/$(SNAPSHOT).zip
 	rm bin/snapshot.zip bin/main
+	aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/snapshot.zip --region eu-west-1
 docs:
 	if ! which swag; then go get -u github.com/swaggo/swag/cmd/swag ; fi
 	swag init --generalInfo rest_controller.go --dir internal/$(API)/infrastructure/rest --output api-docs/$(API)

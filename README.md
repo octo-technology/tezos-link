@@ -11,6 +11,7 @@ Tezos link is a gateway to access to the Tezos network aiming to improve develop
 * [Services](#services)
   * [API](#api)
   * [Proxy](#proxy)
+  * [Snapshot exporter](#snapshot-exporter)
 * [Build all services](#build-all-services)
 * [Tests all services](#tests-all-services)
 * [Run services locally on the machine](#run-services-locally-on-the-machine)
@@ -78,6 +79,20 @@ REST API to manage projects and get project's metrics.
 - `TEZOS_HOST` (default: `node`)
 - `TEZOS_PORT` (default: `1090`)
 - `SERVER_PORT` (default: `8001`)
+
+## Snapshot exporter
+
+Lambda function scheduled with a `Cloudwatch Rule` cronjob, connect to a node with SSH and trigger a snapshot export.
+
+### Environment variables
+
+These environment variables are set in `infra/dev.tfvars`.
+
+- `NODE_USER` (default: `ec2-user`)
+- `NODE_IP` (default: `0.0.0.0`)
+- `S3_REGION` (default: `eu-west-1`)
+- `S3_BUCKET` (default: `tzlink-snapshot-lambda-dev`)
+- `S3_LAMBDA_KEY` (default: `snapshot_lambda_key`)
 
 ## Build all services
 
