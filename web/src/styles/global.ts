@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components/macro'
-import { backgroundColor, textColor, placeholderColor } from './colors'
+import { backgroundColor, textColor, placeholderColor, primaryColor } from "./colors";
 import { fadeInFromLeft } from './animations'
 
 export const GlobalStyle = createGlobalStyle`
@@ -109,4 +109,52 @@ code {
   margin-top: -100px;
   margin-left: 70px;
 }
+
+blockquote {
+  margin: 0 10px 0 10px;
+  padding 2px 10px 2px 10px;
+  border-left: 5px solid ${primaryColor};
+}
+
+.markdown code {
+  background-color: #eee;
+  border-radius: 2px;
+  color: #002b36;
+  -moz-osx-font-smoothing: auto;
+  -webkit-font-smoothing: auto;
+  font-family: monospace;
+  padding: 0.25em 0.5em;
+  font-size: 0.9em;
+}
+
+.markdown pre {
+  background-color:
+  #002b36;
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.markdown pre code {
+  background-color: 
+  transparent;
+  color:
+  #d4d4d4;
+}
+
+.markdown th {
+  font-size: .875rem;
+  text-transform: uppercase;
+  background-color: ${primaryColor};
+  color: black;
+  padding: .5rem;
+}
+
+.markdown td {
+  padding: .5rem;
+}
+
+
 `

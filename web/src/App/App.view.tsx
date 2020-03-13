@@ -57,6 +57,24 @@ const Home = lazy(() =>
   ).then(({ Home }) => ({ default: Home }))
 )
 
+const Documentation = lazy(() =>
+  import(
+    /*
+      webpackChunkName: "documentation",
+      webpackPrefetch: true
+      */ '../pages/Documentation/Documentation.controller'
+  ).then(({ Documentation }) => ({ default: Documentation }))
+)
+
+const Status = lazy(() =>
+  import(
+    /*
+      webpackChunkName: "status",
+      webpackPrefetch: true
+      */ '../pages/Status/Status.controller'
+  ).then(({ Status }) => ({ default: Status }))
+)
+
 export const AppView = () => (
   <AppStyled>
     <Suspense fallback={<div>Loading...</div>}>
@@ -65,6 +83,8 @@ export const AppView = () => (
         <Route exact path="/project/:projectId" component={Dashboard} />
         <Route exact path="/new-project" component={NewProject} />
         <Route exact path="/sign-in-project" component={SignInProject} />
+        <Route exact path="/documentation" component={Documentation} />
+        <Route exact path="/status" component={Status} />
         <Route exact path="/project-not-found" component={ProjectNotFound} />
         <Route component={NotFound} />
       </Switch>
