@@ -1,3 +1,0 @@
-# JSON/RPC API
-
-Our APIs

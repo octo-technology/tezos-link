@@ -23,13 +23,10 @@ export const HeaderView: any = ({ router }: any) => {
           <Beta>alpha</Beta>
         </Link>
         <HeaderMenu>
-          <Link to="/product">
-            <Button color="transparent" text="PRODUCT" />
-          </Link>
-          <Link to="/product">
+          <Link to="/status">
             <Button color="transparent" text="STATUS" />
           </Link>
-          <a href="/docs">
+          <a href="/documentation">
             <Button color="transparent" text="DOCS" />
           </a>
         </HeaderMenu>

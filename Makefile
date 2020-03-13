@@ -26,6 +26,9 @@ all: test build
 build:
 	$(GOBUILD) -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
 	$(GOBUILD) -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
+build-frontend:
+	cp docs/* web/public/docs
+	cd web && yarn build
 build-unix:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
@@ -64,6 +67,8 @@ docker-push:
 	echo ${PASSWORD} | docker login -u ${USERNAME} --password-stdin
 	docker push ${REGISTRY}:$(API)-dev
 	docker push ${REGISTRY}:$(PROXY)-dev
+deploy-frontend:
+	aws s3 sync web/build s3://tezoslink-front
 docs:
 	if ! which swag; then go get -u github.com/swaggo/swag/cmd/swag ; fi
 	swag init --generalInfo rest_controller.go --dir internal/$(API)/infrastructure/rest --output api-docs/$(API)
