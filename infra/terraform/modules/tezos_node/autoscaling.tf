@@ -14,9 +14,9 @@ resource "aws_cloudwatch_metric_alarm" "out" {
   metric_name         = "RequestCount"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   threshold           = "200"
-  
-  period              = "60"
-  evaluation_periods  = "1"
+
+  period             = "60"
+  evaluation_periods = "1"
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.tz_nodes.name
@@ -42,9 +42,9 @@ resource "aws_cloudwatch_metric_alarm" "down" {
   metric_name         = "RequestCount"
   comparison_operator = "LessThanOrEqualToThreshold"
   threshold           = "50"
-  
-  period              = "60"
-  evaluation_periods  = "5"
+
+  period             = "60"
+  evaluation_periods = "5"
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.tz_nodes.name
