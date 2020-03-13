@@ -17,7 +17,7 @@ mount /dev/nvme0n1 /var/lib/docker/volumes
 
 cd /var/lib/docker/volumes
 
-mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo -n ${lambda_public_key} >>  ~/.ssh/authorized_keys
+mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo -n "${lambda_public_key}" >>  ~/.ssh/authorized_keys
 
 aws s3 cp s3://tzlink-blockchain-data-dev/${network}_node_data.tar.gz ${network}_node_data.tar.gz
 tar xvf ${network}_node_data.tar.gz
@@ -36,7 +36,7 @@ rm -rf /var/lib/docker/volumes/${network}_node_data.tar.gz
 cat > export-tezos-snap.sh << EOF
 #!/bin/bash -e
 
-mkdir .tezos-${network}
+mkdir -p .tezos-${network}
 cp /.tezos-${network}/docker-compose.yml .tezos-${network}/docker-compose.yml 
 
 echo "> Stop the node for snapshot"
