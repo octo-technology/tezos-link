@@ -6,7 +6,6 @@ writeTimeout = 5
 idleTimeout = 120
 whitelistedMethods = [
   "/chains/main/blocks(.*?)",
-  "/mockserver/status"
 ]
 blockedMethods = [
   "(.*?)context/contracts$",
