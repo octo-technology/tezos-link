@@ -39,14 +39,49 @@ resource "aws_alb_target_group" "proxy" {
   depends_on = [aws_alb.proxy]
 }
 
-resource "aws_alb_listener" "proxy" {
-  load_balancer_arn = aws_alb.proxy.id
+#resource "aws_alb_listener" "proxy" {
+#  load_balancer_arn = aws_alb.proxy.id
+#  port              = 80
+#  protocol          = "HTTP"
+#
+#  default_action {
+#    target_group_arn = aws_alb_target_group.proxy.id
+#    type             = "forward"
+#  }
+#
+#  depends_on = [aws_alb_target_group.proxy]
+#}
+
+############
+
+resource "aws_alb_listener" "proxy_https" {
+  load_balancer_arn = aws_alb.proxy.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-1-2017-01"
+  certificate_arn   = local.network_certificate_arn
+
+  default_action {
+    target_group_arn = aws_alb_target_group.proxy.arn
+    type             = "forward"
+  }
+
+  depends_on = [aws_alb_target_group.proxy]
+}
+
+resource "aws_alb_listener" "proxy_http_redirect" {
+  load_balancer_arn = aws_alb.proxy.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.proxy.id
-    type             = "forward"
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 
   depends_on = [aws_alb_target_group.proxy]
