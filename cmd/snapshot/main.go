@@ -61,7 +61,7 @@ func getPublicKeyFromS3() ssh.AuthMethod {
 
     signer, err := ssh.ParsePrivateKey(buf.Bytes())
     if err != nil {
-        panic(fmt.Sprintf("Unable to parse key %q at bucket %q. buffer is %s, %v", S3LambdaKey,os.Getenv("S3_BUCKET"), buf, err))
+        panic(fmt.Sprintf("Unable to parse key %q at bucket %q, %v", S3LambdaKey, os.Getenv("S3_BUCKET"), err))
     }
 
     log.Print("got private key from S3 bucket.")
