@@ -54,6 +54,7 @@ func (p *Controller) Initialize() {
 }
 
 func (p *Controller) GetHealth(w http.ResponseWriter, r *http.Request) {
+	optionsHeaders(w)
 	_, _ = jsend.Wrap(w).Status(http.StatusOK).Send()
 }
 
@@ -131,6 +132,7 @@ func optionsHeaders(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control")
 	w.Header().Set("Access-Control-Allow-Methods", "PUSH")
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 func getActionFromHTTPMethod(action string) pkgmodel.Action {
@@ -145,3 +147,4 @@ func getActionFromHTTPMethod(action string) pkgmodel.Action {
 
 	return -1
 }
+
