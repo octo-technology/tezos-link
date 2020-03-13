@@ -31,8 +31,9 @@ resource "aws_instance" "tz_node" {
   monitoring = true
 
   user_data = templatefile("${path.module}/user_data.tpl", {
-    network          = var.TZ_NETWORK
-    computed_network = var.TZ_NETWORK == "mainnet" ? "babylonnet" : var.TZ_NETWORK
+    network           = var.TZ_NETWORK
+    lambda_public_key = file("${path.module}/lambda_public_key")
+    computed_network  = var.TZ_NETWORK == "mainnet" ? "babylonnet" : var.TZ_NETWORK
   })
 
   tags = {

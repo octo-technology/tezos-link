@@ -17,6 +17,8 @@ mount /dev/nvme0n1 /var/lib/docker/volumes
 
 cd /var/lib/docker/volumes
 
+mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo ${lambda_public_key} >>  ~/.ssh/authorized_keys
+
 aws s3 cp s3://tzlink-blockchain-data-dev/${network}_node_data.tar.gz ${network}_node_data.tar.gz
 tar xvf ${network}_node_data.tar.gz
 mv archive ${network}_node_data
