@@ -78,7 +78,7 @@ resource "aws_alb_listener" "proxy_http_redirect" {
     type = "redirect"
 
     redirect {
-      port        = "443"
+      port        = 443
       protocol    = "HTTPS"
       status_code = "HTTP_301"
     }

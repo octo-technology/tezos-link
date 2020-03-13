@@ -54,5 +54,5 @@ resource "aws_ecs_service" "api" {
     container_port   = var.API_PORT
   }
 
-  depends_on = [aws_alb_listener.api]
+  depends_on = [aws_alb_listener.api_https]
 }
