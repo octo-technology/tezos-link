@@ -89,7 +89,6 @@ Lambda function scheduled with a `Cloudwatch Rule` cronjob, connect to a node wi
 These environment variables are set in `infra/dev.tfvars`.
 
 - `NODE_USER` (default: `ec2-user`)
-- `NODE_IP` (default: `0.0.0.0`)
 - `S3_REGION` (default: `eu-west-1`)
 - `S3_BUCKET` (default: `tzlink-snapshot-lambda-dev`)
 - `S3_LAMBDA_KEY` (default: `snapshot_lambda_key`)
