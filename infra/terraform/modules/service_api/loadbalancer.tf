@@ -39,14 +39,39 @@ resource "aws_alb_target_group" "api" {
   depends_on = [aws_alb.api]
 }
 
-resource "aws_alb_listener" "api" {
-  load_balancer_arn = aws_alb.api.id
+data "aws_acm_certificate" "api" {
+  domain   = "api.tezoslink.io"
+  statuses = ["ISSUED"]
+}
+
+resource "aws_alb_listener" "api_https" {
+  load_balancer_arn = aws_alb.api.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-1-2017-01"
+  certificate_arn   = data.aws_acm_certificate.api.arn
+
+  default_action {
+    target_group_arn = aws_alb_target_group.api.arn
+    type             = "forward"
+  }
+
+  depends_on = [aws_alb_target_group.api]
+}
+
+resource "aws_alb_listener" "api_http_redirect" {
+  load_balancer_arn = aws_alb.api.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.api.id
-    type             = "forward"
+    type = "redirect"
+
+    redirect {
+      port        = 443
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 
   depends_on = [aws_alb_target_group.api]

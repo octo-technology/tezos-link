@@ -61,5 +61,5 @@ resource "aws_ecs_service" "proxy" {
     container_port   = var.PROXY_PORT
   }
 
-  depends_on = [aws_alb_listener.proxy]
+  depends_on = [aws_alb_listener.proxy_https]
 }
