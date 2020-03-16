@@ -15,13 +15,13 @@ unzip awscliv2.zip
 mkfs.ext4 -E discard /dev/nvme0n1
 mount /dev/nvme0n1 /var/lib/docker/volumes
 
-cd /var/lib/docker/volumes
-
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
-cat >> authorized_keys <<EOF
-${lambda_public_key}
-EOF
+bash -c '
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDDyEN/krNooLTAmC5xSc3ylkHt+ttAuOxsPW+vSV+B/Oi0xlMEY33wzgJRWyZz7FK5r8Mm/w/vWbYLeV+C5Ohqmr/RYkVxeqiAGsYHay/4xzg/f3YKeKWF8D6hCjyM2SR6fFtReQVvQpX/doW8Y+C2JtrwH5cEVaB0Di4gWfEz4tttUkIgGXCPPJk+lVBddOkcvdKS8Df/j5lZjsTPv7G4qmoUX4Zf4BTU0pIiQkuATGQ9YNa4N65au09Mwi1QmaTNR+HK7fpjO6sMQBTKJGSsvTz52LyQbOsFLPpJxhnXYbbIVRCDuLtdV6yPtDdLu6z38NR05snQFgUCFE7q9I8f loup.theron@AMAC02QD2NYG8WL
+" >> /home/ec2-user/.ssh/authorized_keys
+'
 
+cd /var/lib/docker/volumes
 aws s3 cp s3://tzlink-blockchain-data-dev/${network}_node_data.tar.gz ${network}_node_data.tar.gz
 tar xvf ${network}_node_data.tar.gz
 mv archive ${network}_node_data

@@ -40,7 +40,6 @@ resource "aws_instance" "tz_node" {
     Name      = format("tzlink-%s-%d", var.TZ_NETWORK, count.index)
     Project   = var.PROJECT_NAME
     BuildWith = var.BUILD_WITH
-
   }
 }
 
