@@ -23,11 +23,6 @@ variable "SNAPSHOT_S3_KEY" {
   default = "v1.0.0/snapshot.zip"
 }
 
-variable "NODE_IP" {
-  type    = string
-  default = "0.0.0.0"
-}
-
 variable "NODE_USER" {
   type    = string
   default = "ec2-user"
