@@ -35,7 +35,7 @@ func HandleRequest(ctx context.Context) (string, error) {
     }
     defer conn.Close()
 
-    runCommand("./export-tezos-snap.sh", conn)
+    runCommand("nohup sh export-tezos-snap.sh &", conn)
 
     log.Print("snapshot done")
     return "snapshot done.", nil
