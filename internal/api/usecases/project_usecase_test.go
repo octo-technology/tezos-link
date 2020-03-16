@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -11,7 +10,7 @@ import (
 
 func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 	// Given
-	p := model.NewProject(123, "A PROJECT", "AN_UUID", time.Now().UTC())
+	p := pkgmodel.NewProject(123, "A PROJECT", "AN_UUID", time.Now().UTC())
 	str := "2014-11-12T11:45:26.371Z"
 	now, err := time.Parse(time.RFC3339, str)
 	if err != nil {
@@ -38,7 +37,7 @@ func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 		pkgmodel.NewRequestsByDayMetrics("2014", "11", "11", 0),
 		secondRequestMetrics,
 	}
-	expMetrics := model.NewMetrics(2, expRequestsMetrics, stubRPCUSageMetrics)
+	expMetrics := pkgmodel.NewMetrics(2, expRequestsMetrics, stubRPCUSageMetrics)
 
 	mockProjectRepository := &mockProjectRepository{}
 	mockProjectRepository.

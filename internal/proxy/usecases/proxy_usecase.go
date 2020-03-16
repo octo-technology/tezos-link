@@ -18,6 +18,7 @@ type ProxyUsecase struct {
 	cacheRepo   repository.BlockchainRepository
 	proxyRepo   repository.BlockchainRepository
 	metricsRepo pkgrepository.MetricsRepository
+	projectRepo pkgrepository.ProjectRepository
 	whitelisted []*regexp.Regexp
 	blacklisted []*regexp.Regexp
 	dontCache   []*regexp.Regexp
@@ -35,11 +36,13 @@ const NoProxyResponse = "no response from proxy"
 func NewProxyUsecase(
 	cacheRepo repository.BlockchainRepository,
 	proxyRepo repository.BlockchainRepository,
-	metricsRepo pkgrepository.MetricsRepository) *ProxyUsecase {
+	metricsRepo pkgrepository.MetricsRepository,
+	projectRepo pkgrepository.ProjectRepository) *ProxyUsecase {
 	return &ProxyUsecase{
 		cacheRepo:   cacheRepo,
 		proxyRepo:   proxyRepo,
 		metricsRepo: metricsRepo,
+		projectRepo: projectRepo,
 		whitelisted: setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedMethods),
 		blacklisted: setupRegexpFor(config.ProxyConfig.Proxy.BlockedMethods),
 		dontCache:   setupRegexpFor(config.ProxyConfig.Proxy.DontCache),
@@ -50,6 +53,12 @@ func NewProxyUsecase(
 func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 	logrus.Info("received proxy request for path: ", request.Path)
 	response := []byte("call blacklisted")
+
+	_, err := p.projectRepo.FindByUUID(request.UUID)
+	if err != nil {
+		logrus.Debug("project ID not found: ", request.UUID, err.Error())
+		return err.Error(), false, err
+	}
 
 	if !p.isAllowed(request.Path) {
 		logrus.Debug("not allowed to proxy on the path: ", request.Path)
@@ -71,8 +80,7 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 			_ = p.cacheRepo.Add(request, response)
 		}
 
-		// TODO first check if the project UUID is existing
-		// TODO save the fact that it is cached from the LRU or not
+		// TODO save that it is cached from the LRU or not
 		p.saveMetrics(request)
 		return string(response.([]byte)), false, nil
 	}

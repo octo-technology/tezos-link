@@ -1,10 +1,9 @@
 package outputs
 
 import (
-	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
-	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
-	"github.com/stretchr/testify/assert"
-	"testing"
+    pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+    "github.com/stretchr/testify/assert"
+    "testing"
 )
 
 func TestNewMetricsOutput_Unit(t *testing.T) {
@@ -12,7 +11,7 @@ func TestNewMetricsOutput_Unit(t *testing.T) {
 	firstMetrics := pkgmodel.NewRequestsByDayMetrics("2020", "03", "05", 4)
 	secondMetrics := pkgmodel.NewRequestsByDayMetrics("2019", "03", "06", 5)
 	rpcUsage := pkgmodel.NewRPCUsageMetrics("/dummy/path", 3)
-	metrics := model.NewMetrics(
+	metrics := pkgmodel.NewMetrics(
 		3,
 		[]*pkgmodel.RequestsByDayMetrics{firstMetrics, secondMetrics},
 		[]*pkgmodel.RPCUsageMetrics{rpcUsage})

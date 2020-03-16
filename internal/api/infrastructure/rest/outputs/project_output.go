@@ -1,6 +1,8 @@
 package outputs
 
-import "github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
+import (
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+)
 
 // ProjectOutputWithMetrics contains the fields to represent a project
 type ProjectOutputWithMetrics struct {
@@ -10,7 +12,7 @@ type ProjectOutputWithMetrics struct {
 }
 
 // NewProjectOutputWithMetrics returns a new project with metrics
-func NewProjectOutputWithMetrics(project *model.Project, metrics *model.Metrics) ProjectOutputWithMetrics {
+func NewProjectOutputWithMetrics(project *pkgmodel.Project, metrics *pkgmodel.Metrics) ProjectOutputWithMetrics {
 	return ProjectOutputWithMetrics{
 		Title:   project.Title,
 		UUID:    project.UUID,

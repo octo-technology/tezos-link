@@ -1,30 +1,29 @@
 package usecases
 
 import (
-	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
-	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
-	"github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
-	"github.com/stretchr/testify/mock"
-	"time"
+    pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+    "github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
+    "github.com/stretchr/testify/mock"
+    "time"
 )
 
 type mockProjectRepository struct {
 	mock.Mock
 }
 
-func (mp *mockProjectRepository) FindByUUID(uuid string) (*model.Project, error) {
+func (mp *mockProjectRepository) FindByUUID(uuid string) (*pkgmodel.Project, error) {
 	args := mp.Called(uuid)
-	return args.Get(0).(*model.Project), args.Error(1)
+	return args.Get(0).(*pkgmodel.Project), args.Error(1)
 }
 
-func (mp *mockProjectRepository) Save(title string, uuid string, creationDate time.Time) (*model.Project, error) {
+func (mp *mockProjectRepository) Save(title string, uuid string, creationDate time.Time) (*pkgmodel.Project, error) {
 	args := mp.Called(title, uuid, creationDate)
-	return args.Get(0).(*model.Project), args.Error(1)
+	return args.Get(0).(*pkgmodel.Project), args.Error(1)
 }
 
-func (mp *mockProjectRepository) FindAll() ([]*model.Project, error) {
+func (mp *mockProjectRepository) FindAll() ([]*pkgmodel.Project, error) {
 	args := mp.Called()
-	return args.Get(0).([]*model.Project), args.Error(1)
+	return args.Get(0).([]*pkgmodel.Project), args.Error(1)
 }
 
 func (mp *mockProjectRepository) Ping() error {

@@ -39,7 +39,7 @@ func main() {
 	runMigrations()
 
 	// Repositories
-	projectRepo := database.NewPostgresProjectRepository(database.Connection)
+	projectRepo := pkgdatabase.NewPostgresProjectRepository(database.Connection)
 	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
 
 	// Use cases

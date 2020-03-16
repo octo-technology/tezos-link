@@ -3,9 +3,9 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
-	"github.com/octo-technology/tezos-link/backend/internal/api/domain/repository"
 	"github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	pkgrepository "github.com/octo-technology/tezos-link/backend/pkg/domain/repository"
 	"github.com/sirupsen/logrus"
 	"time"
 )
@@ -15,22 +15,22 @@ type postgresProjectRepository struct {
 }
 
 // NewPostgresProjectRepository returns a new postgres project repository
-func NewPostgresProjectRepository(connection *sql.DB) repository.ProjectRepository {
+func NewPostgresProjectRepository(connection *sql.DB) pkgrepository.ProjectRepository {
 	return &postgresProjectRepository{
 		connection: connection,
 	}
 }
 
 // FindAll returns all projects
-func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
+func (pg postgresProjectRepository) FindAll() ([]*pkgmodel.Project, error) {
 	rows, err := pg.connection.Query("SELECT id, title, uuid, creation_date FROM projects")
 	if err != nil {
 		return nil, fmt.Errorf("no projects found: %s", err)
 	}
 
-	var projects []*model.Project
+	var projects []*pkgmodel.Project
 	for rows.Next() {
-		cursor := model.Project{}
+		cursor := pkgmodel.Project{}
 		err := rows.Scan(&cursor.ID, &cursor.Title, &cursor.UUID, &cursor.CreationDate)
 		if err != nil {
 			return nil, fmt.Errorf("could not map projects: %s", err)
@@ -42,10 +42,16 @@ func (pg postgresProjectRepository) FindAll() ([]*model.Project, error) {
 }
 
 // FindByUUID finds a project by uuid
-func (pg *postgresProjectRepository) FindByUUID(uuid string) (*model.Project, error) {
-	project := model.Project{}
-	err := pg.connection.
-		QueryRow("SELECT id, title, uuid, creation_date FROM projects WHERE uuid = $1", uuid).
+func (pg *postgresProjectRepository) FindByUUID(uuid string) (*pkgmodel.Project, error) {
+	stmt, err := pg.connection.Prepare("SELECT id, title, uuid, creation_date FROM projects WHERE uuid = $1")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	project := pkgmodel.Project{}
+	err = stmt.
+		QueryRow(uuid).
 		Scan(&project.ID, &project.Title, &project.UUID, &project.CreationDate)
 
 	if err != nil {
@@ -57,8 +63,8 @@ func (pg *postgresProjectRepository) FindByUUID(uuid string) (*model.Project, er
 }
 
 // Save insert a new project
-func (pg postgresProjectRepository) Save(title string, uuid string, creationDate time.Time) (*model.Project, error) {
-	project := model.Project{}
+func (pg postgresProjectRepository) Save(title string, uuid string, creationDate time.Time) (*pkgmodel.Project, error) {
+	project := pkgmodel.Project{}
 
 	err := pg.connection.
 		QueryRow("INSERT INTO projects(title, uuid, creation_date) VALUES ($1, $2, $3) RETURNING id, title, uuid, creation_date", title, uuid, creationDate).

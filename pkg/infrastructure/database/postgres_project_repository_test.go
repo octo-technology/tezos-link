@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
+	"github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
