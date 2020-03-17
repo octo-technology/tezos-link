@@ -45,9 +45,9 @@ func TestPostgresProjectRepository_FindAll_Unit(t *testing.T) {
 
 	pgr := NewPostgresProjectRepository(pg)
 	expectedFirstProject := model.NewProject(1, "New Project", "A_KEY", creationDate)
-	expectedSecondProject := model.NewProject(2, "New Project 2", "A_SECOND_KEY", creationDate.Add(2 * time.Second).Truncate(time.Millisecond))
+	expectedSecondProject := model.NewProject(2, "New Project 2", "A_SECOND_KEY", creationDate.Add(2*time.Second).Truncate(time.Millisecond))
 	_, _ = pgr.Save(expectedFirstProject.Title, expectedFirstProject.UUID, creationDate)
-	_, _ = pgr.Save(expectedSecondProject.Title, expectedSecondProject.UUID, creationDate.Add(2 * time.Second).Truncate(time.Millisecond))
+	_, _ = pgr.Save(expectedSecondProject.Title, expectedSecondProject.UUID, creationDate.Add(2*time.Second).Truncate(time.Millisecond))
 
 	// When
 	p, err := pgr.FindAll()

@@ -1,9 +1,9 @@
 package usecases
 
 import (
-    "github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
-    repository2 "github.com/octo-technology/tezos-link/backend/pkg/domain/repository"
-    "github.com/sirupsen/logrus"
+	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
+	repository2 "github.com/octo-technology/tezos-link/backend/pkg/domain/repository"
+	"github.com/sirupsen/logrus"
 )
 
 // HealthUsecase contains the project repository to do the health check

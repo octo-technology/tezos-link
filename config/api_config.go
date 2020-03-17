@@ -55,7 +55,6 @@ func ParseAPIConf(cfg string) (*APIConf, error) {
 	}
 	conf.Server.Port = serverPort
 
-
 	APIConfig = conf
 
 	if conf.Debug {

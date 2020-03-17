@@ -1,10 +1,10 @@
 package usecases
 
 import (
-    pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
-    "github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
-    "github.com/stretchr/testify/mock"
-    "time"
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	"github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
+	"github.com/stretchr/testify/mock"
+	"time"
 )
 
 type mockProjectRepository struct {

@@ -3,8 +3,8 @@ package rest
 import (
 	"github.com/go-chi/chi"
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
-    pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
-    "github.com/stretchr/testify/mock"
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	"github.com/stretchr/testify/mock"
 	"net/http"
 	"net/http/httptest"
 	"strings"

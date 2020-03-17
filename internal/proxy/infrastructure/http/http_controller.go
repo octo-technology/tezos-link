@@ -49,10 +49,11 @@ func NewHTTPController(uc usecases.ProxyUsecaseInterface, rp *httputil.ReversePr
 func (p *Controller) Initialize() {
 	basePath := "v1/"
 	middleware := setupLimiterMiddleware()
-	http.Handle("/" + basePath, middleware.Handler(http.HandlerFunc(handleProxying(p, basePath))))
+	http.Handle("/"+basePath, middleware.Handler(http.HandlerFunc(handleProxying(p, basePath))))
 	http.Handle("/health", http.HandlerFunc(p.GetHealth))
 }
 
+// GetHealth get the health of the service
 func (p *Controller) GetHealth(w http.ResponseWriter, r *http.Request) {
 	optionsHeaders(w)
 	_, _ = jsend.Wrap(w).Status(http.StatusOK).Send()
@@ -151,4 +152,3 @@ func getActionFromHTTPMethod(action string) pkgmodel.Action {
 
 	return -1
 }
-

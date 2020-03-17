@@ -1,8 +1,8 @@
 package outputs
 
 import (
-    "fmt"
-    pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	"fmt"
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 )
 
 // MetricsOutput contains the fields to represent a metrics

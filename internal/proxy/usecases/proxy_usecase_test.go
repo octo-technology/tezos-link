@@ -84,7 +84,7 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 	}
 
 	// 1. Send a dummy request
-	req, err = http.NewRequest("PUT", "http://0.0.0.0:8001/v1/" + uuid + "/mockserver/status", nil)
+	req, err = http.NewRequest("PUT", "http://0.0.0.0:8001/v1/"+uuid+"/mockserver/status", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -109,7 +109,7 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 }`)
 
 	// 2. Get the number of request done by this project UUID
-	req, err = http.NewRequest("GET", "http://0.0.0.0:8000/api/v1/projects/" + uuid, nil)
+	req, err = http.NewRequest("GET", "http://0.0.0.0:8000/api/v1/projects/"+uuid, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

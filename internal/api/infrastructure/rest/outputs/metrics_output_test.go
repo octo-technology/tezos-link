@@ -1,9 +1,9 @@
 package outputs
 
 import (
-    pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
-    "github.com/stretchr/testify/assert"
-    "testing"
+	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestNewMetricsOutput_Unit(t *testing.T) {
