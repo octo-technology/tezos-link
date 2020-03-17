@@ -29,4 +29,14 @@ data "aws_iam_policy_document" "tzlink_lambda_access" {
       "arn:aws:s3:::tzlink-snapshot-lambda-dev/*"
     ]
   }
+
+  statement {
+    actions = [
+      "ec2:Describe*"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
 }
