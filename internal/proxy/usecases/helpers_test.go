@@ -44,3 +44,27 @@ func (m *mockMetricsRepository) CountRPCPathUsage(uuid string, from time.Time, t
 	args := m.Called(uuid, from, to)
 	return args.Get(0).([]*pkgmodel.RPCUsageMetrics), args.Error(1)
 }
+
+type mockProjectRepository struct {
+	mock.Mock
+}
+
+func (mp *mockProjectRepository) FindByUUID(uuid string) (*pkgmodel.Project, error) {
+	args := mp.Called(uuid)
+	return nil, args.Error(1)
+}
+
+func (mp *mockProjectRepository) Save(title string, uuid string, creationDate time.Time) (*pkgmodel.Project, error) {
+	args := mp.Called(title, uuid, creationDate)
+	return args.Get(0).(*pkgmodel.Project), args.Error(1)
+}
+
+func (mp *mockProjectRepository) FindAll() ([]*pkgmodel.Project, error) {
+	args := mp.Called()
+	return args.Get(0).([]*pkgmodel.Project), args.Error(1)
+}
+
+func (mp *mockProjectRepository) Ping() error {
+	args := mp.Called()
+	return args.Error(0)
+}

@@ -3,8 +3,6 @@ package usecases
 import (
 	"errors"
 	"github.com/google/uuid"
-	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
-	"github.com/octo-technology/tezos-link/backend/internal/api/domain/repository"
 	modelerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	pkgrepository "github.com/octo-technology/tezos-link/backend/pkg/domain/repository"
@@ -15,18 +13,18 @@ import (
 
 // ProjectUsecase contains the project repository
 type ProjectUsecase struct {
-	projectRepo repository.ProjectRepository
+	projectRepo pkgrepository.ProjectRepository
 	metricsRepo pkgrepository.MetricsRepository
 }
 
 // ProjectUsecaseInterface contains all available methods of the project use-case
 type ProjectUsecaseInterface interface {
-	CreateProject(name string) (*model.Project, error)
-	FindProjectAndMetrics(uuid string, from time.Time, to time.Time) (*model.Project, *model.Metrics, error)
+	CreateProject(name string) (*pkgmodel.Project, error)
+	FindProjectAndMetrics(uuid string, from time.Time, to time.Time) (*pkgmodel.Project, *pkgmodel.Metrics, error)
 }
 
 // NewProjectUsecase returns a new project use-case
-func NewProjectUsecase(projectRepo repository.ProjectRepository, metricsRepo pkgrepository.MetricsRepository) *ProjectUsecase {
+func NewProjectUsecase(projectRepo pkgrepository.ProjectRepository, metricsRepo pkgrepository.MetricsRepository) *ProjectUsecase {
 	return &ProjectUsecase{
 		projectRepo: projectRepo,
 		metricsRepo: metricsRepo,
@@ -34,7 +32,7 @@ func NewProjectUsecase(projectRepo repository.ProjectRepository, metricsRepo pkg
 }
 
 // CreateProject create and save a new project
-func (pu *ProjectUsecase) CreateProject(name string) (*model.Project, error) {
+func (pu *ProjectUsecase) CreateProject(name string) (*pkgmodel.Project, error) {
 	creationDate := time.Now().UTC()
 	if name == "" {
 		logrus.Error("empty project name", name)
@@ -52,7 +50,7 @@ func (pu *ProjectUsecase) CreateProject(name string) (*model.Project, error) {
 }
 
 // FindProjectAndMetrics finds a project and the associated metrics of a given project's uuid
-func (pu *ProjectUsecase) FindProjectAndMetrics(uuid string, from time.Time, to time.Time) (*model.Project, *model.Metrics, error) {
+func (pu *ProjectUsecase) FindProjectAndMetrics(uuid string, from time.Time, to time.Time) (*pkgmodel.Project, *pkgmodel.Metrics, error) {
 	p, err := pu.projectRepo.FindByUUID(uuid)
 
 	if errors.Is(err, modelerrors.ErrProjectNotFound) {
@@ -78,7 +76,7 @@ func (pu *ProjectUsecase) FindProjectAndMetrics(uuid string, from time.Time, to 
 		return nil, nil, err
 	}
 
-	m := model.NewMetrics(count, fullRequestByDayArray, RPCMetrics)
+	m := pkgmodel.NewMetrics(count, fullRequestByDayArray, RPCMetrics)
 	logrus.Debug("found project and metrics", p, m)
 	return p, &m, nil
 }

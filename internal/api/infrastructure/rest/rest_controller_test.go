@@ -19,7 +19,7 @@ import (
 func TestRestController_PostProject_Unit(t *testing.T) {
 	// Given
 	creationDate := time.Now().UTC()
-	p := model.NewProject(1, "PROJECT_NAME", "AN_UUID", creationDate)
+	p := pkgmodel.NewProject(1, "PROJECT_NAME", "AN_UUID", creationDate)
 	rc := buildControllerWithProjectUseCaseError(&p, nil, "CreateProject")
 	rcWithError := buildControllerWithProjectUseCaseError(nil, errors.New("error from the DB"), "CreateProject")
 	rcWithEmptyNameError := buildControllerWithProjectUseCaseError(nil, modelerrors.ErrNoProjectName, "CreateProject")
@@ -63,8 +63,8 @@ func TestRestController_GetProject_Unit(t *testing.T) {
 	creationDate := time.Now().UTC()
 	stubRPCUSageMetrics := []*pkgmodel.RPCUsageMetrics{rpcUsage}
 	stubRequestsMetrics := []*pkgmodel.RequestsByDayMetrics{firstRequestsMetrics, secondRequestsMetrics}
-	p := model.NewProject(123, "A Project", "A_UUID_666", creationDate)
-	m := model.NewMetrics(3, stubRequestsMetrics, stubRPCUSageMetrics)
+	p := pkgmodel.NewProject(123, "A Project", "A_UUID_666", creationDate)
+	m := pkgmodel.NewMetrics(3, stubRequestsMetrics, stubRPCUSageMetrics)
 
 	mockProjectUsecase := &mockProjectUsecase{}
 	mockProjectUsecase.

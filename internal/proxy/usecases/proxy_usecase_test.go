@@ -24,27 +24,34 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 
 	blockedRequest := pkgmodel.NewRequest("/dummy/path", "UUID", pkgmodel.OBTAIN, "127.0.0.1")
 	t.Run("Returns blacklisted When there is a blacklisted path",
-		testProxyUsecaseFunc(&blockedRequest, "call blacklisted", false, nil, nil, nil, nil))
+		testProxyUsecaseFunc(&blockedRequest, "call blacklisted", false, nil, nil, nil, nil, nil))
 
 	postRequest := pkgmodel.NewRequest("/chains/main/blocks/head", "UUID", pkgmodel.PUSH, "127.0.0.1")
 	t.Run("Forward to reverse proxy When there is a PUSH request",
-		testProxyUsecaseFunc(&postRequest, "", true, nil, nil, nil, nil))
+		testProxyUsecaseFunc(&postRequest, "", true, nil, nil, nil, nil, nil))
 
 	whitelistedCachedRequest := pkgmodel.NewRequest("/chains/main/blocks/number", "UUID", pkgmodel.OBTAIN, "127.0.0.1")
 	t.Run("Returns the cached response When there is a whitelisted path",
-		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy cache response", false, nil, nil, nil, nil))
+		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy cache response", false, nil, nil, nil, nil, nil))
 
 	t.Run("Returns the proxy response When there is no cached response",
-		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy proxy response", false, nil, errors.New("no cache available"), nil, nil))
+		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy proxy response", false, nil, errors.New("no cache available"), nil, nil, nil))
+
+	t.Run("Returns the proxy response When there is no cached response",
+		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy proxy response", false, nil, errors.New("no cache available"), nil, nil, nil))
+
+	projectNotFound := errors.New("project not found")
+	t.Run("Returns no project found error When there is a bad project UUID",
+		testProxyUsecaseFunc(&whitelistedCachedRequest, "project not found", false, projectNotFound, errors.New("no cache available"), nil, nil, projectNotFound))
 
 	whitelistedNotCachedRequest := pkgmodel.NewRequest("/chains/main/blocks", "UUID", pkgmodel.OBTAIN, "127.0.0.1")
 	t.Run("Returns the proxy response When the path is not cacheable",
-		testProxyUsecaseFunc(&whitelistedNotCachedRequest, "", true, nil, nil, nil, nil))
+		testProxyUsecaseFunc(&whitelistedNotCachedRequest, "", true, nil, nil, nil, nil, nil))
 
 	whitelistedCacheableNotCachedRequest := pkgmodel.NewRequest("/chains/main/blocks/number", "UUID", pkgmodel.OBTAIN, "127.0.0.1")
 	t.Run("Returns no response When there is no cache and an proxy error",
 		testProxyUsecaseFunc(&whitelistedCacheableNotCachedRequest, "no response from proxy", false, errors.New("no response from proxy"),
-			errors.New("no cache available"), errors.New("proxy error"), nil))
+			errors.New("no cache available"), errors.New("proxy error"), nil, nil))
 }
 
 // Need docker-compose running in background
@@ -145,13 +152,15 @@ func testProxyUsecaseFunc(
 	expErr error,
 	cacheErr error,
 	proxyErr error,
-	metricErr error) func(t *testing.T) {
+	metricErr error,
+	projectErr error) func(t *testing.T) {
 	return func(t *testing.T) {
 		// Given
 		mockCache := stubBlockchainRepository([]byte("Dummy cache response"), cacheErr)
 		mockProxy := stubBlockchainRepository([]byte("Dummy proxy response"), proxyErr)
 		mockMetricsRepo := stubMetricsRepository(metricErr)
-		puc := NewProxyUsecase(mockCache, mockProxy, mockMetricsRepo)
+		mockProjectRepo := stubProjectRepository(projectErr)
+		puc := NewProxyUsecase(mockCache, mockProxy, mockMetricsRepo, mockProjectRepo)
 
 		// When
 		resp, toRawProxy, err := puc.Proxy(r)
@@ -183,4 +192,13 @@ func stubMetricsRepository(error error) *mockMetricsRepository {
 		Return(error).
 		Once()
 	return mockMetricsRepository
+}
+
+func stubProjectRepository(error error) *mockProjectRepository {
+	mockProjectRepository := &mockProjectRepository{}
+	mockProjectRepository.
+		On("FindByUUID", mock.Anything).
+		Return(nil, error).
+		Once()
+	return mockProjectRepository
 }

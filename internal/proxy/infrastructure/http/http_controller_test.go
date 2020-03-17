@@ -117,6 +117,43 @@ func TestHttpController_Returns500_WhenThereIsProxyError_Unit(t *testing.T) {
 	assert.Equal(t, "Internal Server Error", getStringWithoutNewLine(rr.Body.String()), "Bad body")
 }
 
+func TestHttpController_Returns400_WhenThereIsProjectNotFoundError_Unit(t *testing.T) {
+	// Given
+	http.DefaultServeMux = new(http.ServeMux)
+	req, err := http.NewRequest("POST", "/v1/123e4567-e89b-12d3-a456-426655440000/chains/main/head", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	reverseURL, err := url.Parse("http://localhost")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rp := httputil.NewSingleHostReverseProxy(reverseURL)
+	mockProxyUsecase := &mockProxyUsecase{}
+	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
+	httpController.Initialize()
+	request := pkgmodel.NewRequest(
+		"/chains/main/head",
+		"123e4567-e89b-12d3-a456-426655440000",
+		pkgmodel.PUSH,
+		"")
+
+	// When
+	mockProxyUsecase.
+		On("Proxy", &request).
+		Return("project not found", false, errors.ErrProjectNotFound).
+		Once()
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(handleProxying(httpController, "v1/"))
+	handler.ServeHTTP(rr, req)
+
+	// Then, the request is forwarded to the node
+	assert.Equal(t, http.StatusNotFound, rr.Code, "Bad status code")
+	assert.Equal(t, "Not Found", getStringWithoutNewLine(rr.Body.String()), "Bad body")
+}
+
 func TestHttpController_ContainsRightPath_WhenPOSTRequest_Unit(t *testing.T) {
 	// Given
 	http.DefaultServeMux = new(http.ServeMux)

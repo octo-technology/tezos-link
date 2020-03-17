@@ -1,9 +1,8 @@
 package outputs
 
 import (
-	"fmt"
-	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
-	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+    "fmt"
+    pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 )
 
 // MetricsOutput contains the fields to represent a metrics
@@ -14,7 +13,7 @@ type MetricsOutput struct {
 }
 
 // NewMetricsOutput returns a new metrics
-func NewMetricsOutput(metrics *model.Metrics) MetricsOutput {
+func NewMetricsOutput(metrics *pkgmodel.Metrics) MetricsOutput {
 	requestsByDay := make([]*RequestsByDay, len(metrics.RequestsByDay))
 	for i := 0; i < len(metrics.RequestsByDay); i++ {
 		requestsByDay[i] = NewRequestsByDay(metrics.RequestsByDay[i])

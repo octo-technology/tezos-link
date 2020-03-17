@@ -3,7 +3,8 @@ package rest
 import (
 	"github.com/go-chi/chi"
 	"github.com/octo-technology/tezos-link/backend/internal/api/domain/model"
-	"github.com/stretchr/testify/mock"
+    pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+    "github.com/stretchr/testify/mock"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -15,19 +16,19 @@ type mockProjectUsecase struct {
 	mock.Mock
 }
 
-func (m *mockProjectUsecase) CreateProject(name string) (*model.Project, error) {
+func (m *mockProjectUsecase) CreateProject(name string) (*pkgmodel.Project, error) {
 	args := m.Called(name)
 	if args.Get(0) != nil {
-		return args.Get(0).(*model.Project), args.Error(1)
+		return args.Get(0).(*pkgmodel.Project), args.Error(1)
 	}
 	return nil, args.Error(1)
 }
 
-func (m *mockProjectUsecase) FindProjectAndMetrics(uuid string, from time.Time, to time.Time) (*model.Project, *model.Metrics, error) {
+func (m *mockProjectUsecase) FindProjectAndMetrics(uuid string, from time.Time, to time.Time) (*pkgmodel.Project, *pkgmodel.Metrics, error) {
 	args := m.Called(uuid, from, to)
 
-	project := args.Get(0).(*model.Project)
-	metrics := args.Get(1).(*model.Metrics)
+	project := args.Get(0).(*pkgmodel.Project)
+	metrics := args.Get(1).(*pkgmodel.Metrics)
 	err := args.Error(2)
 
 	return project, metrics, err
@@ -59,7 +60,7 @@ func executeRequest(req *http.Request, handler *chi.Mux) *httptest.ResponseRecor
 	return rr
 }
 
-func buildControllerWithProjectUseCaseError(project *model.Project, error error, ucMethod string) *Controller {
+func buildControllerWithProjectUseCaseError(project *pkgmodel.Project, error error, ucMethod string) *Controller {
 	mockHealthUsecase := &mockHealthUsecase{}
 	mockProjectUsecase := &mockProjectUsecase{}
 	mockProjectUsecase.

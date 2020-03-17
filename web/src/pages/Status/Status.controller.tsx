@@ -10,15 +10,16 @@ export const Status = () => {
 
   useEffect(() => {
     setDate(new Date(Date.now()).toLocaleString())
+    const proxyUrl = 'https://mainnet.tezoslink.io'
 
-    axios.get('http://mainnet.tezoslink.io/health').catch((error: any) => {
+    axios.get(proxyUrl + '/health').catch((error: any) => {
       console.error(error)
       setProxyStatus(false)
     })
 
     axios({
       method: 'get',
-      url: 'http://mainnet.tezoslink.io/v1/ece6cee2-09a3-4092-8cb2-a1c41602db86/chains/main/blocks/head'
+      url: proxyUrl + '/v1/ece6cee2-09a3-4092-8cb2-a1c41602db86/chains/main/blocks/head'
     }).catch((error: any) => {
       console.error(error)
       setNodeStatus(false)

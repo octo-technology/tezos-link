@@ -98,6 +98,10 @@ func handleProxying(p *Controller, basePath string) func(w http.ResponseWriter, 
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = fmt.Fprint(w, http.StatusText(http.StatusInternalServerError))
 			return
+		} else if errors.Is(err, pkgerrors.ErrProjectNotFound) {
+			w.WriteHeader(http.StatusNotFound)
+			_, _ = fmt.Fprint(w, http.StatusText(http.StatusNotFound))
+			return
 		}
 
 		_, _ = fmt.Fprint(w, r)

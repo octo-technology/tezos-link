@@ -51,10 +51,11 @@ func main() {
 	// Repositories
 	lruRepo := cache.NewLruBlockchainRepository()
 	proxyRepo := proxy.NewProxyBlockchainRepository()
+	projectRepo := pkgdatabase.NewPostgresProjectRepository(database.Connection)
 	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
 
 	// Use cases
-	proxyUsecase := usecases.NewProxyUsecase(lruRepo, proxyRepo, metricsRepo)
+	proxyUsecase := usecases.NewProxyUsecase(lruRepo, proxyRepo, metricsRepo, projectRepo)
 
 	// HTTP API
 	server := http.Server{
