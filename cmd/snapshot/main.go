@@ -31,9 +31,9 @@ func HandleRequest(ctx context.Context) (string, error) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	instance_ip := getInstanceIP()
+	instanceIp := getInstanceIP()
 
-	conn, err := ssh.Dial("tcp", *instance_ip+":22", config)
+	conn, err := ssh.Dial("tcp", instanceIp+":22", config)
 	if err != nil {
 		panic(err)
 	}
@@ -72,7 +72,7 @@ func getPublicKeyFromS3() ssh.AuthMethod {
 	return ssh.PublicKeys(signer)
 }
 
-func getInstanceIP() *string {
+func getInstanceIP() string {
 	sess, _ := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("S3_REGION"))},
 	)
@@ -102,7 +102,7 @@ func getInstanceIP() *string {
 			&ec2.Filter{
 				Name: aws.String("tag:aws:autoscaling:groupName"),
 				Values: []*string{
-					aws.String(" tzlink-mainnet"),
+					aws.String("tzlink-mainnet"),
 				},
 			},
 		}}
@@ -115,7 +115,7 @@ func getInstanceIP() *string {
 
 	firstIp := res.Reservations[0].Instances[0].PublicIpAddress
 
-	return firstIp
+	return *firstIp
 }
 
 func runCommand(cmd string, conn *ssh.Client) {
