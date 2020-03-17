@@ -29,12 +29,11 @@ SNAPSHOT_BIN=./bin/$(SNAPSHOT)
 .PHONY: all build build-unix test clean clean-app run deps docker-images docker-tag docs
 
 all: test build
-build:
+build: build-frontend
 	$(GOBUILD) -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
 	$(GOBUILD) -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
 	$(GOBUILD) -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
 build-frontend:
-	cp docs/* web/public/docs
 	cd web && yarn build
 build-unix:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)

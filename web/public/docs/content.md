@@ -6,22 +6,22 @@ Then, add the tezoslink.io RPC endpoint to your prefered Tezos JS library.
 
 > i.e with [Sotez](https://github.com/AndrewKishino/sotez) :
 >```js
-> const sotez = new Sotez('http://<NETWORK>.tezoslink.io/v1/<YOUR_PROJECT_ID>');
+> const sotez = new Sotez('https://<NETWORK>.tezoslink.io/v1/<YOUR_PROJECT_ID>');
 > ```
 
 ## Networks
 
 Use one of these endpoints as your Tezos client provider.
 
-|NETWORK|DESCRIPTION|URL                                             |
-|-------|-----------|------------------------------------------------|
-|Mainnet| JSON/RPC  |http://mainnet.tezoslink.io/v1/<YOUR_PROJECT_ID>|
+|NETWORK|DESCRIPTION|URL                                              |
+|-------|-----------|-------------------------------------------------|
+|Mainnet| JSON/RPC  |https://mainnet.tezoslink.io/v1/<YOUR_PROJECT_ID>|
 
 ## Make requests
 
 ```bash
 # Be sure to replace YOUR-PROJECT-ID with a Project ID from your Tezos Link dashboard
-$ curl http://mainnet.tezoslink.io/v1/<YOUR_PROJECT_ID>/chains/main/blocks/head
+$ curl https://mainnet.tezoslink.io/v1/<YOUR_PROJECT_ID>/chains/main/blocks/head
 ```
 
 You should receive the last received block.
@@ -57,10 +57,10 @@ Tezos has three types of nodes:
 - Rolling mode
 - **Archive**
 
+**Tezoslink.io use archive nodes and store everything.**
+
 Archive is the heaviest mode as it keeps the whole chain data to be able to query any information stored on the chain since the genesis.
 It is particularly suitable for indexers or block explorer, that is why we use archive nodes.
-
-**Tezoslink.io nodes store everything.**
 
 [More about history modes](https://blog.nomadic-labs.com/introducing-snapshots-and-history-modes-for-the-tezos-node.html)
 
