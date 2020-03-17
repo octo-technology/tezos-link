@@ -39,7 +39,7 @@ export const RPCUsagePieViewTotalRequestsCount = styled.div`
   transform: translateY(-50%);
   text-align: center;
   width: inherit;
-  margin-left: 84px;
+  margin-left: 80px;
 `
 
 export const RPCUsagePieViewTotalRequestsCountNumber = styled.div`

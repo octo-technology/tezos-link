@@ -41,7 +41,7 @@ export const RPCUsagePieView = ({ rpcUsage, rpcTotalCount }: RPCUsagePieViewProp
           <ResponsivePie
             data={rpcUsagePieData}
             margin={{ top: 20, left: -100, bottom: 30, right: 100 }}
-            innerRadius={0.8}
+            innerRadius={0.7}
             padAngle={0.7}
             cornerRadius={3}
             colors={{ scheme: 'nivo' }}
@@ -71,7 +71,7 @@ export const RPCUsagePieView = ({ rpcUsage, rpcTotalCount }: RPCUsagePieViewProp
                 itemTextColor: '#999',
                 symbolSize: 18,
                 symbolShape: 'circle',
-                padding: { top: 0, right: 0, left: 0, bottom: 0 },
+                padding: { top: 5, right: 0, left: 0, bottom: 0 },
                 effects: [
                   {
                     on: 'hover',

@@ -39,7 +39,7 @@ export const RequestsByDayLineView = ({ requestsByDay }: RequestsByDayLineViewPr
         <RequestsByDayLineViewTitle>Requests last 30 days</RequestsByDayLineViewTitle>
         <ResponsiveLine
           data={data}
-          margin={{ top: 30, right: 10, bottom: 55, left: 30 }}
+          margin={{ top: 30, right: 10, bottom: 55, left: 40 }}
           xScale={{
             type: 'time',
             format: '%Y-%m-%d',
