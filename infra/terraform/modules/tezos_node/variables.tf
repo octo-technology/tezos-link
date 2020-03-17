@@ -30,11 +30,6 @@ variable "SUBNET_TZ_FARM_CIDR" {
   default = "10.1.0.0/24"
 }
 
-variable "TZ_NODE_NUMBER" {
-  type    = number
-  default = 1
-}
-
 variable "INSTANCE_TYPE" {
   type    = string
   default = "i3.large"
