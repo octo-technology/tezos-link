@@ -8,9 +8,9 @@ resource "aws_autoscaling_policy" "out" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "out" {
-  alarm_name          = format("tzlink-%s-out", var.TZ_NETWORK)
-  namespace           = "AWS/ELB"
-  statistic           = "Average"
+  alarm_name = format("tzlink-%s-out", var.TZ_NETWORK)
+  namespace  = "AWS/ELB"
+  statistic  = "Average"
   # Can be swapped with "RequestCount" if needed
   metric_name         = "Latency"
   comparison_operator = "GreaterThanOrEqualToThreshold"
@@ -37,8 +37,8 @@ resource "aws_autoscaling_policy" "down" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "down" {
-  alarm_name          = format("tzlink-%s-down", var.TZ_NETWORK)
-  namespace           = "AWS/ELB"
+  alarm_name = format("tzlink-%s-down", var.TZ_NETWORK)
+  namespace  = "AWS/ELB"
   # Can be swapped with "RequestCount" if needed
   statistic           = "Average"
   metric_name         = "Latency" #"RequestCount"
