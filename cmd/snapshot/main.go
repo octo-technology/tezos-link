@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"golang.org/x/crypto/ssh"
@@ -30,7 +31,9 @@ func HandleRequest(ctx context.Context) (string, error) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	conn, err := ssh.Dial("tcp", os.Getenv("NODE_IP")+":22", config)
+	instance_ip := getInstanceIP()
+
+	conn, err := ssh.Dial("tcp", *instance_ip+":22", config)
 	if err != nil {
 		panic(err)
 	}
@@ -67,6 +70,52 @@ func getPublicKeyFromS3() ssh.AuthMethod {
 
 	log.Print("got private key from S3 bucket.")
 	return ssh.PublicKeys(signer)
+}
+
+func getInstanceIP() *string {
+	sess, _ := session.NewSession(&aws.Config{
+		Region: aws.String(os.Getenv("S3_REGION"))},
+	)
+
+	svc := ec2.New(sess)
+
+	params := &ec2.DescribeInstancesInput{
+		Filters: []*ec2.Filter{
+			&ec2.Filter{
+				Name: aws.String("tag:Name"),
+				Values: []*string{
+					aws.String("tzlink-mainnet"),
+				},
+			},
+			&ec2.Filter{
+				Name: aws.String("tag:Project"),
+				Values: []*string{
+					aws.String("tezos-link"),
+				},
+			},
+			&ec2.Filter{
+				Name: aws.String("tag:BuildWith"),
+				Values: []*string{
+					aws.String("terraform"),
+				},
+			},
+			&ec2.Filter{
+				Name: aws.String("tag:aws:autoscaling:groupName"),
+				Values: []*string{
+					aws.String(" tzlink-mainnet"),
+				},
+			},
+		}}
+
+	res, err := svc.DescribeInstances(params)
+
+	if err != nil {
+		panic(fmt.Sprintf("Error when describe instances :  %v", err))
+	}
+
+	firstIp := res.Reservations[0].Instances[0].PublicIpAddress
+
+	return firstIp
 }
 
 func runCommand(cmd string, conn *ssh.Client) {
