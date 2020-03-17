@@ -11,7 +11,12 @@ terraform {
 }
 
 inputs = {
-  TZ_NODE_NUMBER = 1
+  TZ_NETWORK = "mainnet"
+
+  MIN_INSTANCE_NUMBER = 2
+  DESIRED_INSTANCE_NUMBER = 2
+  MAX_INSTANCE_NUMBER = 5
+
   INSTANCE_TYPE = "i3.large"
   KEY_PAIR_NAME = "adbo"
 }
