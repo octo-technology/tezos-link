@@ -44,8 +44,8 @@ resource "aws_autoscaling_group" "tz_nodes" {
   max_size         = var.MAX_INSTANCE_NUMBER
   min_size         = var.MIN_INSTANCE_NUMBER
 
-  health_check_grace_period = 300
-  health_check_type         = "EC2"
+  health_check_grace_period = 1800 # 30mins
+  health_check_type         = "ELB"
   force_delete              = true
   launch_configuration      = aws_launch_configuration.tz_node.id
   vpc_zone_identifier       = tolist(data.aws_subnet_ids.tzlink.ids)
@@ -75,38 +75,58 @@ resource "aws_autoscaling_group" "tz_nodes" {
 
 resource "aws_autoscaling_attachment" "tz_farm" {
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.id
-  elb                    = aws_elb.tz_farm.id
+  alb_target_group_arn   = aws_alb_target_group.tz_farm.arn
 }
 
-resource "aws_elb" "tz_farm" {
+
+resource "aws_alb" "tz_farm" {
   name            = format("tzlink-farm-%s", var.TZ_NETWORK)
   subnets         = tolist(data.aws_subnet_ids.tzlink.ids)
-  internal        = true
   security_groups = [aws_security_group.tezos_node_lb.id]
-
-  listener {
-    instance_port     = 8000
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    target              = "HTTP:8000/chains/main/blocks/head"
-    interval            = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
+  internal        = true
 
   tags = {
     Name      = format("tzlink-farm-%s", var.TZ_NETWORK)
     Project   = var.PROJECT_NAME
     BuildWith = var.BUILD_WITH
   }
+}
+
+resource "aws_alb_target_group" "tz_farm" {
+  name        = format("tzlink-farm-%s", var.TZ_NETWORK)
+  port        = 8000
+  protocol    = "HTTP"
+  vpc_id      = data.aws_vpc.tzlink.id
+  target_type = "instance"
+
+  health_check {
+    enabled             = true
+    path                = "/chains/main/blocks/head"
+    port                = 8000
+    protocol            = "HTTP"
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+  }
+
+  tags = {
+    Name      = format("tzlink-farm-%s", var.TZ_NETWORK)
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
+  }
+
+  depends_on = [aws_alb.tz_farm]
+}
+
+resource "aws_alb_listener" "tz_farm_http" {
+  load_balancer_arn = aws_alb.tz_farm.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = aws_alb_target_group.tz_farm.arn
+    type             = "forward"
+  }
+
+  depends_on = [aws_alb_target_group.tz_farm]
 }
