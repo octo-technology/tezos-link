@@ -41,9 +41,10 @@ jobs:
         REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
     
     - name: Push docker image
-      #if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master'
       run: |
-        docker login -u ${USERNAME} -p ${PASSWORD} 
+        docker login -u ${USERNAME} -p ${PASSWORD}
+        docker push ${REGISTRY}:proxy-dev-${GITHUB_SHA::8}
       env:
         USERNAME: ${{ secrets.DOCKER_USERNAME }}
         PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -52,7 +53,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-18.04
     needs: [build]
-    if: github.ref == 'refs/heads/master'
+    #if: github.ref == 'refs/heads/master'
     steps:
     - name: Configure AWS cli
       uses: aws-actions/configure-aws-credentials@v1
@@ -60,3 +61,13 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
+
+    - name: Setup Terragrunt
+      uses: autero1/action-terragrunt@v0.1.0
+      with:
+        terragrunt_version: 0.21.4
+    
+    - name: Deploy proxy ecs-tasks
+      run: |
+        cd infra/terragrunt/02_service_proxy
+        terragrunt plan
