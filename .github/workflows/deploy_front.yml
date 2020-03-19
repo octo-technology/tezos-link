@@ -23,7 +23,7 @@ jobs:
         make build-frontend
 
     - name: Upload artifact (only on master)
-      #if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v1
       with:
         name: build
@@ -33,7 +33,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-18.04
     needs: [build]
-    #if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     steps:
     - name: Configure AWS cli
       uses: aws-actions/configure-aws-credentials@v1

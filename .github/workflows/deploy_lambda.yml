@@ -34,13 +34,13 @@ jobs:
     - name: Zip the snapshot
       run: |
         cp bin/snapshot bin/main
-        zip -j bin/snapshot-lambda.zip bin/main
+        zip -j bin/snapshot.zip bin/main
     
     - name: Upload artifact (only on master)
       #if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v1
       with:
-        name: snapshot.zip
+        name: snapshot
         path: bin/snapshot.zip
 
   deploy:
@@ -59,10 +59,10 @@ jobs:
     - name: Download artifact
       uses: actions/download-artifact@v1
       with:
-        name: snapshot-lambda.zip
+        name: snapshot
 
     - name: Deploy and update lambda
       run: |
-        aws s3 cp snapshot-lambda.zip s3://tzlink-snapshot-lambda-dev/v1.0.0/snapshot.zip
+        aws s3 cp snapshot/snapshot.zip s3://tzlink-snapshot-lambda-dev/v1.0.0/snapshot.zip
         aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/snapshot.zip
       
