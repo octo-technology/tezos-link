@@ -36,7 +36,7 @@ jobs:
     
     - name: Build docker image
       run: |
-        docker build -t ${REGISTRY}:api-dev-${GITHUB_SHA::8} -f build/package/api.Dockerfile .
+        docker build -t ${REGISTRY}:api-${GITHUB_SHA::8} -f build/package/api.Dockerfile .
       env:
         REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
     
@@ -44,10 +44,11 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: |
         docker login -u ${USERNAME} -p ${PASSWORD}
-        docker push ${REGISTRY}:api-dev-${GITHUB_SHA::8}
+        docker push ${REGISTRY}:api-${GITHUB_SHA::8}
       env:
         USERNAME: ${{ secrets.DOCKER_USERNAME }}
         PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
 
   deploy:
     name: Deploy
@@ -77,4 +78,7 @@ jobs:
     - name: Deploy api ecs-tasks
       working-directory: infra/terragrunt/02_service_api
       run: |
-        terragrunt plan
+        TF_VAR_DOCKER_IMAGE_VERSION="${REGISTRY}:api-${GITHUB_SHA::8}" terragrunt plan
+      env:
+        TF_VAR_DATABASE_PASSWORD: ${{ secret.DATABASE_PASSWORD }}
+        REGISTRY: ${{ secrets.DOCKER_REGISTRY }}

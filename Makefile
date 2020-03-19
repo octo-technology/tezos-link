@@ -38,9 +38,9 @@ build-frontend:
 build-snapshot-lambda:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
 build-proxy:
-	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o ./bin/proxy ./cmd/proxy && chmod +x ./bin/proxy
+	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
 build-api:
-	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o ./bin/api ./cmd/api && chmod +x ./bin/api
+	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o (API_BIN) $(API_CMD) && chmod +x $(API_BIN)
 build-unix: build-snapshot-lambda build-proxy build-api
 unit-test:
 	$(GOTEST) -run Unit ./... -v

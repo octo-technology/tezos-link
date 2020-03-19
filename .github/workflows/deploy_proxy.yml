@@ -36,7 +36,7 @@ jobs:
     
     - name: Build docker image
       run: |
-        docker build -t ${REGISTRY}:proxy-dev-${GITHUB_SHA::8} -f build/package/proxy.Dockerfile .
+        docker build -t ${REGISTRY}:proxy-${GITHUB_SHA::8} -f build/package/proxy.Dockerfile .
       env:
         REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
     
@@ -44,7 +44,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: |
         docker login -u ${USERNAME} -p ${PASSWORD}
-        docker push ${REGISTRY}:proxy-dev-${GITHUB_SHA::8}
+        docker push ${REGISTRY}:proxy-${GITHUB_SHA::8}
       env:
         USERNAME: ${{ secrets.DOCKER_USERNAME }}
         PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -77,4 +77,7 @@ jobs:
     - name: Deploy proxy ecs-tasks
       working-directory: infra/terragrunt/02_service_proxy
       run: |
-        terragrunt plan
+        TF_VAR_DOCKER_IMAGE_VERSION="${REGISTRY}:proxy-${GITHUB_SHA::8}" terragrunt plan
+      env:
+        TF_VAR_DATABASE_PASSWORD: ${{ secret.DATABASE_PASSWORD }}
+        REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
