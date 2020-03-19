@@ -26,7 +26,7 @@ SNAPSHOT_PATH=$(CMD_PATH)/$(SNAPSHOT)
 SNAPSHOT_CMD=./cmd/$(SNAPSHOT)
 SNAPSHOT_BIN=./bin/$(SNAPSHOT)
 
-.PHONY: all build build-unix test clean clean-app run deps docker-images docker-tag docs
+.PHONY: all build build-unix build-snapshot-lambda test clean clean-app run deps docker-images docker-tag docs
 
 all: test build
 build: build-frontend
@@ -89,5 +89,7 @@ docs:
 	swag init --generalInfo rest_controller.go --dir internal/$(API)/infrastructure/rest --output api-docs/$(API)
 lint:
 	vendor/golint internal/... cmd/...
+build-snapshot-lambda:
+	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
 fmt:
 	go fmt ./...

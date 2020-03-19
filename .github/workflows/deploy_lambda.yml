@@ -1,0 +1,38 @@
+name: CI/CD Lambda Snapshot
+
+on:
+  push:
+    paths:
+    - 'cmd/snapshot/**'
+    - '.github/workflows/deploy_lambda.yml'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
+
+    - uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        make deps
+        if [ -f Gopkg.toml ]; then
+            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+            dep ensure
+        fi
+
+    - name: Build the snapshot lamdba
+      run: make build-snapshot-lambda
+    
+    - name: Upload artifact (only on master)
+      if: github.ref == 'refs/heads/master'
+      uses: actions/upload-artifact@v1
+      with:
+        name: snapshot
+        path: bin/snapshot
