@@ -35,10 +35,13 @@ build: build-frontend
 	$(GOBUILD) -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
 build-frontend:
 	cd web && yarn build
-build-unix:
-	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
-	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
+build-snapshot-lambda:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
+build-proxy:
+	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o ./bin/proxy ./cmd/proxy && chmod +x ./bin/proxy
+build-api:
+	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o ./bin/api ./cmd/api && chmod +x ./bin/api
+build-unix: build-snapshot-lambda build-proxy build-api
 unit-test:
 	$(GOTEST) -run Unit ./... -v
 integration-test:
@@ -89,7 +92,5 @@ docs:
 	swag init --generalInfo rest_controller.go --dir internal/$(API)/infrastructure/rest --output api-docs/$(API)
 lint:
 	vendor/golint internal/... cmd/...
-build-snapshot-lambda:
-	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
 fmt:
 	go fmt ./...

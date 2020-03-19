@@ -22,7 +22,7 @@ jobs:
 
     - name: Get dependencies
       run: |
-        make deps
+        go get -v -d ./...
         if [ -f Gopkg.toml ]; then
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
