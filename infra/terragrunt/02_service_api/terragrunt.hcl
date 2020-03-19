@@ -20,4 +20,6 @@ inputs = {
   API_PORT = 8000
   API_CPU = 256
   API_MEMORY = 512
+
+  DATABASE_PASSWORD = "${get_env("TF_VAR_DATABASE_PASSWORD", "xxxx")}"
 }

@@ -12,7 +12,7 @@ terraform {
 
 inputs = {
   PROXY_DOCKER_IMAGE_NAME = "louptheronlth/tezos-link"
-  PROXY_DOCKER_IMAGE_VERSION = "proxy-dev"
+  PROXY_DOCKER_IMAGE_VERSION = "${get_env("TF_VAR_DOCKER_IMAGE_VERSION", "proxy-dev")}"
   PROXY_DESIRED_COUNT = 1
 
   PROXY_CONFIGURATION_FILE = "prod"
@@ -22,4 +22,6 @@ inputs = {
 
   TEZOS_FARM_PORT = 80
   TZ_NETWORK = "mainnet"
+
+  DATABASE_PASSWORD = "${get_env("TF_VAR_DATABASE_PASSWORD", "xxxx")}"
 }

@@ -11,5 +11,5 @@ terraform {
 }
 
 inputs = {
-  ENABLE_FLOW_LOGS = true
+  DATABASE_PASSWORD = "${get_env("TF_VAR_DATABASE_PASSWORD", "xxxx")}"
 }
