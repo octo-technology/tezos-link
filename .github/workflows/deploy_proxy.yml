@@ -62,12 +62,19 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
 
+    - name: Install terraform
+      uses: little-core-labs/install-terraform@v1
+      with:
+        version: 0.12.20
+
     - name: Setup Terragrunt
       uses: autero1/action-terragrunt@v0.1.0
       with:
         terragrunt_version: 0.21.4
+
+    - uses: actions/checkout@v2
     
     - name: Deploy proxy ecs-tasks
+      working-directory: infra/terragrunt/02_service_proxy
       run: |
-        cd infra/terragrunt/02_service_proxy
         terragrunt plan
