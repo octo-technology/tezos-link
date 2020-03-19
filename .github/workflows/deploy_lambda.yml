@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - 'cmd/snapshot/**'
+    - 'Makefile'
     - '.github/workflows/deploy_lambda.yml'
 
 jobs:

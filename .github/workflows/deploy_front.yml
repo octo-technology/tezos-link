@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - 'web/**'
+    - 'Makefile'
     - '.github/workflows/deploy_front.yml'
 
 jobs:
