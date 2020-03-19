@@ -33,7 +33,7 @@ resource "aws_cloudwatch_metric_alarm" "latency_scale_out" {
 
   alarm_name          = format("tzlink-%s-out-latency", var.TZ_NETWORK)
   namespace           = "AWS/ApplicationELB"
-  statistic           = "Average"
+  statistic           = "Maximum"
   metric_name         = "TargetResponseTime"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   threshold           = 5 # sec
@@ -46,7 +46,7 @@ resource "aws_cloudwatch_metric_alarm" "latency_scale_out" {
     TargetGroup  = aws_alb_target_group.tz_farm.arn_suffix
   }
 
-  alarm_description = "Average Latency >= 5sec (duration >= 1min)" # "Average RequestCount >=200 req/sec (duration >=1min)"
+  alarm_description = "Maximum Latency >= 5sec (duration >= 1min)"
   alarm_actions     = [aws_autoscaling_policy.latency_out.arn]
 }
 
@@ -66,20 +66,18 @@ resource "aws_cloudwatch_metric_alarm" "requestcountbytarget_scale_out" {
   dimensions = {
     Loadbalancer = aws_alb.tz_farm.arn_suffix
     TargetGroup  = aws_alb_target_group.tz_farm.arn_suffix
-    #AutoScalingGroupName = aws_autoscaling_group.tz_nodes.name
   }
 
-  alarm_description = "Average TargetResponseTime >= 120 req/sec (duration >= 1min)" # "Average RequestCount >=200 req/sec (duration >=1min)"
+  alarm_description = "Average TargetResponseTime >= 120 req/sec (duration >= 1min)"
   alarm_actions     = [aws_autoscaling_policy.requestcountbytarget_out.arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_scale_out" {
   actions_enabled = false
 
-  alarm_name = format("tzlink-%s-out-cpu", var.TZ_NETWORK)
-  namespace  = "AWS/EC2"
-  statistic  = "Average"
-  # Can be swapped with "RequestCount" if needed
+  alarm_name          = format("tzlink-%s-out-cpu", var.TZ_NETWORK)
+  namespace           = "AWS/EC2"
+  statistic           = "Average"
   metric_name         = "CPUUtilization"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   threshold           = 40 #%
@@ -91,7 +89,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_out" {
     AutoScalingGroupName = aws_autoscaling_group.tz_nodes.name
   }
 
-  alarm_description = "Average CPUUtilization >= 40% (duration >= 1min)" # "Average RequestCount >=200 req/sec (duration >=1min)"
+  alarm_description = "Average CPUUtilization >= 40% (duration >= 1min)"
   alarm_actions     = [aws_autoscaling_policy.cpu_out.arn]
 }
 
@@ -129,10 +127,9 @@ resource "aws_autoscaling_policy" "requestcountbytarget_down" {
 resource "aws_cloudwatch_metric_alarm" "latency_scale_down" {
   actions_enabled = true
 
-  alarm_name = format("tzlink-%s-down-latency", var.TZ_NETWORK)
-  namespace  = "AWS/ApplicationELB"
-  # Can be swapped with "RequestCount" if needed
-  statistic           = "Average"
+  alarm_name          = format("tzlink-%s-down-latency", var.TZ_NETWORK)
+  namespace           = "AWS/ApplicationELB"
+  statistic           = "Maximum"
   metric_name         = "TargetResponseTime"
   comparison_operator = "LessThanOrEqualToThreshold"
   threshold           = 2
@@ -145,7 +142,7 @@ resource "aws_cloudwatch_metric_alarm" "latency_scale_down" {
     TargetGroup  = aws_alb_target_group.tz_farm.arn_suffix
   }
 
-  alarm_description = "Average Latency <= 2sec (duration >= 5min)" # "Average RequestCount <=50 req/sec (duration >=1min)"
+  alarm_description = "Average Latency <= 2sec (duration >= 5min)"
   alarm_actions     = [aws_autoscaling_policy.latency_down.arn]
 }
 
@@ -175,7 +172,7 @@ resource "aws_cloudwatch_metric_alarm" "requestcountbytarget_scale_down" {
 
   alarm_name          = format("tzlink-%s-down-requestcountbytarget", var.TZ_NETWORK)
   namespace           = "AWS/ApplicationELB"
-  statistic           = "Average"
+  statistic           = "Sum"
   metric_name         = "RequestCountPerTarget"
   comparison_operator = "LessThanOrEqualToThreshold"
   threshold           = 20 # requests/sec
