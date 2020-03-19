@@ -5,7 +5,6 @@ on:
     paths:
     - 'web/**'
     - '.github/workflows/deploy_front.yml'
-  
 
 jobs:
   build:
@@ -20,7 +19,8 @@ jobs:
     - name: Build frontend
       run: make build-frontend
 
-    - name: Upload artifact
+    - name: Upload artifact (only on master)
+      if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v1
       with:
         name: build
