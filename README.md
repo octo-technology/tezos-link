@@ -218,7 +218,7 @@ These environment variables are set in `infra/dev.tfvars`.
 
 ### Architecture
 
-TODO : To be redacted
+![Architecture](infra/img/architecture.png "Architecture")
 
 ### Requirements
 
