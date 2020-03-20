@@ -26,7 +26,7 @@ SNAPSHOT_PATH=$(CMD_PATH)/$(SNAPSHOT)
 SNAPSHOT_CMD=./cmd/$(SNAPSHOT)
 SNAPSHOT_BIN=./bin/$(SNAPSHOT)
 
-.PHONY: all build build-unix test clean clean-app run deps docker-images docker-tag docs
+.PHONY: all build build-unix build-api build-proxy build-snapshot-lambda test clean clean-app run deps docker-images docker-tag docs
 
 all: test build
 build: build-frontend
@@ -35,10 +35,13 @@ build: build-frontend
 	$(GOBUILD) -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
 build-frontend:
 	cd web && yarn build
-build-unix:
-	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
-	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
+build-snapshot-lambda:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
+build-proxy:
+	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
+build-api:
+	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
+build-unix: build-snapshot-lambda build-proxy build-api
 unit-test:
 	$(GOTEST) -run Unit ./... -v
 integration-test:
