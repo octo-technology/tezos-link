@@ -30,14 +30,24 @@ variable "SUBNET_TZ_FARM_CIDR" {
   default = "10.1.0.0/24"
 }
 
-variable "TZ_NODE_NUMBER" {
+variable "INSTANCE_TYPE" {
+  type    = string
+  default = "i3.large"
+}
+
+variable "MIN_INSTANCE_NUMBER" {
   type    = number
   default = 1
 }
 
-variable "INSTANCE_TYPE" {
-  type    = string
-  default = "i3.large"
+variable "MAX_INSTANCE_NUMBER" {
+  type    = number
+  default = 3
+}
+
+variable "DESIRED_INSTANCE_NUMBER" {
+  type    = number
+  default = 1
 }
 
 variable "KEY_PAIR_NAME" {

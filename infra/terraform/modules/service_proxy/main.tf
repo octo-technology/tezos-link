@@ -2,10 +2,6 @@ data "aws_iam_role" "tzlink_ecs_tasks_access" {
   name = "tzlink_ecs_tasks_access"
 }
 
-data "aws_elb" "tz_farm" {
-  name = format("tzlink-farm-%s", var.TZ_NETWORK)
-}
-
 data "aws_db_instance" "database" {
   db_instance_identifier = "tzlink-database"
 }
@@ -32,7 +28,7 @@ resource "aws_ecs_task_definition" "proxy" {
       database_password = var.DATABASE_PASSWORD,
       database_table    = data.aws_db_instance.database.db_name,
 
-      tezos_hostname = data.aws_elb.tz_farm.dns_name,
+      tezos_hostname = format("%s.internal.tezoslink.io", var.TZ_NETWORK),
       tezos_port     = var.TEZOS_FARM_PORT,
 
       environment_config = var.PROXY_CONFIGURATION_FILE,
