@@ -78,7 +78,7 @@ jobs:
     - name: Deploy api ecs-tasks
       working-directory: infra/terragrunt/02_service_api
       run: |
-        TF_VAR_DOCKER_IMAGE_VERSION="${REGISTRY}:api-${GITHUB_SHA::8}" terragrunt plan
+        TF_VAR_DOCKER_IMAGE_VERSION="${REGISTRY}:api-${GITHUB_SHA::8}" terragrunt apply -auto-approve
       env:
         TF_VAR_DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
