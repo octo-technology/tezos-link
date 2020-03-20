@@ -41,7 +41,7 @@ jobs:
         REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
 
     - name: Push docker image
-      if: github.ref == 'refs/heads/master'
+      #if: github.ref == 'refs/heads/master'
       run: |
         docker login -u ${USERNAME} -p ${PASSWORD}
         docker push ${REGISTRY}:api-${GITHUB_SHA::8}

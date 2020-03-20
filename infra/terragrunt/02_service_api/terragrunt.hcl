@@ -12,7 +12,7 @@ terraform {
 
 inputs = {
   API_DOCKER_IMAGE_NAME = "louptheronlth/tezos-link"
-  API_DOCKER_IMAGE_VERSION = "api-dev"
+  API_DOCKER_IMAGE_VERSION = "${get_env("TF_VAR_DOCKER_IMAGE_VERSION", "proxy-api")}"
   API_DESIRED_COUNT = 1
 
   API_CONFIGURATION_FILE = "local"

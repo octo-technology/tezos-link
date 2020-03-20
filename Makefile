@@ -26,7 +26,7 @@ SNAPSHOT_PATH=$(CMD_PATH)/$(SNAPSHOT)
 SNAPSHOT_CMD=./cmd/$(SNAPSHOT)
 SNAPSHOT_BIN=./bin/$(SNAPSHOT)
 
-.PHONY: all build build-unix build-snapshot-lambda test clean clean-app run deps docker-images docker-tag docs
+.PHONY: all build build-unix build-api build-proxy build-snapshot-lambda test clean clean-app run deps docker-images docker-tag docs
 
 all: test build
 build: build-frontend
