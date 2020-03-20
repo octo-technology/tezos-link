@@ -5,7 +5,7 @@ on:
     paths:
     - 'web/**'
     - 'Makefile'
-    - '.github/workflows/deploy_front.yml'
+    - '.github/workflows/cicd_front.yml'
 
 jobs:
   build:
@@ -28,7 +28,7 @@ jobs:
       with:
         name: build
         path: web/build
-  
+
   deploy:
     name: Deploy
     runs-on: ubuntu-18.04

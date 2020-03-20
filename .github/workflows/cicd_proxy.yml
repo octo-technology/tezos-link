@@ -1,11 +1,11 @@
-name: CI/CD API
+name: CI/CD Proxy
 
 on:
   push:
     paths:
     - '**.go'
     - 'Makefile'
-    - '.github/workflows/deploy_api.yml'
+    - '.github/workflows/cicd_proxy.yml'
 
 jobs:
   build:
@@ -32,11 +32,11 @@ jobs:
       run: make unit-test
 
     - name: Build
-      run: make build-api
+      run: make build-proxy
     
     - name: Build docker image
       run: |
-        docker build -t ${REGISTRY}:api-${GITHUB_SHA::8} -f build/package/api.Dockerfile .
+        docker build -t ${REGISTRY}:proxy-${GITHUB_SHA::8} -f build/package/proxy.Dockerfile .
       env:
         REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
     
@@ -44,11 +44,10 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: |
         docker login -u ${USERNAME} -p ${PASSWORD}
-        docker push ${REGISTRY}:api-${GITHUB_SHA::8}
+        docker push ${REGISTRY}:proxy-${GITHUB_SHA::8}
       env:
         USERNAME: ${{ secrets.DOCKER_USERNAME }}
         PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
 
   deploy:
     name: Deploy
@@ -75,10 +74,10 @@ jobs:
 
     - uses: actions/checkout@v2
     
-    - name: Deploy api ecs-tasks
-      working-directory: infra/terragrunt/02_service_api
+    - name: Deploy proxy ecs-tasks
+      working-directory: infra/terragrunt/02_service_proxy
       run: |
-        TF_VAR_DOCKER_IMAGE_VERSION="${REGISTRY}:api-${GITHUB_SHA::8}" terragrunt plan
+        TF_VAR_DOCKER_IMAGE_VERSION="${REGISTRY}:proxy-${GITHUB_SHA::8}" terragrunt plan
       env:
-        TF_VAR_DATABASE_PASSWORD: ${{ secret.DATABASE_PASSWORD }}
+        TF_VAR_DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         REGISTRY: ${{ secrets.DOCKER_REGISTRY }}

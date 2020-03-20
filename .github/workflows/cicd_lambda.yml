@@ -5,7 +5,7 @@ on:
     paths:
     - 'cmd/snapshot/**'
     - 'Makefile'
-    - '.github/workflows/deploy_lambda.yml'
+    - '.github/workflows/cicd_lambda.yml'
 
 jobs:
   build:
@@ -65,4 +65,3 @@ jobs:
       run: |
         aws s3 cp snapshot/snapshot.zip s3://tzlink-snapshot-lambda-dev/v1.0.0/snapshot.zip
         aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/snapshot.zip
-      
