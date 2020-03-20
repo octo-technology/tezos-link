@@ -11,13 +11,6 @@ data "aws_instances" "tz_nodes" {
   instance_state_names = ["running"]
 }
 
-#data "aws_instance" "tz_node" {
-#  filter {
-#    name   = "tag:Name"
-#    values = ["tzlink-mainnet-0"]
-#  }
-#}
-
 resource "aws_s3_bucket" "snapshot_lambda" {
   bucket = format("tzlink-snapshot-lambda-%s", var.ENV)
   acl    = "private"
