@@ -182,3 +182,48 @@ func TestPostgresMetricsRepository_CountRPCPaths_Unit(t *testing.T) {
 	assert.Equal(t, len(expectedRep), len(results))
 	assert.Equal(t, expectedRep[0], results[0])
 }
+
+func TestPostgresMetricsRepository_FindLastRequests_Unit(t *testing.T) {
+	// Given
+	pool := getDockerPool()
+	pg, resource := GetPostgresClient(*pool)
+	defer pool.Purge(resource)
+
+	pgr := NewPostgresMetricsRepository(pg)
+	r := &model.Request{
+		Path:       "/random/path",
+		UUID:       "UUID",
+		Action:     0,
+		RemoteAddr: "0.0.0.0",
+	}
+	firstMetric := inputs.NewMetricsInput(r, time.Now().UTC())
+	secondMetric := inputs.NewMetricsInput(r, time.Now().UTC().Add(time.Duration(1)*time.Second))
+
+	// When there is no row
+	n, err := pgr.FindLastRequests("UUID")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// then
+	assert.Equal(t, 0, len(n), "Bad count")
+
+	err = pgr.Save(&firstMetric)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = pgr.Save(&secondMetric)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// When there is a row
+	n, err = pgr.FindLastRequests("UUID")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Then
+	assert.Equal(t, "/random/path", n[0], "Bad path")
+	assert.Equal(t, "/random/path", n[1], "Bad path")
+}

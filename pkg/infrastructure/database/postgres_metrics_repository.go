@@ -108,3 +108,27 @@ func (pg postgresMetricsRepository) CountRPCPathUsage(uuid string, from time.Tim
 
 	return r, nil
 }
+
+func (pg postgresMetricsRepository) FindLastRequests(uuid string) ([]string, error) {
+	rows, err := pg.connection.Query("SELECT "+
+		"path "+
+		"FROM metrics "+
+		"WHERE (uuid = $1) "+
+		"ORDER BY date_request DESC "+
+		"LIMIT 10", uuid)
+	if err != nil {
+		return nil, fmt.Errorf("could not retrieve metrics: %s", err)
+	}
+
+	var r []string
+	for rows.Next() {
+		var path string
+		err := rows.Scan(&path)
+		if err != nil {
+			return nil, fmt.Errorf("could not map metrics: %s", err)
+		}
+		r = append(r, path)
+	}
+
+	return r, nil
+}
