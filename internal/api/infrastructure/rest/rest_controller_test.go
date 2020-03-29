@@ -64,7 +64,7 @@ func TestRestController_GetProject_Unit(t *testing.T) {
 	stubRPCUSageMetrics := []*pkgmodel.RPCUsageMetrics{rpcUsage}
 	stubRequestsMetrics := []*pkgmodel.RequestsByDayMetrics{firstRequestsMetrics, secondRequestsMetrics}
 	p := pkgmodel.NewProject(123, "A Project", "A_UUID_666", creationDate)
-	m := pkgmodel.NewMetrics(3, stubRequestsMetrics, stubRPCUSageMetrics)
+	m := pkgmodel.NewMetrics(3, stubRequestsMetrics, stubRPCUSageMetrics, []string{"/a/path", "/another/path"})
 
 	mockProjectUsecase := &mockProjectUsecase{}
 	mockProjectUsecase.
@@ -84,7 +84,7 @@ func TestRestController_GetProject_Unit(t *testing.T) {
 
 	// Then
 	assert.Equal(t, http.StatusOK, requestResponse.Code, "Bad status code")
-	assert.Equal(t, `{"data":{"title":"A Project","uuid":"A_UUID_666","metrics":{"requestsCount":3,"requestsByDay":[{"date":"2014-11-1","value":4},{"date":"2014-11-12","value":5}],"rpcUsage":[{"id":"/dummy/path","label":"/dummy/path","value":3}]}},"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
+	assert.Equal(t, `{"data":{"title":"A Project","uuid":"A_UUID_666","metrics":{"requestsCount":3,"requestsByDay":[{"date":"2014-11-1","value":4},{"date":"2014-11-12","value":5}],"rpcUsage":[{"id":"/dummy/path","label":"/dummy/path","value":3}],"lastRequests":["/a/path","/another/path"]}},"status":"success"}`, getStringWithoutNewLine(requestResponse.Body.String()), "Bad body")
 }
 
 func TestRestController_GetHealth_Unit(t *testing.T) {
