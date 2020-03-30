@@ -6,7 +6,7 @@ export const DashboardStyled = styled.div`
   max-width: 1140px;
   margin: 100px auto 20px auto;
   display: grid;
-  grid-template-columns: calc(75% - 20px) 25%;
+  grid-template-columns: calc(100% - 320px) 300px;
   grid-gap: 20px;
 `
 

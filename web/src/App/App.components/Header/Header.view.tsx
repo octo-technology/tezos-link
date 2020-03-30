@@ -5,9 +5,7 @@ import { Link } from 'react-router-dom'
 import { Button } from '../Button/Button.controller'
 // prettier-ignore
 import {
-  Beta,
   HeaderLoggedOut,
-  HeaderLogo,
   HeaderMenu,
   HeaderStyled
 } from "./Header.style"
@@ -17,20 +15,17 @@ export const HeaderView: any = ({ router }: any) => {
   console.log(path)
   return (
     <HeaderStyled>
-      <HeaderLogo>
+      <HeaderMenu>
         <Link to="/">
           <img alt="Tezos Link" src="/link_logo.svg" />
-          <Beta>alpha</Beta>
         </Link>
-        <HeaderMenu>
-          <Link to="/status">
-            <Button color="transparent" text="STATUS" />
-          </Link>
-          <a href="/documentation">
-            <Button color="transparent" text="DOCS" />
-          </a>
-        </HeaderMenu>
-      </HeaderLogo>
+        <Link to="/status">
+          <Button color="transparent" text="STATUS" />
+        </Link>
+        <Link to="/documentation">
+          <Button color="transparent" text="DOCS" />
+        </Link>
+      </HeaderMenu>
 
       {loggedOutHeader()}
     </HeaderStyled>

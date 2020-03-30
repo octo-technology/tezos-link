@@ -1,13 +1,5 @@
 import styled from 'styled-components/macro'
 
-import { Card, fadeInFromLeft } from '../../styles'
+import { NewProjectCard } from '../NewProject/NewProject.style'
 
-export const SignInProjectCard = styled(Card)`
-  margin-top: 10%;
-  padding: 10px;
-  width: 100%;
-  height: 100%;
-  max-width: 500px;
-  will-change: transform, opacity;
-  animation: ${fadeInFromLeft} 500ms;
-`
+export const SignInProjectCard = styled(NewProjectCard)``

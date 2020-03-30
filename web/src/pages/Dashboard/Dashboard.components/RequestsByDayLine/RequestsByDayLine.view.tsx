@@ -14,11 +14,11 @@ export const RequestsByDayLineView = ({ requestsByDay }: RequestsByDayLineViewPr
   const requestsByDayGraph =
     requestsByDay && Array.isArray(requestsByDay)
       ? requestsByDay.map(requestByDay => {
-        return {
-          x: requestByDay.date,
-          y: requestByDay.value
-        }
-      })
+          return {
+            x: requestByDay.date,
+            y: requestByDay.value
+          }
+        })
       : []
 
   const data = [
@@ -40,6 +40,7 @@ export const RequestsByDayLineView = ({ requestsByDay }: RequestsByDayLineViewPr
         <ResponsiveLine
           data={data}
           margin={{ top: 30, right: 10, bottom: 55, left: 40 }}
+          colors="#F3CC4B"
           xScale={{
             type: 'time',
             format: '%Y-%m-%d',

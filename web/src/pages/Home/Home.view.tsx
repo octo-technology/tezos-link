@@ -7,14 +7,14 @@ import { CreateButton, HomeText, HomeViewStyled, HomeViewTitle } from './Home.st
 export const Home = () => (
   <HomeViewStyled>
     <HomeViewTitle>
-      <h1>Your gateway to the Tezos network</h1>
+      <h1>YOUR GATEWAY TO THE TEZOS NETWORK</h1>
     </HomeViewTitle>
     <HomeText>
       <h3>We provide scalable API access to the Tezos network and usage analytics for your projects</h3>
     </HomeText>
     <CreateButton>
       <Link to="/new-project">
-        <Button text="CREATE PROJECT" icon="plus-card" />
+        <Button text="&nbsp;&nbsp;NEW PROJECT" icon="plus-card" />
       </Link>
     </CreateButton>
   </HomeViewStyled>

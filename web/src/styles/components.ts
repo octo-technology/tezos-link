@@ -18,13 +18,13 @@ export const IconSmall = styled.img`
 `
 
 export const Card = styled.div`
-  border-radius: 13px;
+  border-radius: 6px;
   background: white;
   box-shadow: 0 1px 10px rgba(151, 164, 175, 0.1);
 `
 
 export const AnimatedCard = styled.div`
-  border-radius: 13px;
+  border-radius: 6px;
   background: white;
   box-shadow: 0 1px 10px rgba(151, 164, 175, 0.1);
   will-change: opacity, transform;

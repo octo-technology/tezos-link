@@ -22,12 +22,12 @@ export const InputComponent = styled.input`
   background-color: ${backgroundColor};
 
   &:hover {
-    border-color: rgba(105, 108, 255, 0.5);
+    border-color: rgba(243, 204, 75, 0.5);
   }
 
   &:focus {
-    box-shadow: 0 0 0 2px rgba(105, 108, 255, 0.1);
-    border-color: rgba(105, 108, 255, 0.5);
+    box-shadow: 0 0 0 2px rgba(243, 204, 75, 0.1);
+    border-color: rgba(243, 204, 75, 0.5);
   }
 
   &.error {
