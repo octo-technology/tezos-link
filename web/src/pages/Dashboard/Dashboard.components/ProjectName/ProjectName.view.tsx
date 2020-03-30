@@ -7,7 +7,7 @@ type ProjectNameViewProps = {
 }
 
 export const ProjectNameView = ({ name }: ProjectNameViewProps) => {
-  return <ProjectNameCard>{name}</ProjectNameCard>
+  return <ProjectNameCard>Project {name}</ProjectNameCard>
 }
 
 ProjectNameView.propTypes = {

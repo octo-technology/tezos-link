@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components/macro'
-import { backgroundColor, textColor, placeholderColor, primaryColor } from "./colors";
+import { backgroundColor, textColor, placeholderColor, primaryColor } from './colors'
 import { fadeInFromLeft } from './animations'
 
 export const GlobalStyle = createGlobalStyle`
@@ -47,10 +47,10 @@ body {
   margin: 0;
   padding: 0;
   background-color: ${backgroundColor};
-  background-image: url(/background.svg);
+  background-image: url("/background.svg");
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: 100%;
+  background-size: cover;
   color: ${textColor};
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
