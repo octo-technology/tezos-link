@@ -13,12 +13,11 @@ import * as PropTypes from 'prop-types'
 type LastRequestsViewProps = { lastRequests: string[] }
 
 const showRequests = (request: string, isFirst: boolean) => {
-  const stringLength = isFirst ? 25 : 37
+  const stringLength = isFirst ? 40 : 60
   if (request.length > stringLength) {
     return (
-      request.substring(0, stringLength - 10) +
-      '[...]' +
-      request.substring(request.length - (stringLength + 7), request.length)
+      request.substring(0, stringLength) +
+      '...'
     )
   }
 
