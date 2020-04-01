@@ -54,3 +54,8 @@ func (m *mockMetricsRepository) CountRPCPathUsage(uuid string, from time.Time, t
 	args := m.Called(uuid, from, to)
 	return args.Get(0).([]*pkgmodel.RPCUsageMetrics), args.Error(1)
 }
+
+func (m *mockMetricsRepository) FindLastRequests(uuid string) ([]string, error) {
+	args := m.Called(uuid)
+	return args.Get(0).([]string), args.Error(1)
+}

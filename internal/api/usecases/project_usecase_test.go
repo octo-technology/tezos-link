@@ -37,7 +37,12 @@ func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 		pkgmodel.NewRequestsByDayMetrics("2014", "11", "11", 0),
 		secondRequestMetrics,
 	}
-	expMetrics := pkgmodel.NewMetrics(2, expRequestsMetrics, stubRPCUSageMetrics)
+	stubLastRequests := []string{
+		"/chains/main/blocks/head/header",
+		"/chains/main/blocks/head/header/head",
+	}
+
+	expMetrics := pkgmodel.NewMetrics(2, expRequestsMetrics, stubRPCUSageMetrics, stubLastRequests)
 
 	mockProjectRepository := &mockProjectRepository{}
 	mockProjectRepository.
@@ -61,6 +66,11 @@ func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 		Return(stubRPCUSageMetrics, nil).
 		Once()
 
+	mockMetricsRepository.
+		On("FindLastRequests", mock.Anything).
+		Return(stubLastRequests, nil).
+		Once()
+
 	pu := NewProjectUsecase(mockProjectRepository, mockMetricsRepository)
 
 	// When
@@ -73,4 +83,5 @@ func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 	assert.Equal(t, &p, projects)
 	assert.ElementsMatch(t, expMetrics.RequestsByDay, metrics.RequestsByDay)
 	assert.ElementsMatch(t, expMetrics.RPCUSage, metrics.RPCUSage)
+	assert.ElementsMatch(t, stubLastRequests, metrics.LastRequests)
 }

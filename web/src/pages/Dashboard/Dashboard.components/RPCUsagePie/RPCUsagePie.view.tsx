@@ -4,8 +4,9 @@ import {
   RPCUsagePieViewStyled,
   RPCUsagePieViewTitle,
   RPCUsagePieViewNoData,
-  RPCUsagePieViewTotalRequestsCount, RPCUsagePieViewTotalRequestsCountNumber
-} from "./RPCUsagePie.style";
+  RPCUsagePieViewTotalRequestsCount,
+  RPCUsagePieViewTotalRequestsCountNumber
+} from './RPCUsagePie.style'
 import * as PropTypes from 'prop-types'
 import { RPCUsage } from '../../../../entities/ProjectWithMetrics'
 import { ResponsivePie, PieDatum } from '@nivo/pie'

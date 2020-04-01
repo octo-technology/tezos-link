@@ -7,38 +7,46 @@ import {
   DashboardHeader,
   DashboardLeftSide,
   DashboardRightSide,
-  DashboardStyled,
-  DashboardTitle
+  DashboardBottomStyled,
+  DashboardTitle,
+  DashboardTopStyled,
+  DashboardStyled
 } from './Dashboard.style'
 import { ProjectWithMetrics } from '../../entities/ProjectWithMetrics'
 import { ProjectNameView } from './Dashboard.components/ProjectName/ProjectName.view'
 import { RequestsByDayLineView } from './Dashboard.components/RequestsByDayLine/RequestsByDayLine.view'
 import { RPCUsagePieView } from './Dashboard.components/RPCUsagePie/RPCUsagePie.view'
+import { LastRequestsView } from './Dashboard.components/LastRequests/LastRequests.view'
 
 type DashboardViewProps = { project: ProjectWithMetrics; loading: boolean }
 
 export const DashboardView = ({ loading, project }: DashboardViewProps) => (
   <DashboardStyled>
-    <DashboardLeftSide>
-      <DashboardHeader>
-        <DashboardTitle>
-          <h1>Dashboard</h1>
-        </DashboardTitle>
-        <Button text="Mainnet" color="secondary" />
-      </DashboardHeader>
-      {loading ? (
-        'Loading...'
-      ) : (
-        <>
-          <RequestsByDayLineView requestsByDay={project.metrics.requestsByDay} />
-          <RPCUsagePieView rpcUsage={project.metrics.rpcUsage} rpcTotalCount={project.metrics.requestsCount} />
-        </>
-      )}
-    </DashboardLeftSide>
-    <DashboardRightSide>
-      <ProjectNameView name={project.title} />
-      <ProjectTokenView token={project.uuid} />
-    </DashboardRightSide>
+    <DashboardTopStyled>
+      <DashboardLeftSide>
+        <DashboardHeader>
+          <DashboardTitle>
+            <h1>Dashboard</h1>
+          </DashboardTitle>
+          <Button text="Mainnet" color="secondary" />
+        </DashboardHeader>
+        {loading ? (
+          'Loading...'
+        ) : (
+          <>
+            <RequestsByDayLineView requestsByDay={project.metrics.requestsByDay} />
+          </>
+        )}
+      </DashboardLeftSide>
+      <DashboardRightSide>
+        <ProjectNameView name={project.title} />
+        <ProjectTokenView token={project.uuid} />
+      </DashboardRightSide>
+    </DashboardTopStyled>
+    <DashboardBottomStyled>
+      <RPCUsagePieView rpcUsage={project.metrics.rpcUsage} rpcTotalCount={project.metrics.requestsCount} />
+      <LastRequestsView lastRequests={project.metrics.lastRequests} />
+    </DashboardBottomStyled>
   </DashboardStyled>
 )
 

@@ -14,7 +14,8 @@ func TestNewMetricsOutput_Unit(t *testing.T) {
 	metrics := pkgmodel.NewMetrics(
 		3,
 		[]*pkgmodel.RequestsByDayMetrics{firstMetrics, secondMetrics},
-		[]*pkgmodel.RPCUsageMetrics{rpcUsage})
+		[]*pkgmodel.RPCUsageMetrics{rpcUsage},
+		[]string{"/a/path", "/a/path"})
 
 	// When
 	metricsOutput := NewMetricsOutput(&metrics)
@@ -28,4 +29,6 @@ func TestNewMetricsOutput_Unit(t *testing.T) {
 	assert.Equal(t, "/dummy/path", metricsOutput.RPCUsage[0].Label)
 	assert.Equal(t, "/dummy/path", metricsOutput.RPCUsage[0].ID)
 	assert.Equal(t, 3, metricsOutput.RPCUsage[0].Value)
+	assert.Equal(t, "/a/path", metricsOutput.LastRequests[0])
+	assert.Equal(t, "/a/path", metricsOutput.LastRequests[1])
 }

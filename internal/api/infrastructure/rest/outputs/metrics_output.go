@@ -10,6 +10,7 @@ type MetricsOutput struct {
 	RequestsCount int              `json:"requestsCount"`
 	RequestsByDay []*RequestsByDay `json:"requestsByDay"`
 	RPCUsage      []*RPCUsage      `json:"rpcUsage"`
+	LastRequests  []string         `json:"lastRequests"`
 }
 
 // NewMetricsOutput returns a new metrics
@@ -28,6 +29,7 @@ func NewMetricsOutput(metrics *pkgmodel.Metrics) MetricsOutput {
 		RequestsCount: metrics.RequestsCount,
 		RequestsByDay: requestsByDay,
 		RPCUsage:      rpcUsage,
+		LastRequests:  metrics.LastRequests,
 	}
 }
 

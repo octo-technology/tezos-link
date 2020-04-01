@@ -76,7 +76,12 @@ func (pu *ProjectUsecase) FindProjectAndMetrics(uuid string, from time.Time, to 
 		return nil, nil, err
 	}
 
-	m := pkgmodel.NewMetrics(count, fullRequestByDayArray, RPCMetrics)
+	lastRequests, err := pu.metricsRepo.FindLastRequests(uuid)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	m := pkgmodel.NewMetrics(count, fullRequestByDayArray, RPCMetrics, lastRequests)
 	logrus.Debug("found project and metrics", p, m)
 	return p, &m, nil
 }
