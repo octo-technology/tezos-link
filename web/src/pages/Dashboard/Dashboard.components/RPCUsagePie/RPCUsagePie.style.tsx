@@ -8,7 +8,6 @@ export const RPCUsagePieViewCard = styled(Card)`
 `
 
 export const RPCUsagePieViewStyled = styled(FadeInFromLeft)`
-  width: 60%;
   position: relative;
   float: left;
 `
@@ -39,7 +38,8 @@ export const RPCUsagePieViewTotalRequestsCount = styled.div`
   transform: translateY(-50%);
   text-align: center;
   width: inherit;
-  margin-left: 80px;
+  left: 50%;
+  margin-left: -162px;
 `
 
 export const RPCUsagePieViewTotalRequestsCountNumber = styled.div`

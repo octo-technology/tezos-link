@@ -20,7 +20,8 @@ export const Dashboard = () => {
     metrics: {
       requestsCount: 0,
       requestsByDay: [],
-      rpcUsage: []
+      rpcUsage: [],
+      lastRequests: []
     }
   })
 

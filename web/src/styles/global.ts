@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components/macro'
-import { backgroundColor, textColor, placeholderColor, primaryColor } from './colors'
+import { backgroundColor, textColor, placeholderColor, primaryColor, secondaryColor } from "./colors";
 import { fadeInFromLeft } from './animations'
 
 export const GlobalStyle = createGlobalStyle`
@@ -128,8 +128,7 @@ blockquote {
 }
 
 .markdown pre {
-  background-color:
-  #002b36;
+  background-color: #002b36;
   border-radius: 2px;
   margin-bottom: 1.5rem;
   padding: 1rem;
@@ -138,10 +137,8 @@ blockquote {
 }
 
 .markdown pre code {
-  background-color: 
-  transparent;
-  color:
-  #d4d4d4;
+  background-color: transparent;
+  color: #d4d4d4;
 }
 
 .markdown th {
@@ -156,5 +153,44 @@ blockquote {
   padding: .5rem;
 }
 
+[data-tooltip]:hover {
+  position: absolute;
+  overflow-y: visible !important;
+}
+
+[data-tooltip]:hover::before {
+  all: initial;
+  font-family: Arial, Helvetica, sans-serif;
+  display: inline-block;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: ${backgroundColor};
+  content: attr(data-tooltip);
+  color: ${secondaryColor};
+  position: absolute;
+  bottom: 100%;
+  width: auto;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+[data-tooltip]:hover::after {
+  all: initial;
+  display: inline-block;
+  width: 0; 
+  height: 0; 
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid ${backgroundColor};
+  position: absolute;
+  bottom: 100%;
+  content: '';
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-bottom: 5px;
+}
 
 `

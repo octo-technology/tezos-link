@@ -5,6 +5,7 @@ export interface ProjectWithMetrics {
     requestsCount: number
     requestsByDay: RequestByDay[]
     rpcUsage: RPCUsage[]
+    lastRequests: string[]
   }
 }
 
