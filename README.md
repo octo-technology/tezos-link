@@ -47,15 +47,18 @@ The repository is currently following this organization:
 
 - `Docker`
 - `docker-compose`
-- `yarn`
+- `Yarn` (setup with 1.22.0)
+- `Golang` (setup with 1.13)
+- `GNU Make` (setup with 3.81)
+- `Node.js` (setup with 11.14.0)
 
 ### How to
 
 To run services locally on the machine, you will need to run those commands :
 
 ```bash
+$> make deps
 $> make build-docker
-
 $> make run
 ```
 
@@ -112,7 +115,8 @@ $> docker-compose down
 
 - `GNU Make` (setup with 3.81)
 - `Golang` (setup with 1.13)
-- `yarn` (setup with 1.22.0)
+- `Yarn` (setup with 1.22.0)
+- `Node.js` (setup with 11.14.0)
 
 ### How to
 
@@ -129,6 +133,17 @@ $> make build
 ```
 
 ## Frontend
+
+### Requirements
+
+- `Yarn` (setup with 1.22.0)
+- `Node.js` (setup with 11.14.0)
+
+To build the frontend, you need first to `install dependencies`:
+
+```bash
+$> make deps
+```
 
 ### Run
 
