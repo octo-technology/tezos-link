@@ -15,6 +15,7 @@
     "cypress:test": "cypress run -s 'cypress/integration/**/*-spec.js'"
   },
   "dependencies": {
+    "@babel/plugin-transform-react-jsx-development": "^7.9.0",
     "@nivo/line": "^0.61.1",
     "@nivo/pie": "^0.61.1",
     "@sentry/browser": "^5.11.1",
