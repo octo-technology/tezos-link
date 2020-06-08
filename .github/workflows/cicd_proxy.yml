@@ -6,6 +6,7 @@ on:
     - '**.go'
     - 'Makefile'
     - '.github/workflows/cicd_proxy.yml'
+    - 'infra/terraform/modules/service_proxy'
 
 jobs:
   build:
