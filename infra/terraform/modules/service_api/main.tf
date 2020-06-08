@@ -2,8 +2,8 @@ data "aws_iam_role" "tzlink_ecs_tasks_access" {
   name = "tzlink_ecs_tasks_access"
 }
 
-data "aws_db_instance" "database" {
-  db_instance_identifier = "tzlink-database"
+data "aws_rds_cluster" "database" {
+  cluster_identifier = "tzlink-database"
 }
 
 resource "aws_ecs_task_definition" "api" {
@@ -23,10 +23,10 @@ resource "aws_ecs_task_definition" "api" {
       task_cpu    = var.API_CPU,
       task_memory = var.API_MEMORY,
 
-      database_url      = data.aws_db_instance.database.endpoint,
+      database_url      = data.aws_rds_cluster.database.endpoint,
       database_username = var.DATABASE_USERNAME,
       database_password = var.DATABASE_PASSWORD,
-      database_table    = data.aws_db_instance.database.db_name,
+      database_table    = data.aws_rds_cluster.database.database_name,
 
       environment_config = var.API_CONFIGURATION_FILE,
 
