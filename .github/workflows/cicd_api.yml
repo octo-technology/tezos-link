@@ -6,6 +6,7 @@ on:
     - '**.go'
     - 'Makefile'
     - '.github/workflows/cicd_api.yml'
+    - 'infra/terraform/modules/service_api'
 
 jobs:
   build:

@@ -1,3 +1,3 @@
 output "rds_endpoint" {
-  value = aws_db_instance.database.endpoint
+  value = aws_rds_cluster.database.endpoint
 }
