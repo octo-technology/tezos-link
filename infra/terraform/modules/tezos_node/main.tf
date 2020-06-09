@@ -30,6 +30,7 @@ resource "aws_launch_configuration" "tz_node" {
     network           = var.TZ_NETWORK
     lambda_public_key = file("${path.module}/lambda_public_key")
     computed_network  = var.TZ_NETWORK == "mainnet" ? "babylonnet" : var.TZ_NETWORK
+    mode              = var.TZ_MODE
   })
 
   lifecycle {
@@ -38,7 +39,7 @@ resource "aws_launch_configuration" "tz_node" {
 }
 
 resource "aws_autoscaling_group" "tz_nodes" {
-  name = format("tzlink-%s", var.TZ_NETWORK)
+  name = format("tzlink-%s-%s", var.TZ_NETWORK, var.TZ_MODE)
 
   desired_capacity = var.DESIRED_INSTANCE_NUMBER
   max_size         = var.MAX_INSTANCE_NUMBER
@@ -69,6 +70,11 @@ resource "aws_autoscaling_group" "tz_nodes" {
       key                 = "BuildWith"
       value               = var.BUILD_WITH
       propagate_at_launch = true
+    },
+    {
+      key                 = "Mode"
+      value               = var.TZ_MODE
+      propagate_at_launch = true
     }
   ]
 }
@@ -80,20 +86,20 @@ resource "aws_autoscaling_attachment" "tz_farm" {
 
 
 resource "aws_alb" "tz_farm" {
-  name            = format("tzlink-farm-%s", var.TZ_NETWORK)
+  name            = format("tzlink-farm-%s-%s", var.TZ_NETWORK, var.TZ_MODE)
   subnets         = tolist(data.aws_subnet_ids.tzlink.ids)
   security_groups = [aws_security_group.tezos_node_lb.id]
   internal        = true
 
   tags = {
-    Name      = format("tzlink-farm-%s", var.TZ_NETWORK)
+    Name      = format("tzlink-farm-%s-%s", var.TZ_NETWORK, var.TZ_MODE)
     Project   = var.PROJECT_NAME
     BuildWith = var.BUILD_WITH
   }
 }
 
 resource "aws_alb_target_group" "tz_farm" {
-  name        = format("tzlink-farm-%s", var.TZ_NETWORK)
+  name        = format("tzlink-farm-%s-%s", var.TZ_NETWORK, var.TZ_MODE)
   port        = 8000
   protocol    = "HTTP"
   vpc_id      = data.aws_vpc.tzlink.id
@@ -110,7 +116,7 @@ resource "aws_alb_target_group" "tz_farm" {
   }
 
   tags = {
-    Name      = format("tzlink-farm-%s", var.TZ_NETWORK)
+    Name      = format("tzlink-farm-%s-%s", var.TZ_NETWORK, var.TZ_MODE)
     Project   = var.PROJECT_NAME
     BuildWith = var.BUILD_WITH
   }

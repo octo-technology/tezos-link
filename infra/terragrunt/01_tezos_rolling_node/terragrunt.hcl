@@ -12,12 +12,12 @@ terraform {
 
 inputs = {
   TZ_NETWORK = "mainnet"
-  TZ_MODE    = "archive"
+  TZ_MODE    = "rolling"
 
   MIN_INSTANCE_NUMBER = 1
   DESIRED_INSTANCE_NUMBER = 1
   MAX_INSTANCE_NUMBER = 5
 
-  INSTANCE_TYPE = "i3.large"
+  INSTANCE_TYPE = "t2.small"
   KEY_PAIR_NAME = "adbo"
 }

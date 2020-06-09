@@ -5,7 +5,7 @@ data "aws_route53_zone" "tezoslink_private" {
 
 resource "aws_route53_record" "internal_lb_farm" {
   zone_id = data.aws_route53_zone.tezoslink_private.zone_id
-  name    = format("%s.internal.tezoslink.io", var.TZ_NETWORK)
+  name    = format("%s-%s.internal.tezoslink.io", var.TZ_NETWORK, var.TZ_MODE)
   type    = "A"
 
   alias {

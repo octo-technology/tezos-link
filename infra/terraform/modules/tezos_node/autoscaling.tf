@@ -1,5 +1,5 @@
 resource "aws_autoscaling_policy" "latency_out" {
-  name                   = format("tzlink-%s-out-latency", var.TZ_NETWORK)
+  name                   = format("tzlink-%s-%s-out-latency", var.TZ_NETWORK, var.TZ_MODE)
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "1"
@@ -8,7 +8,7 @@ resource "aws_autoscaling_policy" "latency_out" {
 }
 
 resource "aws_autoscaling_policy" "cpu_out" {
-  name                   = format("tzlink-%s-out-cpu", var.TZ_NETWORK)
+  name                   = format("tzlink-%s-%s-out-cpu", var.TZ_NETWORK, var.TZ_MODE)
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "1"
@@ -17,7 +17,7 @@ resource "aws_autoscaling_policy" "cpu_out" {
 }
 
 resource "aws_autoscaling_policy" "requestcountbytarget_out" {
-  name                   = format("tzlink-%s-out-requestcountbytarget", var.TZ_NETWORK)
+  name                   = format("tzlink-%s-%s-out-requestcountbytarget", var.TZ_NETWORK, var.TZ_MODE)
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "1"

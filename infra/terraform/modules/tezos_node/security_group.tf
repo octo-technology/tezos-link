@@ -1,5 +1,5 @@
 resource "aws_security_group" "tezos_node_lb" {
-  name        = format("tezos_farm_lb_%s", var.TZ_NETWORK)
+  name        = format("tezos_farm_lb_%s_%s", var.TZ_NETWORK, var.TZ_MODE)
   description = format("Security group for tezos loadbalancer targeting the %s network", var.TZ_NETWORK)
   vpc_id      = data.aws_vpc.tzlink.id
 }
@@ -26,7 +26,7 @@ resource "aws_security_group_rule" "all_egress_for_loadbalancer" {
 }
 
 resource "aws_security_group" "tezos_node" {
-  name        = format("tezos_farm_%s", var.TZ_NETWORK)
+  name        = format("tezos_farm_%s_%s", var.TZ_NETWORK, var.TZ_MODE)
   description = format("Security group for tezos nodes in network %s", var.TZ_NETWORK)
   vpc_id      = data.aws_vpc.tzlink.id
 }
