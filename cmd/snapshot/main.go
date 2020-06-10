@@ -3,6 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
+	"log"
+	"os"
+
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -10,9 +14,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"golang.org/x/crypto/ssh"
-	"io"
-	"log"
-	"os"
 )
 
 func main() {
@@ -102,7 +103,13 @@ func getInstanceIP() string {
 			&ec2.Filter{
 				Name: aws.String("tag:aws:autoscaling:groupName"),
 				Values: []*string{
-					aws.String("tzlink-mainnet"),
+					aws.String("tzlink-mainnet-archive"),
+				},
+			},
+			&ec2.Filter{
+				Name: aws.String("tag:Mode"),
+				Values: []*string{
+					aws.String("archive"),
 				},
 			},
 		}}
