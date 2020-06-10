@@ -29,9 +29,9 @@ resource "aws_autoscaling_policy" "requestcountbytarget_out" {
 ########################
 
 resource "aws_cloudwatch_metric_alarm" "latency_scale_out" {
-  actions_enabled = true
+  actions_enabled = false
 
-  alarm_name          = format("tzlink-%s-out-latency", var.TZ_NETWORK)
+  alarm_name          = format("tzlink-%s-%s-out-latency", var.TZ_NETWORK, var.TZ_MODE)
   namespace           = "AWS/ApplicationELB"
   statistic           = "Maximum"
   metric_name         = "TargetResponseTime"
@@ -51,9 +51,9 @@ resource "aws_cloudwatch_metric_alarm" "latency_scale_out" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "requestcountbytarget_scale_out" {
-  actions_enabled = true
+  actions_enabled = false
 
-  alarm_name          = format("tzlink-%s-out-requestcountbytarget", var.TZ_NETWORK)
+  alarm_name          = format("tzlink-%s-%s-out-requestcountbytarget", var.TZ_NETWORK, var.TZ_MODE)
   namespace           = "AWS/ApplicationELB"
   statistic           = "Sum"
   metric_name         = "RequestCountPerTarget"
@@ -75,7 +75,7 @@ resource "aws_cloudwatch_metric_alarm" "requestcountbytarget_scale_out" {
 resource "aws_cloudwatch_metric_alarm" "cpu_scale_out" {
   actions_enabled = false
 
-  alarm_name          = format("tzlink-%s-out-cpu", var.TZ_NETWORK)
+  alarm_name          = format("tzlink-%s-%s-out-cpu", var.TZ_NETWORK, var.TZ_MODE)
   namespace           = "AWS/EC2"
   statistic           = "Average"
   metric_name         = "CPUUtilization"
@@ -96,7 +96,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_out" {
 ##################
 
 resource "aws_autoscaling_policy" "latency_down" {
-  name                   = format("tzlink-%s-down-latency", var.TZ_NETWORK)
+  name                   = format("tzlink-%s-%s-down-latency", var.TZ_NETWORK, var.TZ_MODE)
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "-1"
@@ -105,7 +105,7 @@ resource "aws_autoscaling_policy" "latency_down" {
 }
 
 resource "aws_autoscaling_policy" "cpu_down" {
-  name                   = format("tzlink-%s-down-cpu", var.TZ_NETWORK)
+  name                   = format("tzlink-%s-%s-down-cpu", var.TZ_NETWORK, var.TZ_MODE)
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "-1"
@@ -114,7 +114,7 @@ resource "aws_autoscaling_policy" "cpu_down" {
 }
 
 resource "aws_autoscaling_policy" "requestcountbytarget_down" {
-  name                   = format("tzlink-%s-down-requestcountbytarget", var.TZ_NETWORK)
+  name                   = format("tzlink-%s-%s-down-requestcountbytarget", var.TZ_NETWORK, var.TZ_MODE)
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "-1"
@@ -125,9 +125,9 @@ resource "aws_autoscaling_policy" "requestcountbytarget_down" {
 ##################
 
 resource "aws_cloudwatch_metric_alarm" "latency_scale_down" {
-  actions_enabled = true
+  actions_enabled = false
 
-  alarm_name          = format("tzlink-%s-down-latency", var.TZ_NETWORK)
+  alarm_name          = format("tzlink-%s-%s-down-latency", var.TZ_NETWORK, var.TZ_MODE)
   namespace           = "AWS/ApplicationELB"
   statistic           = "Maximum"
   metric_name         = "TargetResponseTime"
@@ -135,7 +135,7 @@ resource "aws_cloudwatch_metric_alarm" "latency_scale_down" {
   threshold           = 2
 
   period             = 60
-  evaluation_periods = 5
+  evaluation_periods = 30
 
   dimensions = {
     Loadbalancer = aws_alb.tz_farm.arn_suffix
@@ -149,7 +149,7 @@ resource "aws_cloudwatch_metric_alarm" "latency_scale_down" {
 resource "aws_cloudwatch_metric_alarm" "cpu_scale_down" {
   actions_enabled = false
 
-  alarm_name          = format("tzlink-%s-down-cpu", var.TZ_NETWORK)
+  alarm_name          = format("tzlink-%s-%s-down-cpu", var.TZ_NETWORK, var.TZ_MODE)
   namespace           = "AWS/EC2"
   statistic           = "Average"
   metric_name         = "CPUUtilization"
@@ -157,7 +157,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_down" {
   threshold           = 5 #%
 
   period             = 60
-  evaluation_periods = 5
+  evaluation_periods = 30
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.tz_nodes.name
@@ -168,9 +168,9 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_down" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "requestcountbytarget_scale_down" {
-  actions_enabled = true
+  actions_enabled = false
 
-  alarm_name          = format("tzlink-%s-down-requestcountbytarget", var.TZ_NETWORK)
+  alarm_name          = format("tzlink-%s-%s-down-requestcountbytarget", var.TZ_NETWORK, var.TZ_MODE)
   namespace           = "AWS/ApplicationELB"
   statistic           = "Sum"
   metric_name         = "RequestCountPerTarget"
@@ -178,7 +178,7 @@ resource "aws_cloudwatch_metric_alarm" "requestcountbytarget_scale_down" {
   threshold           = 20 # requests/sec
 
   period             = 60
-  evaluation_periods = 5
+  evaluation_periods = 30
 
   dimensions = {
     Loadbalancer = aws_alb.tz_farm.arn_suffix
