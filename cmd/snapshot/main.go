@@ -32,7 +32,7 @@ func HandleRequest(ctx context.Context) (string, error) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	instanceIp := getInstanceIP()
+	instanceIp := *getInstanceIP()
 
 	conn, err := ssh.Dial("tcp", instanceIp+":22", config)
 	if err != nil {
@@ -73,7 +73,7 @@ func getPublicKeyFromS3() ssh.AuthMethod {
 	return ssh.PublicKeys(signer)
 }
 
-func getInstanceIP() string {
+func getInstanceIP() *string {
 	sess, _ := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("S3_REGION"))},
 	)
@@ -82,6 +82,12 @@ func getInstanceIP() string {
 
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
+			&ec2.Filter{
+				Name: aws.String("instance-state-name"),
+				Values: []*string{
+					aws.String("running"),
+				},
+			},
 			&ec2.Filter{
 				Name: aws.String("tag:Name"),
 				Values: []*string{
@@ -120,9 +126,13 @@ func getInstanceIP() string {
 		panic(fmt.Sprintf("Error when describe instances :  %v", err))
 	}
 
+	print(res.Reservations[0].Instances[0].GoString())
+
 	firstIp := res.Reservations[0].Instances[0].PublicIpAddress
 
-	return *firstIp
+	log.Print(firstIp)
+
+	return firstIp
 }
 
 func runCommand(cmd string, conn *ssh.Client) {
