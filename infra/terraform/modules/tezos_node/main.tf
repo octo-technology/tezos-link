@@ -111,8 +111,9 @@ resource "aws_alb_target_group" "tz_farm" {
     port                = 8000
     protocol            = "HTTP"
     healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
+    unhealthy_threshold = 10
+    interval            = 60
+    timeout             = 59
   }
 
   tags = {
