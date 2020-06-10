@@ -28,8 +28,8 @@ resource "aws_ecs_task_definition" "proxy" {
       database_password = var.DATABASE_PASSWORD,
       database_table    = data.aws_rds_cluster.database.database_name,
 
-      tezos_hostname = format("%s.internal.tezoslink.io", var.TZ_NETWORK),
-      tezos_port     = var.TEZOS_FARM_PORT,
+      tezos_archive_hostname = format("%s-%s.internal.tezoslink.io", var.TZ_NETWORK, "archive"),
+      tezos_archive_port     = var.TEZOS_FARM_PORT,
 
       environment_config = var.PROXY_CONFIGURATION_FILE,
 

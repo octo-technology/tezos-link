@@ -40,11 +40,11 @@
         },
         {
           "name": "TEZOS_HOST",
-          "value": "${tezos_hostname}"
+          "value": "${tezos_archive_hostname}"
         },
         {
           "name": "TEZOS_PORT",
-          "value": "${tezos_port}"
+          "value": "${tezos_archive_port}"
         },
         {
           "name": "ENV",
