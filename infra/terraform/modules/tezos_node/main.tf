@@ -51,6 +51,12 @@ resource "aws_autoscaling_group" "tz_nodes" {
   launch_configuration      = aws_launch_configuration.tz_node.id
   vpc_zone_identifier       = tolist(data.aws_subnet_ids.tzlink.ids)
 
+  target_group_arns = [aws_alb_target_group.tz_farm.arn]
+
+  # TODO : Fix maintenance process by removing this line and adding in maintenance script
+  # disable and enable ReplaceUnhealthy.
+  suspended_processes = ["ReplaceUnhealthy"]
+
   lifecycle {
     create_before_destroy = true
   }
@@ -79,10 +85,10 @@ resource "aws_autoscaling_group" "tz_nodes" {
   ]
 }
 
-resource "aws_autoscaling_attachment" "tz_farm" {
-  autoscaling_group_name = aws_autoscaling_group.tz_nodes.id
-  alb_target_group_arn   = aws_alb_target_group.tz_farm.arn
-}
+#resource "aws_autoscaling_attachment" "tz_farm" {
+#  autoscaling_group_name = aws_autoscaling_group.tz_nodes.id
+#  alb_target_group_arn   = aws_alb_target_group.tz_farm.arn
+#}
 
 
 resource "aws_alb" "tz_farm" {
