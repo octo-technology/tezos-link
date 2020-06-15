@@ -24,15 +24,16 @@ type ProxyConf struct {
 		Url string
 	}
 	Proxy struct {
-		ReadTimeout        int
-		WriteTimeout       int
-		IdleTimeout        int
-		WhitelistedMethods []string
-		BlockedMethods     []string
-		DontCache          []string
-		RateLimitPeriod    int
-		RateLimitCount     int64
-		CacheMaxItems      int
+		ReadTimeout                     int
+		WriteTimeout                    int
+		IdleTimeout                     int
+		WhitelistedMethods              []string
+		BlockedMethods                  []string
+		DontCache                       []string
+		RateLimitPeriod                 int
+		RateLimitCount                  int64
+		BlockchainRequestsCacheMaxItems int
+		ProjectsCacheMaxItems			int
 	}
 }
 
