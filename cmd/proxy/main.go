@@ -49,7 +49,7 @@ func main() {
 	reverseProxy := httputil.NewSingleHostReverseProxy(reverseURL)
 
 	// Repositories
-	lruRepo := cache.NewLruBlockchainRepository()
+	lruRepo := cache.NewLRUBlockchainRepository()
 	proxyRepo := proxy.NewProxyBlockchainRepository()
 	projectRepo := pkgdatabase.NewPostgresProjectRepository(database.Connection)
 	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(database.Connection)

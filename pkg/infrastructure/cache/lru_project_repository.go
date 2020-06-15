@@ -14,8 +14,8 @@ type lruProjectRepository struct {
 	cache *lru.Cache
 }
 
-// NewLruProjectRepository returns a new project LRU cache repository
-func NewLruProjectRepository() repository.ProjectRepository {
+// NewLRUProjectRepository returns a new project LRU cache repository
+func NewLRUProjectRepository() repository.ProjectRepository {
 	cache, err := lru.New(config.ProxyConfig.Proxy.ProjectsCacheMaxItems)
 	if err != nil {
 		log.Fatal("could not init the LRU cache")
@@ -26,9 +26,7 @@ func NewLruProjectRepository() repository.ProjectRepository {
 	}
 }
 
-func (l lruProjectRepository) FindAll() ([]*pkgmodel.Project, error) {
-	panic("implement me")
-}
+
 
 func (l lruProjectRepository) FindByUUID(uuid string) (*pkgmodel.Project, error) {
 	val, ok := l.cache.Get(uuid)
@@ -36,7 +34,9 @@ func (l lruProjectRepository) FindByUUID(uuid string) (*pkgmodel.Project, error)
 		return nil, fmt.Errorf("could not get cache for path: %s", uuid)
 	}
 
-	return val.(*pkgmodel.Project), nil
+	ret := val.(pkgmodel.Project)
+
+	return &ret, nil
 }
 
 func (l lruProjectRepository) Save(title string, uuid string, creationDate time.Time) (*pkgmodel.Project, error) {
@@ -46,6 +46,10 @@ func (l lruProjectRepository) Save(title string, uuid string, creationDate time.
 	l.cache.Add(uuid, project)
 
 	return &project, nil
+}
+
+func (l lruProjectRepository) FindAll() ([]*pkgmodel.Project, error) {
+	panic("implement me")
 }
 
 func (l lruProjectRepository) Ping() error {
