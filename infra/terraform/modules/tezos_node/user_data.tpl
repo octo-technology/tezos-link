@@ -77,7 +77,7 @@ cp /.tezos-${network}/docker-compose.yml .tezos-${network}/docker-compose.yml
 echo "> Snapshot rolling-mode node"
 
 echo ">>> Generate the snapshot.rolling file"
-docker exec -it mainnet_node_1 sh -c "tezos-node snapshot export snapshot.rolling --data-dir /var/run/tezos/node/data --rolling && mv snapshot.rolling /var/run/tezos/client/snapshot.rolling"
+docker exec mainnet_node_1 sh -c "tezos-node snapshot export snapshot.rolling --data-dir /var/run/tezos/node/data --rolling && mv snapshot.rolling /var/run/tezos/client/snapshot.rolling"
 
 cd /var/lib/docker/volumes/mainnet_client_data/_data/
 
