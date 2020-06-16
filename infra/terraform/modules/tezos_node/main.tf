@@ -53,10 +53,6 @@ resource "aws_autoscaling_group" "tz_nodes" {
 
   target_group_arns = [aws_alb_target_group.tz_farm.arn]
 
-  # TODO : Fix maintenance process by removing this line and adding in maintenance script
-  # disable and enable ReplaceUnhealthy.
-  suspended_processes = ["ReplaceUnhealthy"]
-
   lifecycle {
     create_before_destroy = true
   }
