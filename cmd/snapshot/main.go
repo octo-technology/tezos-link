@@ -126,11 +126,9 @@ func getInstanceIP() *string {
 		panic(fmt.Sprintf("Error when describe instances :  %v", err))
 	}
 
-	print(res.Reservations[0].Instances[0].GoString())
-
 	firstIp := res.Reservations[0].Instances[0].PublicIpAddress
 
-	log.Print(firstIp)
+	log.Print(fmt.Sprintf("Running lambda on instance : %s", *firstIp))
 
 	return firstIp
 }
