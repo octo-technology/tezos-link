@@ -87,7 +87,6 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 	expResponse.cacheErr = errors.New("no cache available")
 	expResponse.projectErr = projectNotFound
 	expResponse.projectCacheErr = projectNotFound
-	//expResponse.projectDatabaseResponse = &prj
 	t.Run("Returns no project found error When it is not in the cache or database",
 		testProxyUsecaseFunc(&whitelistedCachedRequest, &expResponse))
 
