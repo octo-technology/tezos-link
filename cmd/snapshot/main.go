@@ -40,10 +40,10 @@ func HandleRequest(ctx context.Context) (string, error) {
 	}
 	defer conn.Close()
 
-	runCommand("nohup sh export-tezos-snap.sh &", conn)
+	runCommand("sudo systemctl start tezos-backup", conn)
 
-	log.Print("snapshot done")
-	return "snapshot done.", nil
+	log.Print("snapshot service started")
+	return "snapshot service started.", nil
 }
 
 func getPublicKeyFromS3() ssh.AuthMethod {
