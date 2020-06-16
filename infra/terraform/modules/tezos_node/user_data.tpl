@@ -67,6 +67,20 @@ echo "Error: unknown mode declared. Possible choice : [rolling, archive]"
 
 fi
 
+cat > /etc/systemd/system/tezos-backup.service << EOF
+[Unit]
+Description=Backup service for Tezos node to S3
+
+[Service]
+Type=simple
+Restart=no
+ExecStart=/bin/bash /home/ec2-user/export-tezos-snap.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
 
 cat > export-tezos-snap.sh << EOF
 #!/bin/bash -e
