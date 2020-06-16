@@ -58,11 +58,13 @@ func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) error {
 
 	if err != nil {
 		logrus.Debug("project ID not found in cache: ", UUID, err.Error())
-		_, err := p.projectRepo.FindByUUID(UUID)
+		prj, err := p.projectRepo.FindByUUID(UUID)
 		if err != nil {
 			logrus.Debug("project ID not found: ", UUID, err.Error())
 			return err
 		}
+
+		_, err = p.projectCacheRepo.Save(prj.Title, prj.UUID, prj.CreationDate)
 	}
 
 	return nil
