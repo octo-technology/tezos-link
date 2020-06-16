@@ -1,6 +1,10 @@
 package usecases
 
 import (
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/repository"
 	"github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
@@ -8,20 +12,18 @@ import (
 	pkgrepository "github.com/octo-technology/tezos-link/backend/pkg/domain/repository"
 	"github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
 	"github.com/sirupsen/logrus"
-	"regexp"
-	"strings"
-	"time"
 )
 
 // ProxyUsecase contains the repositories and regexes to route paths proxying and store metrics
 type ProxyUsecase struct {
-	cacheRepo   repository.BlockchainRepository
-	proxyRepo   repository.BlockchainRepository
-	metricsRepo pkgrepository.MetricsRepository
-	projectRepo pkgrepository.ProjectRepository
-	whitelisted []*regexp.Regexp
-	blacklisted []*regexp.Regexp
-	dontCache   []*regexp.Regexp
+	cacheRepo        repository.BlockchainRepository
+	proxyRepo        repository.BlockchainRepository
+	metricsRepo      pkgrepository.MetricsRepository
+	projectRepo      pkgrepository.ProjectRepository
+	projectCacheRepo pkgrepository.ProjectRepository
+	whitelisted      []*regexp.Regexp
+	blacklisted      []*regexp.Regexp
+	dontCache        []*regexp.Regexp
 }
 
 // ProxyUsecaseInterface contains all methods implemented by the proxyRepo use-case
@@ -37,16 +39,35 @@ func NewProxyUsecase(
 	cacheRepo repository.BlockchainRepository,
 	proxyRepo repository.BlockchainRepository,
 	metricsRepo pkgrepository.MetricsRepository,
-	projectRepo pkgrepository.ProjectRepository) *ProxyUsecase {
+	projectRepo pkgrepository.ProjectRepository,
+	projectCacheRepo pkgrepository.ProjectRepository) *ProxyUsecase {
 	return &ProxyUsecase{
-		cacheRepo:   cacheRepo,
-		proxyRepo:   proxyRepo,
-		metricsRepo: metricsRepo,
-		projectRepo: projectRepo,
-		whitelisted: setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedMethods),
-		blacklisted: setupRegexpFor(config.ProxyConfig.Proxy.BlockedMethods),
-		dontCache:   setupRegexpFor(config.ProxyConfig.Proxy.DontCache),
+		cacheRepo:        cacheRepo,
+		proxyRepo:        proxyRepo,
+		metricsRepo:      metricsRepo,
+		projectRepo:      projectRepo,
+		projectCacheRepo: projectCacheRepo,
+		whitelisted:      setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedMethods),
+		blacklisted:      setupRegexpFor(config.ProxyConfig.Proxy.BlockedMethods),
+		dontCache:        setupRegexpFor(config.ProxyConfig.Proxy.DontCache),
 	}
+}
+
+func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) error {
+	_, err := p.projectCacheRepo.FindByUUID(UUID)
+
+	if err != nil {
+		logrus.Debug("project ID not found in cache: ", UUID, err.Error())
+		prj, err := p.projectRepo.FindByUUID(UUID)
+		if err != nil {
+			logrus.Debug("project ID not found: ", UUID, err.Error())
+			return err
+		}
+
+		_, err = p.projectCacheRepo.Save(prj.Title, prj.UUID, prj.CreationDate)
+	}
+
+	return nil
 }
 
 // Proxy proxy an http request to the right repositories
@@ -54,9 +75,9 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 	logrus.Info("received proxy request for path: ", request.Path)
 	response := []byte("call blacklisted")
 
-	_, err := p.projectRepo.FindByUUID(request.UUID)
+	err := p.findInDatabaseIfNotFoundInCache(request.UUID)
+
 	if err != nil {
-		logrus.Debug("project ID not found: ", request.UUID, err.Error())
 		return err.Error(), false, err
 	}
 
