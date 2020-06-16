@@ -30,7 +30,8 @@ resource "aws_lambda_function" "snapshot_lambda" {
   handler       = "main"
   runtime       = "go1.x"
   description   = "Snapshot exporter Lambda"
-  timeout       = 900
+  timeout       = 7200 # sec
+  retry         = 0
 
   environment {
     variables = {
