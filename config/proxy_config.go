@@ -33,7 +33,7 @@ type ProxyConf struct {
 		RateLimitPeriod                 int
 		RateLimitCount                  int64
 		BlockchainRequestsCacheMaxItems int
-		ProjectsCacheMaxItems			int
+		ProjectsCacheMaxItems           int
 	}
 }
 

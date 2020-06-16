@@ -8,18 +8,18 @@ import (
 )
 
 func TestLRUProjectRepository_FindByUUID_Unit(t *testing.T) {
-    // Given
+	// Given
 	_, err := config.ParseProxyConf("../../../test/proxy/conf/test.toml")
 	if err != nil {
 		t.Fatal("could not parse conf", err)
 	}
 
-    projectCache := NewLRUProjectRepository()
+	projectCache := NewLRUProjectRepository()
 	projectUUID := "12234"
 	projectTitle := "DummyProject"
 	projectCreationDate := time.Now()
 
-    // When
+	// When
 	_, err = projectCache.Save(projectTitle, projectUUID, projectCreationDate)
 	if err != nil {
 		t.Fatal("could not save in cache", err)
@@ -30,7 +30,7 @@ func TestLRUProjectRepository_FindByUUID_Unit(t *testing.T) {
 		t.Fatal("project not found in cache", err)
 	}
 
-    // Then
+	// Then
 	assert.Equal(t, prj.UUID, projectUUID)
 	assert.Equal(t, prj.Title, projectTitle)
 	assert.Equal(t, prj.CreationDate, projectCreationDate)

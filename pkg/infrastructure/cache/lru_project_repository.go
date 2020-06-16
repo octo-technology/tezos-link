@@ -26,8 +26,6 @@ func NewLRUProjectRepository() repository.ProjectRepository {
 	}
 }
 
-
-
 func (l lruProjectRepository) FindByUUID(uuid string) (*pkgmodel.Project, error) {
 	val, ok := l.cache.Get(uuid)
 	if !ok {

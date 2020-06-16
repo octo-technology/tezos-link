@@ -18,75 +18,122 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+type dummyResponse struct {
+	expResp                 string
+	expToRawProxy           bool
+	expErr                  error
+	cacheErr                error
+	proxyErr                error
+	metricErr               error
+	projectErr              error
+	projectCacheErr         error
+	projectDatabaseResponse *pkgmodel.Project
+}
+
+func newDummyResponse() dummyResponse {
+	return dummyResponse{
+		expResp:                 "",
+		expToRawProxy:           false,
+		expErr:                  nil,
+		cacheErr:                nil,
+		proxyErr:                nil,
+		metricErr:               nil,
+		projectErr:              nil,
+		projectCacheErr:         nil,
+		projectDatabaseResponse: nil,
+	}
+}
+
 func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 	_, err := config.ParseProxyConf("../../../test/proxy/conf/test.toml")
 	if err != nil {
 		t.Fatal("could not parse conf", err)
 	}
 	prj := pkgmodel.NewProject(123, "DUMMY_TITLE", "DUMMY_UUID", time.Now())
+	localURL := "127.0.0.1"
 
-	blockedRequest := pkgmodel.NewRequest("/dummy/path", "UUID", pkgmodel.OBTAIN, "127.0.0.1")
+	blockedRequest := pkgmodel.NewRequest("/dummy/path", "UUID", pkgmodel.OBTAIN, localURL)
+	expResponse := newDummyResponse()
+	expResponse.expResp = "call blacklisted"
+	expResponse.projectDatabaseResponse = &prj
 	t.Run("Returns blacklisted When there is a blacklisted path",
-		testProxyUsecaseFunc(&blockedRequest, "call blacklisted", false, nil, nil, nil, nil, nil, nil, &prj))
+		testProxyUsecaseFunc(&blockedRequest, &expResponse))
 
-	postRequest := pkgmodel.NewRequest("/chains/main/blocks/head", "UUID", pkgmodel.PUSH, "127.0.0.1")
+	postRequest := pkgmodel.NewRequest("/chains/main/blocks/head", "UUID", pkgmodel.PUSH, localURL)
+	expResponse = newDummyResponse()
+	expResponse.expToRawProxy = true
+	expResponse.projectDatabaseResponse = &prj
 	t.Run("Forward to reverse proxy When there is a PUSH request",
-		testProxyUsecaseFunc(&postRequest, "", true, nil, nil, nil, nil, nil, nil, &prj))
+		testProxyUsecaseFunc(&postRequest, &expResponse))
 
-	whitelistedCachedRequest := pkgmodel.NewRequest("/chains/main/blocks/number", "UUID", pkgmodel.OBTAIN, "127.0.0.1")
+	whitelistedCachedRequest := pkgmodel.NewRequest("/chains/main/blocks/number", "UUID", pkgmodel.OBTAIN, localURL)
+	expResponse = newDummyResponse()
+	expResponse.expResp = "Dummy cache response"
+	expResponse.projectDatabaseResponse = &prj
 	t.Run("Returns the cached response When there is a whitelisted path",
-		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy cache response", false, nil, nil, nil, nil, nil, nil, &prj))
+		testProxyUsecaseFunc(&whitelistedCachedRequest, &expResponse))
 
+	expResponse = newDummyResponse()
+	expResponse.expResp = "Dummy proxy response"
+	expResponse.cacheErr = errors.New("no cache available")
+	expResponse.projectDatabaseResponse = &prj
 	t.Run("Returns the proxy response When there is no cached response",
-		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy proxy response", false, nil, errors.New("no cache available"), nil, nil, nil, nil, &prj))
-
-	t.Run("Returns the proxy response When there is no cached response",
-		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy proxy response", false, nil, errors.New("no cache available"), nil, nil, nil, nil, &prj))
+		testProxyUsecaseFunc(&whitelistedCachedRequest, &expResponse))
 
 	projectNotFound := errors.New("project not found")
+	expResponse = newDummyResponse()
+	expResponse.expResp = "project not found"
+	expResponse.expErr = projectNotFound
+	expResponse.cacheErr = errors.New("no cache available")
+	expResponse.projectErr = projectNotFound
+	expResponse.projectCacheErr = projectNotFound
+	//expResponse.projectDatabaseResponse = &prj
 	t.Run("Returns no project found error When it is not in the cache or database",
-		testProxyUsecaseFunc(&whitelistedCachedRequest, "project not found", false, projectNotFound, errors.New("no cache available"), nil, nil, projectNotFound, projectNotFound, nil))
+		testProxyUsecaseFunc(&whitelistedCachedRequest, &expResponse))
 
+	expResponse = newDummyResponse()
+	expResponse.expResp = "Dummy proxy response"
+	expResponse.cacheErr = errors.New("no cache available")
+	expResponse.projectCacheErr = projectNotFound
+	expResponse.projectDatabaseResponse = &prj
 	t.Run("Returns project When it is not in the cache but found in database",
-		testProxyUsecaseFunc(&whitelistedCachedRequest, "Dummy proxy response", false, nil, errors.New("no cache available"), nil, nil, nil, projectNotFound, &prj))
+		testProxyUsecaseFunc(&whitelistedCachedRequest, &expResponse))
 
-	whitelistedNotCachedRequest := pkgmodel.NewRequest("/chains/main/blocks", "UUID", pkgmodel.OBTAIN, "127.0.0.1")
+	whitelistedNotCachedRequest := pkgmodel.NewRequest("/chains/main/blocks", "UUID", pkgmodel.OBTAIN, localURL)
+	expResponse = newDummyResponse()
+	expResponse.expToRawProxy = true
+	expResponse.projectDatabaseResponse = &prj
 	t.Run("Returns the proxy response When the path is not cacheable",
-		testProxyUsecaseFunc(&whitelistedNotCachedRequest, "", true, nil, nil, nil, nil, nil, nil, &prj))
+		testProxyUsecaseFunc(&whitelistedNotCachedRequest, &expResponse))
 
-	whitelistedCacheableNotCachedRequest := pkgmodel.NewRequest("/chains/main/blocks/number", "UUID", pkgmodel.OBTAIN, "127.0.0.1")
+	whitelistedCacheableNotCachedRequest := pkgmodel.NewRequest("/chains/main/blocks/number", "UUID", pkgmodel.OBTAIN, localURL)
+	expResponse = newDummyResponse()
+	expResponse.expResp = "no response from proxy"
+	expResponse.expErr = errors.New("no response from proxy")
+	expResponse.cacheErr = errors.New("no cache available")
+	expResponse.proxyErr = errors.New("proxy error")
+	expResponse.projectDatabaseResponse = &prj
 	t.Run("Returns no response When there is no cache and an proxy error",
-		testProxyUsecaseFunc(&whitelistedCacheableNotCachedRequest, "no response from proxy", false, errors.New("no response from proxy"),
-			errors.New("no cache available"), errors.New("proxy error"), nil, nil, nil, &prj))
+		testProxyUsecaseFunc(&whitelistedCacheableNotCachedRequest, &expResponse))
 }
 
-func testProxyUsecaseFunc(
-	r *pkgmodel.Request,
-	expResp string,
-	expToRawProxy bool,
-	expErr error,
-	cacheErr error,
-	proxyErr error,
-	metricErr error,
-	projectErr error,
-	projectCacheErr error,
-	projectDatabaseResponse *pkgmodel.Project) func(t *testing.T) {
+func testProxyUsecaseFunc(req *pkgmodel.Request, resp *dummyResponse) func(t *testing.T) {
 	return func(t *testing.T) {
 		// Given
-		mockCache := stubBlockchainRepository([]byte("Dummy cache response"), cacheErr)
-		mockProxy := stubBlockchainRepository([]byte("Dummy proxy response"), proxyErr)
-		mockMetricsRepo := stubMetricsRepository(metricErr)
-		mockProjectRepo := stubProjectRepository(projectDatabaseResponse, projectErr)
-		mockProjectCacheRepo := stubProjectRepository(nil, projectCacheErr)
+		mockCache := stubBlockchainRepository([]byte("Dummy cache response"), resp.cacheErr)
+		mockProxy := stubBlockchainRepository([]byte("Dummy proxy response"), resp.proxyErr)
+		mockMetricsRepo := stubMetricsRepository(resp.metricErr)
+		mockProjectRepo := stubProjectRepository(resp.projectDatabaseResponse, resp.projectErr)
+		mockProjectCacheRepo := stubProjectRepository(nil, resp.projectCacheErr)
 		puc := NewProxyUsecase(mockCache, mockProxy, mockMetricsRepo, mockProjectRepo, mockProjectCacheRepo)
 
 		// When
-		resp, toRawProxy, err := puc.Proxy(r)
+		proxyResp, toRawProxy, err := puc.Proxy(req)
 
 		// Then
-		assert.Equal(t, expResp, resp)
-		assert.Equal(t, expToRawProxy, toRawProxy)
-		assert.Equal(t, expErr, err)
+		assert.Equal(t, resp.expResp, proxyResp)
+		assert.Equal(t, resp.expToRawProxy, toRawProxy)
+		assert.Equal(t, resp.expErr, err)
 	}
 }
 
