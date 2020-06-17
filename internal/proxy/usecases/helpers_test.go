@@ -31,6 +31,11 @@ func (m *mockMetricsRepository) Save(metrics *inputs.MetricsInput) error {
 	return args.Error(0)
 }
 
+func (m *mockMetricsRepository) SaveMany(metrics []*inputs.MetricsInput) error {
+	args := m.Called(metrics)
+	return args.Error(0)
+}
+
 func (m *mockMetricsRepository) CountAll(uuid string) (int, error) {
 	args := m.Called(uuid)
 	return args.Int(0), args.Error(1)
@@ -79,4 +84,27 @@ func (mp *mockProjectRepository) FindAll() ([]*pkgmodel.Project, error) {
 func (mp *mockProjectRepository) Ping() error {
 	args := mp.Called()
 	return args.Error(0)
+}
+
+type mockCacheMetricsRepository struct {
+	mock.Mock
+}
+
+func (m *mockCacheMetricsRepository) Add(metrics *inputs.MetricsInput) error {
+	args := m.Called(metrics)
+	return args.Error(0)
+}
+
+func (m *mockCacheMetricsRepository) GetAll() ([]*inputs.MetricsInput, error) {
+	args := m.Called()
+	if args.Get(0) != nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).([]*inputs.MetricsInput), args.Error(1)
+}
+
+func (m *mockCacheMetricsRepository) Len() int {
+	args := m.Called()
+	return args.Get(0).(int)
 }

@@ -21,6 +21,7 @@ type ProxyUsecase struct {
 	metricsRepo      pkgrepository.MetricsRepository
 	projectRepo      pkgrepository.ProjectRepository
 	projectCacheRepo pkgrepository.ProjectRepository
+	lruMetrics       repository.MetricInputRepository
 	whitelisted      []*regexp.Regexp
 	blacklisted      []*regexp.Regexp
 	dontCache        []*regexp.Regexp
@@ -40,13 +41,15 @@ func NewProxyUsecase(
 	proxyRepo repository.BlockchainRepository,
 	metricsRepo pkgrepository.MetricsRepository,
 	projectRepo pkgrepository.ProjectRepository,
-	projectCacheRepo pkgrepository.ProjectRepository) *ProxyUsecase {
+	projectCacheRepo pkgrepository.ProjectRepository,
+	lruMetrics repository.MetricInputRepository) *ProxyUsecase {
 	return &ProxyUsecase{
 		cacheRepo:        cacheRepo,
 		proxyRepo:        proxyRepo,
 		metricsRepo:      metricsRepo,
 		projectRepo:      projectRepo,
 		projectCacheRepo: projectCacheRepo,
+		lruMetrics:       lruMetrics,
 		whitelisted:      setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedMethods),
 		blacklisted:      setupRegexpFor(config.ProxyConfig.Proxy.BlockedMethods),
 		dontCache:        setupRegexpFor(config.ProxyConfig.Proxy.DontCache),
@@ -68,6 +71,22 @@ func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) error {
 	}
 
 	return nil
+}
+
+// WriteCachedRequestsRoutine  write metric cache in database
+func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
+	logrus.Info("func WriteCachedRequestsRoutine")
+	allRequests, err := p.lruMetrics.GetAll()
+	if err != nil {
+		logrus.Error("could not init the LRU cache")
+	}
+	logrus.Info("len data", len(allRequests))
+	err = p.metricsRepo.SaveMany(allRequests)
+	if err != nil {
+		logrus.Errorf("could not save metrics in database: %s", err)
+	}
+
+	time.Sleep(60 * time.Second)
 }
 
 // Proxy proxy an http request to the right repositories
@@ -112,10 +131,32 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 
 func (p *ProxyUsecase) saveMetrics(request *pkgmodel.Request) {
 	metrics := inputs.NewMetricsInput(request, time.Now().UTC())
-	err := p.metricsRepo.Save(&metrics)
+
+	// BEFORE
+	//err := p.metricsRepo.Save(&metrics)
+
+	// AFTER
+	// add to cache
+	err := p.lruMetrics.Add(&metrics) //TODO
 	if err != nil {
-		logrus.Errorf("could not save metrics: %s", err)
+		logrus.Error("could not init the LRU cache")
 	}
+
+	logrus.Info("metric input add to lruMetrics cache")
+	// check limit reached if yes save in database
+	nb := p.lruMetrics.Len()
+	if nb >= config.ProxyConfig.Proxy.CacheMaxMetricItems {
+		logrus.Info("metric top")
+		allRequests, err := p.lruMetrics.GetAll()
+		if err != nil {
+			logrus.Error("could not init the LRU cache")
+		}
+		err = p.metricsRepo.SaveMany(allRequests) // TODO
+		if err != nil {
+			logrus.Errorf("could not save metrics in database: %s", err)
+		}
+	}
+
 }
 
 func (p *ProxyUsecase) isAllowed(url string) bool {

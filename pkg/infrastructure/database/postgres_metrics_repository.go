@@ -4,12 +4,14 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
+
+	"github.com/lib/pq"
 	modelerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
 	"github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/octo-technology/tezos-link/backend/pkg/domain/repository"
 	"github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 type postgresMetricsRepository struct {
@@ -24,16 +26,59 @@ func NewPostgresMetricsRepository(connection *sql.DB) repository.MetricsReposito
 }
 
 // Save insert a new metrics
-func (pg postgresMetricsRepository) Save(metrics *inputs.MetricsInput) error {
+func (pg postgresMetricsRepository) Save(metricInput *inputs.MetricsInput) error {
 	_, err := pg.connection.
 		Exec("INSERT INTO metrics(path, uuid, remote_address, date_request) VALUES ($1, $2, $3, $4)",
-			metrics.Request.Path,
-			metrics.Request.UUID,
-			metrics.Request.RemoteAddr,
-			metrics.Date)
+			metricInput.Request.Path,
+			metricInput.Request.UUID,
+			metricInput.Request.RemoteAddr,
+			metricInput.Date)
 
 	if err != nil {
-		return fmt.Errorf("could not insert metrics for UUID %s: %s", metrics.Request.UUID, err)
+		return fmt.Errorf("could not insert metricInput for UUID %s: %s", metricInput.Request.UUID, err)
+	}
+
+	return nil
+}
+
+// insert many metrics
+func (pg postgresMetricsRepository) SaveMany(metricInputs []*inputs.MetricsInput) error {
+	txn, err := pg.connection.Begin()
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+
+	stmt, err := txn.Prepare(pq.CopyIn("metrics", "path", "uuid", "remote_address", "date_request"))
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+
+	for _, metricInput := range metricInputs {
+		_, err = stmt.Exec(metricInput.Request.Path, metricInput.Request.UUID, metricInput.Request.RemoteAddr, metricInput.Date)
+		if err != nil {
+			logrus.Error(err)
+			return err
+		}
+	}
+
+	_, err = stmt.Exec() // to flush data
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+
+	err = stmt.Close()
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+
+	err = txn.Commit()
+	if err != nil {
+		logrus.Error(err)
+		return err
 	}
 
 	return nil

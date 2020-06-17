@@ -3,12 +3,13 @@ package config
 import (
 	"errors"
 	"fmt"
-	"github.com/BurntSushi/toml"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/BurntSushi/toml"
+	"github.com/sirupsen/logrus"
 )
 
 type ProxyConf struct {
@@ -34,6 +35,8 @@ type ProxyConf struct {
 		RateLimitCount                  int64
 		BlockchainRequestsCacheMaxItems int
 		ProjectsCacheMaxItems           int
+		CacheMaxMetricItems             int
+		CacheMaxItems                   int
 	}
 }
 
