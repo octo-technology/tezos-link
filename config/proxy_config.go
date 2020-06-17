@@ -3,12 +3,13 @@ package config
 import (
 	"errors"
 	"fmt"
-	"github.com/BurntSushi/toml"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/BurntSushi/toml"
+	"github.com/sirupsen/logrus"
 )
 
 type ProxyConf struct {
@@ -24,15 +25,16 @@ type ProxyConf struct {
 		Url string
 	}
 	Proxy struct {
-		ReadTimeout        int
-		WriteTimeout       int
-		IdleTimeout        int
-		WhitelistedMethods []string
-		BlockedMethods     []string
-		DontCache          []string
-		RateLimitPeriod    int
-		RateLimitCount     int64
-		CacheMaxItems      int
+		ReadTimeout         int
+		WriteTimeout        int
+		IdleTimeout         int
+		WhitelistedMethods  []string
+		BlockedMethods      []string
+		DontCache           []string
+		RateLimitPeriod     int
+		RateLimitCount      int64
+		CacheMaxItems       int
+		CacheMaxMetricItems int
 	}
 }
 

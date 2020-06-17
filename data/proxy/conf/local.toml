@@ -20,3 +20,4 @@ dontCache = [
 rateLimitPeriod = 100
 rateLimitCount = 1000000
 cacheMaxItems = 2000
+cacheMaxMetricItems = 100

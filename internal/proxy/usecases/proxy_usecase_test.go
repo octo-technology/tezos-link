@@ -8,6 +8,7 @@ import (
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	dbinputs "github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
 	"github.com/stretchr/testify/mock"
 	"io/ioutil"
 	"net/http"
@@ -159,8 +160,9 @@ func testProxyUsecaseFunc(
 		mockCache := stubBlockchainRepository([]byte("Dummy cache response"), cacheErr)
 		mockProxy := stubBlockchainRepository([]byte("Dummy proxy response"), proxyErr)
 		mockMetricsRepo := stubMetricsRepository(metricErr)
+		mockCacheMetricsRepo := stubCacheMetricsRepository(nil)
 		mockProjectRepo := stubProjectRepository(projectErr)
-		puc := NewProxyUsecase(mockCache, mockProxy, mockMetricsRepo, mockProjectRepo)
+		puc := NewProxyUsecase(mockCache, mockProxy, mockMetricsRepo, mockProjectRepo, mockCacheMetricsRepo)
 
 		// When
 		resp, toRawProxy, err := puc.Proxy(r)
@@ -191,7 +193,31 @@ func stubMetricsRepository(error error) *mockMetricsRepository {
 		On("Save", mock.Anything).
 		Return(error).
 		Once()
+	mockMetricsRepository.
+		On("SaveMany", mock.Anything).
+		Return(error).
+		Once()
 	return mockMetricsRepository
+}
+
+func stubCacheMetricsRepository(error error) *mockCacheMetricsRepository {
+	mockCacheMetricsRepository := &mockCacheMetricsRepository{}
+	// TODO Add the stubs
+	mockCacheMetricsRepository.
+		On("Add", mock.Anything).
+		Return(error).
+		Once()
+	mockCacheMetricsRepository.
+		On("Len").
+		Return(10).
+		Once()
+
+	noinputs := make([]*dbinputs.MetricsInput, 0)
+	mockCacheMetricsRepository.
+		On("GetAll").
+		Return(noinputs, error).
+		Once()
+	return mockCacheMetricsRepository
 }
 
 func stubProjectRepository(error error) *mockProjectRepository {

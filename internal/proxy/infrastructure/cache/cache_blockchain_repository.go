@@ -9,23 +9,23 @@ import (
 	"log"
 )
 
-type lruBlockchainRepository struct {
+type cacheBlockchainRepository struct {
 	cache *lru.Cache
 }
 
-// NewLruBlockchainRepository returns a new blockchain LRU cache repository
-func NewLruBlockchainRepository() repository.BlockchainRepository {
+// NewCacheBlockchainRepository returns a new blockchain LRU cache repository
+func NewCacheBlockchainRepository() repository.BlockchainRepository {
 	cache, err := lru.New(config.ProxyConfig.Proxy.CacheMaxItems)
 	if err != nil {
 		log.Fatal("could not init the LRU cache")
 	}
 
-	return &lruBlockchainRepository{
+	return &cacheBlockchainRepository{
 		cache: cache,
 	}
 }
 
-func (l lruBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, error) {
+func (l cacheBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, error) {
 	val, ok := l.cache.Get(request.Path)
 	if !ok {
 		return nil, fmt.Errorf("could not get cache for path: %s", request.Path)
@@ -34,7 +34,7 @@ func (l lruBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, er
 	return val, nil
 }
 
-func (l lruBlockchainRepository) Add(request *pkgmodel.Request, response interface{}) error {
+func (l cacheBlockchainRepository) Add(request *pkgmodel.Request, response interface{}) error {
 	l.cache.Add(request.Path, response)
 
 	return nil

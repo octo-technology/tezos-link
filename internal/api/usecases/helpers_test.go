@@ -40,6 +40,11 @@ func (m *mockMetricsRepository) Save(metrics *inputs.MetricsInput) error {
 	return args.Error(0)
 }
 
+func (m *mockMetricsRepository) SaveMany(metrics []*inputs.MetricsInput) error {
+	args := m.Called(metrics)
+	return args.Error(0)
+}
+
 func (m *mockMetricsRepository) CountAll(uuid string) (int, error) {
 	args := m.Called(uuid)
 	return args.Int(0), args.Error(1)

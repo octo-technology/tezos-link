@@ -40,6 +40,12 @@ func init() {
 	database.Configure()
 }
 
+func writeCachedRequestsRoutine(p *usecases.ProxyUsecase) {
+	for true {
+		p.WriteCachedRequestsRoutine()
+	}
+}
+
 func main() {
 	reverseURL, err := url.Parse("http://" + config.ProxyConfig.Tezos.Host + ":" + strconv.Itoa(config.ProxyConfig.Tezos.Port))
 	if err != nil {
@@ -49,13 +55,18 @@ func main() {
 	reverseProxy := httputil.NewSingleHostReverseProxy(reverseURL)
 
 	// Repositories
-	lruRepo := cache.NewLruBlockchainRepository()
+	cacheBlockchainRepo := cache.NewCacheBlockchainRepository()
 	proxyRepo := proxy.NewProxyBlockchainRepository()
 	projectRepo := pkgdatabase.NewPostgresProjectRepository(database.Connection)
 	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
 
+	cacheMetricsRepo := cache.NewCacheMetricsRepository()
+
 	// Use cases
-	proxyUsecase := usecases.NewProxyUsecase(lruRepo, proxyRepo, metricsRepo, projectRepo)
+	proxyUsecase := usecases.NewProxyUsecase(cacheBlockchainRepo, proxyRepo, metricsRepo, projectRepo, cacheMetricsRepo)
+
+	// Routine
+	go writeCachedRequestsRoutine(proxyUsecase)
 
 	// HTTP API
 	server := http.Server{
