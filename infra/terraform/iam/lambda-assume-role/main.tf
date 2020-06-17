@@ -16,9 +16,6 @@ data "aws_iam_policy_document" "tzlink_lambda_access" {
   statement {
 
     actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
       "s3:*"
     ]
 
@@ -27,6 +24,19 @@ data "aws_iam_policy_document" "tzlink_lambda_access" {
       "arn:aws:s3:::tzlink-blockchain-data-dev/*",
       "arn:aws:s3:::tzlink-snapshot-lambda-dev",
       "arn:aws:s3:::tzlink-snapshot-lambda-dev/*"
+    ]
+  }
+
+  statement {
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+
+    resources = [
+      "*"
     ]
   }
 

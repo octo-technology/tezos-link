@@ -3,15 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"golang.org/x/crypto/ssh"
 	"io"
 	"log"
 	"os"
+
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"golang.org/x/crypto/ssh"
 )
 
 func main() {
@@ -30,16 +32,18 @@ func HandleRequest(ctx context.Context) (string, error) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	conn, err := ssh.Dial("tcp", os.Getenv("NODE_IP")+":22", config)
+	instanceIp := *getInstanceIP()
+
+	conn, err := ssh.Dial("tcp", instanceIp+":22", config)
 	if err != nil {
 		panic(err)
 	}
 	defer conn.Close()
 
-	runCommand("nohup sh export-tezos-snap.sh &", conn)
+	runCommand("sudo systemctl start tezos-backup", conn)
 
-	log.Print("snapshot done")
-	return "snapshot done.", nil
+	log.Print("snapshot service started")
+	return "snapshot service started.", nil
 }
 
 func getPublicKeyFromS3() ssh.AuthMethod {
@@ -67,6 +71,66 @@ func getPublicKeyFromS3() ssh.AuthMethod {
 
 	log.Print("got private key from S3 bucket.")
 	return ssh.PublicKeys(signer)
+}
+
+func getInstanceIP() *string {
+	sess, _ := session.NewSession(&aws.Config{
+		Region: aws.String(os.Getenv("S3_REGION"))},
+	)
+
+	svc := ec2.New(sess)
+
+	params := &ec2.DescribeInstancesInput{
+		Filters: []*ec2.Filter{
+			&ec2.Filter{
+				Name: aws.String("instance-state-name"),
+				Values: []*string{
+					aws.String("running"),
+				},
+			},
+			&ec2.Filter{
+				Name: aws.String("tag:Name"),
+				Values: []*string{
+					aws.String("tzlink-mainnet"),
+				},
+			},
+			&ec2.Filter{
+				Name: aws.String("tag:Project"),
+				Values: []*string{
+					aws.String("tezos-link"),
+				},
+			},
+			&ec2.Filter{
+				Name: aws.String("tag:BuildWith"),
+				Values: []*string{
+					aws.String("terraform"),
+				},
+			},
+			&ec2.Filter{
+				Name: aws.String("tag:aws:autoscaling:groupName"),
+				Values: []*string{
+					aws.String("tzlink-mainnet-archive"),
+				},
+			},
+			&ec2.Filter{
+				Name: aws.String("tag:Mode"),
+				Values: []*string{
+					aws.String("archive"),
+				},
+			},
+		}}
+
+	res, err := svc.DescribeInstances(params)
+
+	if err != nil {
+		panic(fmt.Sprintf("Error when describe instances :  %v", err))
+	}
+
+	firstIp := res.Reservations[0].Instances[0].PublicIpAddress
+
+	log.Print(fmt.Sprintf("Running lambda on instance : %s", *firstIp))
+
+	return firstIp
 }
 
 func runCommand(cmd string, conn *ssh.Client) {

@@ -2,15 +2,6 @@ data "aws_iam_role" "tzlink_lambdas_access" {
   name = "tzlink_lambdas_access"
 }
 
-data "aws_instances" "tz_nodes" {
-  filter {
-    name   = "tag:Name"
-    values = ["tzlink-mainnet"]
-  }
-
-  instance_state_names = ["running"]
-}
-
 resource "aws_s3_bucket" "snapshot_lambda" {
   bucket = format("tzlink-snapshot-lambda-%s", var.ENV)
   acl    = "private"
@@ -30,12 +21,11 @@ resource "aws_lambda_function" "snapshot_lambda" {
   handler       = "main"
   runtime       = "go1.x"
   description   = "Snapshot exporter Lambda"
-  timeout       = 900
+  timeout       = 900 # sec
 
   environment {
     variables = {
       NODE_USER     = var.NODE_USER
-      NODE_IP       = data.aws_instances.tz_nodes.ids[0] #data.aws_instance.tz_node.public_ip
       S3_REGION     = var.REGION
       S3_BUCKET     = aws_s3_bucket.snapshot_lambda.bucket
       S3_LAMBDA_KEY = var.S3_LAMBDA_KEY
