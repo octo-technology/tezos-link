@@ -1,10 +1,11 @@
 package usecases
 
 import (
+	"time"
+
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
 	"github.com/stretchr/testify/mock"
-	"time"
 )
 
 type mockBlockchainRepository struct {
@@ -61,11 +62,17 @@ type mockProjectRepository struct {
 
 func (mp *mockProjectRepository) FindByUUID(uuid string) (*pkgmodel.Project, error) {
 	args := mp.Called(uuid)
-	return nil, args.Error(1)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*pkgmodel.Project), args.Error(1)
 }
 
 func (mp *mockProjectRepository) Save(title string, uuid string, creationDate time.Time) (*pkgmodel.Project, error) {
 	args := mp.Called(title, uuid, creationDate)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*pkgmodel.Project), args.Error(1)
 }
 

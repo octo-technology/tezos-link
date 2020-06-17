@@ -2,11 +2,12 @@ package cache
 
 import (
 	"fmt"
+	"log"
+
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/repository"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
-	"log"
 )
 
 type cacheBlockchainRepository struct {

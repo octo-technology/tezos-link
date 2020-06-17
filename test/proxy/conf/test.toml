@@ -25,5 +25,7 @@ dontCache = [
 ]
 rateLimitPeriod = 100
 rateLimitCount = 100
-cacheMaxItems = 2000
+blockchainRequestsCacheMaxItems = 2000
+projectsCacheMaxItems = 1000
 cacheMaxMetricItems = 100
+cacheMaxItems = 1000

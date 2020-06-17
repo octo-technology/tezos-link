@@ -3,6 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"strconv"
+	"time"
+
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
@@ -12,14 +19,9 @@ import (
 	httpinfra "github.com/octo-technology/tezos-link/backend/internal/proxy/infrastructure/http"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/infrastructure/proxy"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/usecases"
+	pkgcache "github.com/octo-technology/tezos-link/backend/pkg/infrastructure/cache"
 	pkgdatabase "github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database"
 	"github.com/sirupsen/logrus"
-	"log"
-	"net/http"
-	"net/http/httputil"
-	"net/url"
-	"strconv"
-	"time"
 )
 
 var configPath = flag.String("conf", "", "Path to TOML config")
@@ -58,12 +60,18 @@ func main() {
 	cacheBlockchainRepo := cache.NewCacheBlockchainRepository()
 	proxyRepo := proxy.NewProxyBlockchainRepository()
 	projectRepo := pkgdatabase.NewPostgresProjectRepository(database.Connection)
+	cacheProjectRepo := pkgcache.NewLRUProjectRepository()
 	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
+	cacheMetricsRepo := cache.NewCacheMetricsRepository()
 
 	cacheMetricsRepo := cache.NewCacheMetricsRepository()
 
 	// Use cases
+<<<<<<< HEAD
 	proxyUsecase := usecases.NewProxyUsecase(cacheBlockchainRepo, proxyRepo, metricsRepo, projectRepo, cacheMetricsRepo)
+=======
+	proxyUsecase := usecases.NewProxyUsecase(cacheBlockchainRepo, proxyRepo, metricsRepo, projectRepo, cacheProjectRepo, cacheMetricsRepo)
+>>>>>>> b6bf93d452ef683c38f71adbc215e1d7dafde8a6
 
 	// Routine
 	go writeCachedRequestsRoutine(proxyUsecase)

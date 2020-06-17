@@ -16,14 +16,15 @@ import (
 
 // ProxyUsecase contains the repositories and regexes to route paths proxying and store metrics
 type ProxyUsecase struct {
-	cacheRepo   repository.BlockchainRepository
-	proxyRepo   repository.BlockchainRepository
-	metricsRepo pkgrepository.MetricsRepository
-	projectRepo pkgrepository.ProjectRepository
-	lruMetrics  repository.MetricInputRepository
-	whitelisted []*regexp.Regexp
-	blacklisted []*regexp.Regexp
-	dontCache   []*regexp.Regexp
+	cacheRepo        repository.BlockchainRepository
+	proxyRepo        repository.BlockchainRepository
+	metricsRepo      pkgrepository.MetricsRepository
+	projectRepo      pkgrepository.ProjectRepository
+	projectCacheRepo pkgrepository.ProjectRepository
+	lruMetrics       repository.MetricInputRepository
+	whitelisted      []*regexp.Regexp
+	blacklisted      []*regexp.Regexp
+	dontCache        []*regexp.Regexp
 }
 
 // ProxyUsecaseInterface contains all methods implemented by the proxyRepo use-case
@@ -40,22 +41,38 @@ func NewProxyUsecase(
 	proxyRepo repository.BlockchainRepository,
 	metricsRepo pkgrepository.MetricsRepository,
 	projectRepo pkgrepository.ProjectRepository,
-	lruMetrics repository.MetricInputRepository,
-) *ProxyUsecase {
-
+	projectCacheRepo pkgrepository.ProjectRepository,
+	lruMetrics repository.MetricInputRepository) *ProxyUsecase {
 	return &ProxyUsecase{
-		cacheRepo:   cacheRepo,
-		proxyRepo:   proxyRepo,
-		metricsRepo: metricsRepo,
-		projectRepo: projectRepo,
-		lruMetrics:  lruMetrics,
-		whitelisted: setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedMethods),
-		blacklisted: setupRegexpFor(config.ProxyConfig.Proxy.BlockedMethods),
-		dontCache:   setupRegexpFor(config.ProxyConfig.Proxy.DontCache),
+		cacheRepo:        cacheRepo,
+		proxyRepo:        proxyRepo,
+		metricsRepo:      metricsRepo,
+		projectRepo:      projectRepo,
+		projectCacheRepo: projectCacheRepo,
+		lruMetrics:       lruMetrics,
+		whitelisted:      setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedMethods),
+		blacklisted:      setupRegexpFor(config.ProxyConfig.Proxy.BlockedMethods),
+		dontCache:        setupRegexpFor(config.ProxyConfig.Proxy.DontCache),
 	}
 }
 
-// TODO move this function to a separate usecase
+func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) error {
+	_, err := p.projectCacheRepo.FindByUUID(UUID)
+
+	if err != nil {
+		logrus.Debug("project ID not found in cache: ", UUID, err.Error())
+		prj, err := p.projectRepo.FindByUUID(UUID)
+		if err != nil {
+			logrus.Debug("project ID not found: ", UUID, err.Error())
+			return err
+		}
+
+		_, err = p.projectCacheRepo.Save(prj.Title, prj.UUID, prj.CreationDate)
+	}
+
+	return nil
+}
+
 func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 	logrus.Info("func WriteCachedRequestsRoutine")
 	allRequests, err := p.lruMetrics.GetAll()
@@ -76,9 +93,9 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 	logrus.Info("received proxy request for path: ", request.Path)
 	response := []byte("call blacklisted")
 
-	_, err := p.projectRepo.FindByUUID(request.UUID)
+	err := p.findInDatabaseIfNotFoundInCache(request.UUID)
+
 	if err != nil {
-		logrus.Debug("project ID not found: ", request.UUID, err.Error())
 		return err.Error(), false, err
 	}
 
