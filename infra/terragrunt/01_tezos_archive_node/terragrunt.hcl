@@ -12,6 +12,7 @@ terraform {
 
 inputs = {
   TZ_NETWORK = "mainnet"
+  TZ_MODE    = "archive"
 
   MIN_INSTANCE_NUMBER = 1
   DESIRED_INSTANCE_NUMBER = 1

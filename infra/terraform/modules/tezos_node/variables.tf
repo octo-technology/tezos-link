@@ -10,6 +10,13 @@ variable "TZ_NETWORK" {
   description = "The current network to deploy in the tezos_node. (possible choice: mainnet, carthagenet)"
 }
 
+variable "TZ_MODE" {
+  type    = string
+  default = "archive"
+
+  description = "The current mode of the node wanted (archive, rolling)"
+}
+
 variable "PROJECT_NAME" {
   type    = string
   default = "tezos-link"

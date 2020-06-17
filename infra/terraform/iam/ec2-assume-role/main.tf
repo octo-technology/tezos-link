@@ -29,4 +29,16 @@ data "aws_iam_policy_document" "tzlink_backup_access" {
       "arn:aws:s3:::tzlink-tfstate/*"
     ]
   }
+  statement {
+    sid = "2"
+
+    actions = [
+      "autoscaling:SuspendProcesses",
+      "autoscaling:ResumeProcesses"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
 }
