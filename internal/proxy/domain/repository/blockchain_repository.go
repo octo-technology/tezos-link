@@ -8,4 +8,5 @@ import (
 type BlockchainRepository interface {
 	Get(request *pkgmodel.Request) (interface{}, error)
 	Add(request *pkgmodel.Request, response interface{}) error
+	IsRollingRedirection(url string) bool
 }

@@ -40,3 +40,7 @@ func (l cacheBlockchainRepository) Add(request *pkgmodel.Request, response inter
 
 	return nil
 }
+
+func (p lruBlockchainRepository) IsRollingRedirection(url string) bool {
+	panic("not implemented")
+}

@@ -3,6 +3,9 @@ debug = true
 [tezos]
 host = "127.0.0.1"
 port = 8765
+whitelistedRolling = [
+ "(.*?)/blocks(.*?)head(.*?)"
+]
 
 [server]
 port = 8899

@@ -1,8 +1,6 @@
 package proxy
 
 import (
-	"regexp"
-	"strings"
 	"fmt"
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/repository"
@@ -10,7 +8,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -39,7 +39,7 @@ func (p proxyBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, 
 	// redirect to Archive nodes by default
 	url := p.baseArchiveURL + request.Path
 	//if strings.Contains(request.Path, "/block/head") {
-	if p.isRollingRedirection(request.Path) {
+	if p.IsRollingRedirection(request.Path) {
 		url = p.baseRollingURL + request.Path
 	}
 
@@ -71,7 +71,7 @@ func (p proxyBlockchainRepository) Add(request *pkgmodel.Request, response inter
 	panic("not implemented")
 }
 
-func (p *proxyBlockchainRepository) isRollingRedirection(url string) bool {
+func (p proxyBlockchainRepository) IsRollingRedirection(url string) bool {
 	ret := false
 	urls := strings.Split(url, "?")
 	url = "/" + strings.Trim(urls[0], "/")

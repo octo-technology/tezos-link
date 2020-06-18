@@ -115,6 +115,7 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 	expResponse.projectDatabaseResponse = &prj
 	t.Run("Returns no response When there is no cache and an proxy error",
 		testProxyUsecaseFunc(&whitelistedCacheableNotCachedRequest, &expResponse))
+
 }
 
 func testProxyUsecaseFunc(req *pkgmodel.Request, resp *dummyResponse) func(t *testing.T) {
@@ -148,6 +149,10 @@ func stubBlockchainRepository(response interface{}, error error) *mockBlockchain
 	mockBlockchainRepository.
 		On("Add", mock.Anything, mock.Anything).
 		Return(error).
+		Once()
+	mockBlockchainRepository.
+		On("IsRollingRedirection", mock.Anything).
+		Return(true).
 		Once()
 	return mockBlockchainRepository
 }
