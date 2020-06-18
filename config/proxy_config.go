@@ -14,11 +14,11 @@ import (
 type ProxyConf struct {
 	Debug bool
 	Tezos struct {
-		ArchiveHost string
-		Port        int
-		RollingHost string
-		RollingPort int
-		WhitelistedRolling	[]string
+		ArchiveHost        string
+		Port               int
+		RollingHost        string
+		RollingPort        int
+		WhitelistedRolling []string
 	}
 	Server struct {
 		Port int

@@ -15,9 +15,9 @@ import (
 )
 
 type proxyBlockchainRepository struct {
-	baseArchiveURL 	string
-	baseRollingURL 	string
-	client         	*http.Client
+	baseArchiveURL  string
+	baseRollingURL  string
+	client          *http.Client
 	rollingPatterns []*regexp.Regexp
 }
 
@@ -28,9 +28,9 @@ func NewProxyBlockchainRepository() repository.BlockchainRepository {
 	client := &http.Client{Timeout: time.Duration(config.ProxyConfig.Proxy.ReadTimeout) * time.Second}
 
 	return &proxyBlockchainRepository{
-		baseArchiveURL: baseArchiveURL,
-		baseRollingURL: baseRollingURL,
-		client:         client,
+		baseArchiveURL:  baseArchiveURL,
+		baseRollingURL:  baseRollingURL,
+		client:          client,
 		rollingPatterns: setupRegexpFor(config.ProxyConfig.Tezos.WhitelistedRolling),
 	}
 }
