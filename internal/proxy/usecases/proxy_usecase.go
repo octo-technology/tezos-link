@@ -132,12 +132,8 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 func (p *ProxyUsecase) saveMetrics(request *pkgmodel.Request) {
 	metrics := inputs.NewMetricsInput(request, time.Now().UTC())
 
-	// BEFORE
-	//err := p.metricsRepo.Save(&metrics)
-
-	// AFTER
 	// add to cache
-	err := p.lruMetrics.Add(&metrics) //TODO
+	err := p.lruMetrics.Add(&metrics)
 	if err != nil {
 		logrus.Error("could not init the LRU cache")
 	}
@@ -151,7 +147,7 @@ func (p *ProxyUsecase) saveMetrics(request *pkgmodel.Request) {
 		if err != nil {
 			logrus.Error("could not init the LRU cache")
 		}
-		err = p.metricsRepo.SaveMany(allRequests) // TODO
+		err = p.metricsRepo.SaveMany(allRequests)
 		if err != nil {
 			logrus.Errorf("could not save metrics in database: %s", err)
 		}
