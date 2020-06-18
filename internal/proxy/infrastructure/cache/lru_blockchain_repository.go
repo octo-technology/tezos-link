@@ -39,3 +39,7 @@ func (l lruBlockchainRepository) Add(request *pkgmodel.Request, response interfa
 
 	return nil
 }
+
+func (p lruBlockchainRepository) IsRollingRedirection(url string) bool {
+	panic("not implemented")
+}

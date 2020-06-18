@@ -3,6 +3,9 @@ debug = true
 [tezos]
 host = "127.0.0.1"
 port = 8765
+whitelistedRolling = [
+ "(.*?)/blocks(.*?)head(.*?)"
+]
 
 [server]
 port = 8899
@@ -27,7 +30,3 @@ rateLimitPeriod = 100
 rateLimitCount = 100
 blockchainRequestsCacheMaxItems = 2000
 projectsCacheMaxItems = 1000
-
-whitelistedRolling = [
- "(.*?)/blocks(.*?)head(.*?)"
-]

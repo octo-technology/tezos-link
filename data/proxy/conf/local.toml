@@ -1,5 +1,10 @@
 debug = true
 
+[tezos]
+whitelistedRolling = [
+ "(.*?)/blocks(.*?)head(.*?)"
+]
+
 [proxy]
 readTimeout = 1
 writeTimeout = 5
@@ -22,6 +27,3 @@ rateLimitCount = 1000000
 blockchainRequestsCacheMaxItems = 2000
 projectsCacheMaxItems = 1000
 
-whitelistedRolling = [
- "(.*?)/blocks(.*?)head(.*?)"
-]
