@@ -61,7 +61,12 @@ variable "DATABASE_TABLE" {
   default = "tezoslink"
 }
 
-variable "TEZOS_FARM_PORT" {
+variable "TEZOS_FARM_ARCHIVE_PORT" {
+  type    = string
+  default = 80
+}
+
+variable "TEZOS_FARM_ROLLING_PORT" {
   type    = string
   default = 80
 }
