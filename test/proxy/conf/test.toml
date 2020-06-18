@@ -27,3 +27,7 @@ rateLimitPeriod = 100
 rateLimitCount = 100
 blockchainRequestsCacheMaxItems = 2000
 projectsCacheMaxItems = 1000
+
+whitelistedRolling = [
+ "(.*?)/blocks(.*?)head(.*?)"
+]

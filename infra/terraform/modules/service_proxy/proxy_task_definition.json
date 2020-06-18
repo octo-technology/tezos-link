@@ -39,12 +39,20 @@
           "value": "${database_table}"
         },
         {
-          "name": "TEZOS_HOST",
+          "name": "ARCHIVE_NODES_URL",
           "value": "${tezos_archive_hostname}"
         },
         {
           "name": "TEZOS_PORT",
           "value": "${tezos_archive_port}"
+        },
+        {
+          "name": "ROLLING_NODES_URL",
+          "value": "${tezos_rolling_hostname}"
+        },
+        {
+          "name": "TEZOS_ROLLING_PORT",
+          "value": "${tezos_rolling_port}"
         },
         {
           "name": "ENV",

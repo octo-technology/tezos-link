@@ -43,7 +43,7 @@ func init() {
 }
 
 func main() {
-	reverseURL, err := url.Parse("http://" + config.ProxyConfig.Tezos.Host + ":" + strconv.Itoa(config.ProxyConfig.Tezos.Port))
+	reverseURL, err := url.Parse("http://" + config.ProxyConfig.Tezos.ArchiveHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.Port))
 	if err != nil {
 		log.Fatal(fmt.Sprintf("could not read blockchain node reverse url from configuration: %s", err))
 	}
