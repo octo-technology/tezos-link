@@ -86,7 +86,7 @@ func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 		logrus.Errorf("could not save metrics in database: %s", err)
 	}
 
-	time.Sleep(60 * time.Second)
+	time.Sleep(time.Duration(config.ProxyConfig.Proxy.RoutineDelaySeconds) * time.Second)
 }
 
 // Proxy proxy an http request to the right repositories

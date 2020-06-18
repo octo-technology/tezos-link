@@ -22,3 +22,4 @@ rateLimitCount = 1000000
 blockchainRequestsCacheMaxItems = 2000
 projectsCacheMaxItems = 1000
 cacheMaxMetricItems = 100
+routineDelaySeconds = 60
