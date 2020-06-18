@@ -16,7 +16,7 @@ type cacheBlockchainRepository struct {
 
 // NewCacheBlockchainRepository returns a new blockchain LRU cache repository
 func NewCacheBlockchainRepository() repository.BlockchainRepository {
-	cache, err := lru.New(config.ProxyConfig.Proxy.CacheMaxItems)
+	cache, err := lru.New(config.ProxyConfig.Proxy.BlockchainRequestsCacheMaxItems)
 	if err != nil {
 		log.Fatal("could not init the LRU cache")
 	}
