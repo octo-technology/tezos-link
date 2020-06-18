@@ -26,7 +26,7 @@ var doc = `{
         "license": {},
         "version": "{{.Version}}"
     },
-    "host": "{{.Host}}",
+    "host": "{{.ArchiveHost}}",
     "basePath": "{{.BasePath}}",
     "paths": {
         "/health": {
