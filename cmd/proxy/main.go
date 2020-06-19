@@ -64,14 +64,8 @@ func main() {
 	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(database.Connection)
 	cacheMetricsRepo := cache.NewCacheMetricsRepository()
 
-	cacheMetricsRepo := cache.NewCacheMetricsRepository()
-
 	// Use cases
-<<<<<<< HEAD
-	proxyUsecase := usecases.NewProxyUsecase(cacheBlockchainRepo, proxyRepo, metricsRepo, projectRepo, cacheMetricsRepo)
-=======
 	proxyUsecase := usecases.NewProxyUsecase(cacheBlockchainRepo, proxyRepo, metricsRepo, projectRepo, cacheProjectRepo, cacheMetricsRepo)
->>>>>>> b6bf93d452ef683c38f71adbc215e1d7dafde8a6
 
 	// Routine
 	go writeCachedRequestsRoutine(proxyUsecase)

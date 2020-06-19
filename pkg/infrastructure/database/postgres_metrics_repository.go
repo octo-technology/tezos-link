@@ -45,39 +45,33 @@ func (pg postgresMetricsRepository) Save(metricInput *inputs.MetricsInput) error
 func (pg postgresMetricsRepository) SaveMany(metricInputs []*inputs.MetricsInput) error {
 	txn, err := pg.connection.Begin()
 	if err != nil {
-		logrus.Error(err)
 		return err
 	}
 
 	stmt, err := txn.Prepare(pq.CopyIn("metrics", "path", "uuid", "remote_address", "date_request"))
 	if err != nil {
-		logrus.Error(err)
 		return err
 	}
 
 	for _, metricInput := range metricInputs {
 		_, err = stmt.Exec(metricInput.Request.Path, metricInput.Request.UUID, metricInput.Request.RemoteAddr, metricInput.Date)
 		if err != nil {
-			logrus.Error(err)
 			return err
 		}
 	}
 
 	_, err = stmt.Exec() // to flush data
 	if err != nil {
-		logrus.Error(err)
 		return err
 	}
 
 	err = stmt.Close()
 	if err != nil {
-		logrus.Error(err)
 		return err
 	}
 
 	err = txn.Commit()
 	if err != nil {
-		logrus.Error(err)
 		return err
 	}
 
