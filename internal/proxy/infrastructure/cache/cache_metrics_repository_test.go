@@ -1,12 +1,13 @@
 package cache
 
 import (
+	"testing"
+	"time"
+
 	"github.com/bmizerany/assert"
 	"github.com/octo-technology/tezos-link/backend/config"
 	"github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
-	"testing"
-	"time"
 )
 
 func TestCacheMetricsRepository_Add_Unit(t *testing.T) {
@@ -27,12 +28,14 @@ func TestCacheMetricsRepository_Add_Unit(t *testing.T) {
 
 	// When
 	err = cacheMetricsRepo.Add(&firstMetric)
+	nb := cacheMetricsRepo.Len()
 
 	// Then
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	assert.Equal(t, nb, 1)
 }
 
 func TestCacheMetricsRepository_GetAll_Unit(t *testing.T) {

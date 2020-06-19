@@ -36,7 +36,7 @@ type ProxyConf struct {
 		BlockchainRequestsCacheMaxItems int
 		ProjectsCacheMaxItems           int
 		CacheMaxMetricItems             int
-		CacheMaxItems                   int
+		RoutineDelaySeconds             int
 	}
 }
 
