@@ -38,7 +38,6 @@ func NewProxyBlockchainRepository() repository.BlockchainRepository {
 func (p proxyBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, error) {
 	// redirect to Archive nodes by default
 	url := p.baseArchiveURL + request.Path
-	//if strings.Contains(request.Path, "/block/head") {
 	if p.IsRollingRedirection(request.Path) {
 		url = p.baseRollingURL + request.Path
 	}
