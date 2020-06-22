@@ -22,6 +22,12 @@ variable "BUILD_WITH" {
   default     = "terraform"
 }
 
+variable "VPC_CIDR" {
+  type        = string
+  description = "The CIDR of the VPC where the lambda will be placed"
+  default     = ""
+}
+
 variable "S3_BUCKET_NAME" {
   type        = string
   description = "The S3 bucket name that will be associated to the lambda"
@@ -47,6 +53,24 @@ variable "LAMBDA_ENVIRONMENT_VARIABLES" {
   type        = map(string)
   description = "The environment variables to give to the lambda."
   default     = {}
+}
+
+variable "LAMBDA_VPC_CONFIG_ENABLE" {
+  type = bool
+  description = "Permits to put the lambda in the VPC or not."
+  default = false
+}
+
+variable "LAMBDA_SUBNET_NAME" {
+  type = string
+  description = "The subnet where the lambda will be placed (regex autorized)."
+  default = ""
+}
+
+variable "LAMBDA_SECURITY_GROUP_NAME" {
+  type = string
+  description = "The security_group associated to the lamdba."
+  default = ""
 }
 
 variable "RUN_EVERY" {
