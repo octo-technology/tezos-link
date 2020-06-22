@@ -5,7 +5,7 @@ on:
     paths:
     - 'cmd/snapshot/**'
     - 'Makefile'
-    - '.github/workflows/cicd_lambda.yml'
+    - '.github/workflows/cicd_lambda_snapshot.yml'
 
 jobs:
   build:
