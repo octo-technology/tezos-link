@@ -75,16 +75,16 @@ func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) error {
 
 func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 	logrus.Info("Starting to write cached requests to database")
-	allRequests, err := p.metricsCacheRepo.GetAll()
+	cachedMetrics, err := p.metricsCacheRepo.GetAll()
 	if err != nil {
-		logrus.Error("could not init the LRU cache")
+		logrus.Errorf("could not get cached metrics: %s", err)
 	}
-	logrus.Info("len data", len(allRequests))
-	err = p.metricsRepo.SaveMany(allRequests)
+	logrus.Infof("got %d cached metrics", len(cachedMetrics))
+	err = p.metricsRepo.SaveMany(cachedMetrics)
 	if err != nil {
 		logrus.Errorf("could not save metrics in database: %s", err)
 	}
-
+	logrus.Infof("Successfully saved %d cached metrics in database", len(cachedMetrics))
 	time.Sleep(time.Duration(config.ProxyConfig.Proxy.RoutineDelaySeconds) * time.Second)
 }
 
@@ -134,17 +134,17 @@ func (p *ProxyUsecase) saveMetrics(request *pkgmodel.Request) {
 	// add to cache
 	err := p.metricsCacheRepo.Add(&metrics)
 	if err != nil {
-		logrus.Error("could not init the LRU cache")
+		logrus.Errorf("could not cache the metrics: %s", err)
 	}
 
-	logrus.Info("metric input add to metricsCacheRepo cache")
+	logrus.Info("metric input has been added to cache metrics")
 	// check limit reached if yes save in database
 	nb := p.metricsCacheRepo.Len()
 	if nb >= config.ProxyConfig.Proxy.CacheMaxMetricItems {
-		logrus.Info("metric top")
+		logrus.Info("cache metrics limit has been reached, saving cached metrics in database ...")
 		allRequests, err := p.metricsCacheRepo.GetAll()
 		if err != nil {
-			logrus.Error("could not init the LRU cache")
+			logrus.Errorf("could not retrieve cached metrics: %s", err)
 		}
 		err = p.metricsRepo.SaveMany(allRequests)
 		if err != nil {
