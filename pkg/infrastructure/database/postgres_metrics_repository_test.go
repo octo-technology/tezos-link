@@ -1,11 +1,12 @@
 package database
 
 import (
+	"testing"
+	"time"
+
 	"github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"time"
 )
 
 func TestPostgresMetricsRepository_Save_Unit(t *testing.T) {
@@ -226,4 +227,52 @@ func TestPostgresMetricsRepository_FindLastRequests_Unit(t *testing.T) {
 	// Then
 	assert.Equal(t, "/random/path", n[0], "Bad path")
 	assert.Equal(t, "/random/path", n[1], "Bad path")
+}
+
+func TestPostgresMetricsRepository_SaveMany_Unit(t *testing.T) {
+	// Given
+	pool := getDockerPool()
+	pg, resource := GetPostgresClient(*pool)
+	defer pool.Purge(resource)
+
+	date, err := time.Parse(time.RFC3339, "2020-03-05T10:58:56Z")
+
+	pgr := NewPostgresMetricsRepository(pg)
+	firstMetric := inputs.NewMetricsInput(&model.Request{
+		Path:       "/random/path",
+		UUID:       "UUID",
+		Action:     0,
+		RemoteAddr: "0.0.0.0",
+	}, date)
+
+	date, err = time.Parse(time.RFC3339, "2019-03-05T10:58:56Z")
+	secondMetric := inputs.NewMetricsInput(&model.Request{
+		Path:       "/random/path3",
+		UUID:       "UUID",
+		Action:     0,
+		RemoteAddr: "0.0.0.0",
+	}, date)
+
+	thirdMetric := inputs.NewMetricsInput(&model.Request{
+		Path:       "/random/path2",
+		UUID:       "UUID",
+		Action:     0,
+		RemoteAddr: "0.0.0.0",
+	}, time.Now().UTC())
+
+	// When
+	err = pgr.SaveMany([]*inputs.MetricsInput{&firstMetric, &secondMetric, &thirdMetric})
+
+	// Then
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	count, err := pgr.CountAll("UUID")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, count, 3)
+
 }

@@ -15,6 +15,7 @@ import (
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/inputs"
 	"github.com/octo-technology/tezos-link/backend/internal/api/infrastructure/rest/outputs"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
+	dbinputs "github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database/inputs"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -124,7 +125,9 @@ func testProxyUsecaseFunc(req *pkgmodel.Request, resp *dummyResponse) func(t *te
 		mockMetricsRepo := stubMetricsRepository(resp.metricErr)
 		mockProjectRepo := stubProjectRepository(resp.projectDatabaseResponse, resp.projectErr)
 		mockProjectCacheRepo := stubProjectRepository(nil, resp.projectCacheErr)
-		puc := NewProxyUsecase(mockCache, mockProxy, mockMetricsRepo, mockProjectRepo, mockProjectCacheRepo)
+		mockCacheMetricsRepo := stubCacheMetricsRepository(nil)
+
+		puc := NewProxyUsecase(mockCache, mockProxy, mockMetricsRepo, mockProjectRepo, mockProjectCacheRepo, mockCacheMetricsRepo)
 
 		// When
 		proxyResp, toRawProxy, err := puc.Proxy(req)
@@ -147,15 +150,6 @@ func stubBlockchainRepository(response interface{}, error error) *mockBlockchain
 		Return(error).
 		Once()
 	return mockBlockchainRepository
-}
-
-func stubMetricsRepository(error error) *mockMetricsRepository {
-	mockMetricsRepository := &mockMetricsRepository{}
-	mockMetricsRepository.
-		On("Save", mock.Anything).
-		Return(error).
-		Once()
-	return mockMetricsRepository
 }
 
 func stubProjectRepository(response *pkgmodel.Project, error error) *mockProjectRepository {
@@ -260,4 +254,37 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 	assert.Equal(t, 1, projectOutputWithMetrics.Data.Metrics.RPCUsage[0].Value)
 	assert.Equal(t, "/mockserver/status", projectOutputWithMetrics.Data.Metrics.RPCUsage[0].ID)
 	assert.Equal(t, "/mockserver/status", projectOutputWithMetrics.Data.Metrics.RPCUsage[0].Label)
+}
+
+func stubMetricsRepository(error error) *mockMetricsRepository {
+	mockMetricsRepository := &mockMetricsRepository{}
+	mockMetricsRepository.
+		On("Save", mock.Anything).
+		Return(error).
+		Once()
+	mockMetricsRepository.
+		On("SaveMany", mock.Anything).
+		Return(error).
+		Once()
+	return mockMetricsRepository
+}
+
+func stubCacheMetricsRepository(error error) *mockCacheMetricsRepository {
+	mockCacheMetricsRepository := &mockCacheMetricsRepository{}
+	// TODO Add the stubs
+	mockCacheMetricsRepository.
+		On("Add", mock.Anything).
+		Return(error).
+		Once()
+	mockCacheMetricsRepository.
+		On("Len").
+		Return(10).
+		Once()
+
+	noinputs := make([]*dbinputs.MetricsInput, 0)
+	mockCacheMetricsRepository.
+		On("GetAll").
+		Return(noinputs, error).
+		Once()
+	return mockCacheMetricsRepository
 }
