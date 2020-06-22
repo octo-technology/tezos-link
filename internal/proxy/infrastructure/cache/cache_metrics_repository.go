@@ -27,8 +27,8 @@ func NewCacheMetricsRepository() repository.MetricInputRepository {
 }
 
 func (l cacheMetricsRepository) Add(metric *pkginfradbinputs.MetricsInput) error {
-	newid := l.cache.Len() + 1
-	l.cache.Add(newid, metric)
+	newKey := l.cache.Len() + 1
+	l.cache.Add(newKey, metric)
 
 	return nil
 }
