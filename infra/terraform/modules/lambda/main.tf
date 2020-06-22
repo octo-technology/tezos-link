@@ -2,42 +2,43 @@ data "aws_iam_role" "tzlink_lambdas_access" {
   name = "tzlink_lambdas_access"
 }
 
-resource "aws_s3_bucket" "snapshot_lambda" {
-  bucket = format("tzlink-snapshot-lambda-%s", var.ENV)
+resource "aws_s3_bucket" "lambda_dedicated" {
+  bucket = var.S3_BUCKET_NAME
   acl    = "private"
 
   tags = {
-    Name      = format("tzlink-snapshot-lambda-%s", var.ENV)
+    Name      = var.S3_BUCKET_NAME
     Project   = var.PROJECT_NAME
     BuildWith = var.BUILD_WITH
   }
 }
 
-resource "aws_lambda_function" "snapshot_lambda" {
-  s3_bucket     = aws_s3_bucket.snapshot_lambda.bucket
-  s3_key        = var.SNAPSHOT_S3_KEY
-  function_name = "snapshot"
+resource "aws_lambda_function" "executor" {
+  s3_bucket     = aws_s3_bucket.lambda_dedicated.bucket
+  s3_key        = var.S3_CODE_PATH
+  function_name = var.LAMBDA_PURPOSE
   role          = data.aws_iam_role.tzlink_lambdas_access.arn
   handler       = "main"
   runtime       = "go1.x"
-  description   = "Snapshot exporter Lambda"
+  description   = var.LAMBDA_DESCRIPTION
   timeout       = 900 # sec
 
   environment {
-    variables = {
-      NODE_USER     = var.NODE_USER
-      S3_REGION     = var.REGION
-      S3_BUCKET     = aws_s3_bucket.snapshot_lambda.bucket
-      S3_LAMBDA_KEY = var.S3_LAMBDA_KEY
-    }
+    variables = var.LAMBDA_ENVIRONMENT_VARIABLES
+  }
+
+  tags = {
+    Name      = var.LAMBDA_PURPOSE
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
   }
 }
 
-resource "aws_lambda_permission" "allow_cloudwatch_to_call_snapshot_lambda" {
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_lambda" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.snapshot_lambda.function_name
+  function_name = aws_lambda_function.executor.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.every_twelve_hours.arn
+  source_arn    = aws_cloudwatch_event_rule.cron.arn
 }
 
