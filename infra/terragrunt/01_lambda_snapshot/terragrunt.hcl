@@ -19,5 +19,7 @@ inputs = {
     S3_LAMBDA_KEY = "snapshot_lambda_key"
   }
 
+  LAMBDA_VPC_CONFIG_ENABLE = false
+
   RUN_EVERY = "rate(12 hours)"
 }

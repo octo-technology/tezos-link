@@ -23,6 +23,11 @@ resource "aws_lambda_function" "executor" {
   description   = var.LAMBDA_DESCRIPTION
   timeout       = 900 # sec
 
+  vpc_config {
+      subnet_ids = var.LAMBDA_VPC_CONFIG_ENABLE ? tolist(data.aws_subnet_ids.lambda[0].ids) : []
+      security_group_ids = var.LAMBDA_VPC_CONFIG_ENABLE ? [ data.aws_security_group.lambda[0].id ] : []
+  }
+
   environment {
     variables = var.LAMBDA_ENVIRONMENT_VARIABLES
   }
