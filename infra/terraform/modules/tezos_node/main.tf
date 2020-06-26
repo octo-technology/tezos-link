@@ -45,7 +45,7 @@ resource "aws_autoscaling_group" "tz_nodes" {
   max_size         = var.MAX_INSTANCE_NUMBER
   min_size         = var.MIN_INSTANCE_NUMBER
 
-  health_check_grace_period = 1800 # 30mins
+  health_check_grace_period = 600 # 10mins <- rolling-nodes
   health_check_type         = "ELB"
   force_delete              = true
   launch_configuration      = aws_launch_configuration.tz_node.id
