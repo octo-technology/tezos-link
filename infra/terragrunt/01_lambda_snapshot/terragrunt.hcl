@@ -10,7 +10,7 @@ inputs = {
   S3_BUCKET_NAME = "tzlink-snapshot-lambda-${get_env("TF_VAR_ENV", "dev")}"
   S3_CODE_PATH = "v1.0.0/snapshot.zip"
 
-  LAMBDA_PURPOSE = "snapshot"
+  LAMBDA_NAME = "snapshot"
   LAMBDA_DESCRIPTION = "Snapshot exporter lambda"
   LAMBDA_ENVIRONMENT_VARIABLES = {
     NODE_USER = "ec2-user"

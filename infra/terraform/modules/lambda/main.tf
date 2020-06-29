@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "lambda_dedicated" {
 resource "aws_lambda_function" "executor" {
   s3_bucket     = aws_s3_bucket.lambda_dedicated.bucket
   s3_key        = var.S3_CODE_PATH
-  function_name = var.LAMBDA_PURPOSE
+  function_name = var.LAMBDA_NAME
   role          = data.aws_iam_role.tzlink_lambdas_access.arn
   handler       = "main"
   runtime       = "go1.x"
@@ -33,7 +33,7 @@ resource "aws_lambda_function" "executor" {
   }
 
   tags = {
-    Name      = var.LAMBDA_PURPOSE
+    Name      = var.LAMBDA_NAME
     Project   = var.PROJECT_NAME
     BuildWith = var.BUILD_WITH
   }
