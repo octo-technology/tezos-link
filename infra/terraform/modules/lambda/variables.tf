@@ -39,7 +39,7 @@ variable "S3_CODE_PATH" {
   default     = "v1.0.0/snapshot.zip"
 }
 
-variable "LAMBDA_PURPOSE" {
+variable "LAMBDA_NAME" {
   type        = string
   description = "The purpose of the lambda (ex: snapshot)."
 }

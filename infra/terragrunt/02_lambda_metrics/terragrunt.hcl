@@ -14,7 +14,7 @@ inputs = {
   S3_BUCKET_NAME = "tzlink-metrics-lambda-${get_env("TF_VAR_ENV", "dev")}"
   S3_CODE_PATH = "v1.0.0/metrics.zip"
 
-  LAMBDA_PURPOSE = "metrics"
+  LAMBDA_NAME = "metrics"
   LAMBDA_DESCRIPTION = "RDS old metrics cleaner lambda"
   LAMBDA_ENVIRONMENT_VARIABLES = {
     RDS_ENDPOINT = "postgres://xxxxx:xxxxx@tzlink-database.cluster-cmeu9dixowfa.eu-west-1.rds.amazonaws.com"
