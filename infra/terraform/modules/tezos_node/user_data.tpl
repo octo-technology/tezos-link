@@ -35,13 +35,14 @@ elif [ ${mode} == "rolling" ]; then
 aws s3 cp s3://tzlink-blockchain-data-dev/${network}_rolling-snapshot.tar.gz ${network}_rolling-snapshot.tar.gz
 tar xvf ${network}_rolling-snapshot.tar.gz
 mv snapshot.rolling /home/ec2-user/snapshot.rolling
+
+rm ${network}_rolling-snapshot.tar.gz
+
 else
 
 echo "Error: unknown mode declared. Possible choice : [rolling, archive]"
 
 fi
-
-
 
 curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/${computed_network}/scripts/alphanet.sh
 chmod +x /usr/local/bin/${network}.sh
@@ -58,8 +59,7 @@ elif [ ${mode} == "rolling" ]; then
 ${network}.sh snapshot import /home/ec2-user/snapshot.rolling
 ${network}.sh node start --rpc-port 8000 --history-mode experimental-rolling
 
-rm ${network}_rolling-snapshot.tar.gz
-rm rolling-snapshot.tar.gz
+rm snapshot.rolling
 
 else
 
