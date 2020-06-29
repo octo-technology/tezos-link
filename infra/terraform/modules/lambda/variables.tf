@@ -56,21 +56,21 @@ variable "LAMBDA_ENVIRONMENT_VARIABLES" {
 }
 
 variable "LAMBDA_VPC_CONFIG_ENABLE" {
-  type = bool
+  type        = bool
   description = "Permits to put the lambda in the VPC or not."
-  default = false
+  default     = false
 }
 
 variable "LAMBDA_SUBNET_NAME" {
-  type = string
+  type        = string
   description = "The subnet where the lambda will be placed (regex autorized)."
-  default = ""
+  default     = ""
 }
 
 variable "LAMBDA_SECURITY_GROUP_NAME" {
-  type = string
+  type        = string
   description = "The security_group associated to the lamdba."
-  default = ""
+  default     = ""
 }
 
 variable "RUN_EVERY" {

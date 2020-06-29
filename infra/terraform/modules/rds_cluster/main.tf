@@ -36,13 +36,13 @@ resource "aws_rds_cluster" "database" {
   }
 
   # parameters which permits idempotency
-  backtrack_window = 0
-  deletion_protection = false
-  enable_http_endpoint = false
-  enabled_cloudwatch_logs_exports = []
+  backtrack_window                    = 0
+  deletion_protection                 = false
+  enable_http_endpoint                = false
+  enabled_cloudwatch_logs_exports     = []
   iam_database_authentication_enabled = false
-  iam_roles = []
-  storage_encrypted = true
+  iam_roles                           = []
+  storage_encrypted                   = true
 
   tags = {
     Name      = "tzlink-database"
