@@ -8,39 +8,25 @@ import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
-	"regexp"
-	"strconv"
-	"strings"
 	"time"
 )
 
 type proxyBlockchainRepository struct {
-	baseArchiveURL 	string
-	baseRollingURL 	string
 	client         	*http.Client
-	rollingPatterns []*regexp.Regexp
 }
 
 // NewProxyBlockchainRepository returns a new blockchain proxy repository
 func NewProxyBlockchainRepository() repository.BlockchainRepository {
-	baseArchiveURL := "http://" + config.ProxyConfig.Tezos.ArchiveHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.Port)
-	baseRollingURL := "http://" + config.ProxyConfig.Tezos.RollingHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.RollingPort)
+
 	client := &http.Client{Timeout: time.Duration(config.ProxyConfig.Proxy.ReadTimeout) * time.Second}
 
 	return &proxyBlockchainRepository{
-		baseArchiveURL: baseArchiveURL,
-		baseRollingURL: baseRollingURL,
 		client:         client,
-		rollingPatterns: setupRegexpFor(config.ProxyConfig.Tezos.WhitelistedRolling),
 	}
 }
 
-func (p proxyBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, error) {
+func (p proxyBlockchainRepository) Get(request *pkgmodel.Request, url string) (interface{}, error) {
 	// redirect to Archive nodes by default
-	url := p.baseArchiveURL + request.Path
-	if p.IsRollingRedirection(request.Path) {
-		url = p.baseRollingURL + request.Path
-	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -70,32 +56,3 @@ func (p proxyBlockchainRepository) Add(request *pkgmodel.Request, response inter
 	panic("not implemented")
 }
 
-func (p proxyBlockchainRepository) IsRollingRedirection(url string) bool {
-	ret := false
-	urls := strings.Split(url, "?")
-	url = "/" + strings.Trim(urls[0], "/")
-
-	for _, wl := range p.rollingPatterns {
-		if wl.Match([]byte(url)) {
-			ret = true
-			break
-		}
-	}
-
-	return ret
-}
-
-func setupRegexpFor(regexPaths []string) []*regexp.Regexp {
-	var list []*regexp.Regexp
-
-	for _, s := range regexPaths {
-		regex, err := regexp.Compile(s)
-		if err != nil {
-			logrus.Error("could not compile Regexp: ", s)
-		} else {
-			list = append(list, regex)
-		}
-	}
-
-	return list
-}

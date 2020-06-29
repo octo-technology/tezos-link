@@ -12,8 +12,8 @@ type mockBlockchainRepository struct {
 	mock.Mock
 }
 
-func (m *mockBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, error) {
-	args := m.Called(request)
+func (m *mockBlockchainRepository) Get(request *pkgmodel.Request, url string) (interface{}, error) {
+	args := m.Called(request, url)
 	return args.Get(0), args.Error(1)
 }
 
@@ -22,10 +22,10 @@ func (m *mockBlockchainRepository) Add(request *pkgmodel.Request, response inter
 	return nil
 }
 
-func (m *mockBlockchainRepository) IsRollingRedirection(url string) bool {
-	args := m.Called(url)
-	return args.Get(0).(bool)
-}
+//func (m *mockBlockchainRepository) IsRollingRedirection(url string) bool {
+//	args := m.Called(url)
+//	return args.Get(0).(bool)
+//}
 
 type mockMetricsRepository struct {
 	mock.Mock

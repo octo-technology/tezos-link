@@ -1,9 +1,7 @@
 debug = true
 
 [tezos]
-whitelistedRolling = [
- "(.*?)/blocks(.*?)head(.*?)"
-]
+
 
 [proxy]
 readTimeout = 1

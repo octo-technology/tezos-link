@@ -208,7 +208,7 @@ REST API to manage projects and get project's metrics.
 - `DATABASE_TABLE` (default: `tezoslink`)
 - `DATABASE_ADDITIONAL_PARAMETER` (default: `sslmode=disable`)
 - `ARCHIVE_NODES_URL` (default: `node`)
-- `TEZOS_PORT` (default: `1090`)
+- `TEZOS_ARCHIVE_PORT` (default: `1090`)
 - `ROLLING_NODES_URL` (default: `node`)
 - `TEZOS_ROLLING_PORT` (default: `1090`)
 - `SERVER_PORT` (default: `8001`)

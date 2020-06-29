@@ -16,10 +16,9 @@ type ProxyConf struct {
 	Debug bool
 	Tezos struct {
 		ArchiveHost string
-		Port        int
+		ArchivePort int
 		RollingHost string
 		RollingPort int
-		WhitelistedRolling	[]string
 	}
 	Server struct {
 		Port int
@@ -40,6 +39,7 @@ type ProxyConf struct {
 		ProjectsCacheMaxItems           int
 		CacheMaxMetricItems             int
 		RoutineDelaySeconds             int
+		WhitelistedRolling	            []string
 	}
 }
 
@@ -64,8 +64,8 @@ func ParseProxyConf(cfg string) (*ProxyConf, error) {
 	conf.Database.Url = fmt.Sprintf("postgres://%s:%s@%s/%s?%s", dbUser, dbPass, dbUrl, dbTable, dbParam)
 
 	conf.Tezos.ArchiveHost = getEnv("ARCHIVE_NODES_URL", "node")
-	conf.Tezos.RollingHost = getEnv("ROLLING_NODES_URL", "node")
-	tezosPort, err := strconv.Atoi(getEnv("TEZOS_PORT", "1090"))
+	conf.Tezos.RollingHost = getEnv("ROLLING_NODES_URL", "node-rolling")
+	tezosArchivePort, err := strconv.Atoi(getEnv("TEZOS_ARCHIVE_PORT", "1090"))
 	if err != nil {
 		logrus.Fatal(err)
 	}
@@ -73,7 +73,7 @@ func ParseProxyConf(cfg string) (*ProxyConf, error) {
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	conf.Tezos.Port = tezosPort
+	conf.Tezos.ArchivePort = tezosArchivePort
 	conf.Tezos.RollingPort = tezosRollingPort
 
 	serverPort, err := strconv.Atoi(getEnv("SERVER_PORT", "8001"))

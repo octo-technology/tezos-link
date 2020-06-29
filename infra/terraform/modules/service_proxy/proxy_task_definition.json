@@ -43,7 +43,7 @@
           "value": "${tezos_archive_hostname}"
         },
         {
-          "name": "TEZOS_PORT",
+          "name": "TEZOS_ARCHIVE_PORT",
           "value": "${tezos_archive_port}"
         },
         {
