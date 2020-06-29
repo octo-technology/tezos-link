@@ -44,13 +44,13 @@ build-frontend:
 	cd web && yarn build
 build-snapshot-lambda:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
-build-metrics-lambda:
+build-metrics-cleaner-lambda:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(METRICS_CLEANER_BIN) $(METRICS_CLEANER_CMD) && chmod +x $(METRICS_CLEANER_BIN)
 build-proxy:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
 build-api:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
-build-unix: build-snapshot-lambda build-metrics-lambda build-proxy build-api
+build-unix: build-snapshot-lambda build-metrics-cleaner-lambda build-proxy build-api
 unit-test:
 	$(GOTEST) -run Unit ./... -v
 integration-test:
@@ -98,7 +98,7 @@ deploy-snapshot-lambda:
 	aws s3 cp bin/$(SNAPSHOT).zip s3://tzlink-snapshot-lambda-dev/v1.0.0/$(SNAPSHOT).zip
 	rm bin/$(SNAPSHOT).zip bin/main
 	aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/$(SNAPSHOT).zip --region eu-west-1
-deploy-metrics-lambda:
+deploy-metrics-cleaner-lambda:
 	cp $(METRICS_CLEANER_BIN) bin/main
 	zip -j bin/$(METRICS_CLEANER).zip bin/main
 	aws s3 cp bin/$(METRICS_CLEANER).zip s3://tzlink-metrics-lambda-dev/v1.0.0/$(METRICS_CLEANER).zip
