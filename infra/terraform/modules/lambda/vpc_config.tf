@@ -19,11 +19,11 @@ data "aws_subnet_ids" "lambda" {
 }
 
 data "aws_security_group" "lambda" {
-  count = var.LAMBDA_VPC_CONFIG_ENABLE ? 1 : 0
+  count  = var.LAMBDA_VPC_CONFIG_ENABLE ? 1 : 0
   vpc_id = data.aws_vpc.tzlink[0].id
 
   tags = {
-    Name        = var.LAMBDA_SECURITY_GROUP_NAME
-    Project     = var.PROJECT_NAME
+    Name    = var.LAMBDA_SECURITY_GROUP_NAME
+    Project = var.PROJECT_NAME
   }
 }
