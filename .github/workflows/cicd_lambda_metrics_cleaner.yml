@@ -1,11 +1,11 @@
-name: CI/CD Lambda Snapshot
+name: CI/CD Lambda Metric Cleaner
 
 on:
   push:
     paths:
-    - 'cmd/snapshot/**'
+    - 'cmd/metrics/**'
     - 'Makefile'
-    - '.github/workflows/cicd_lambda.yml'
+    - '.github/workflows/cicd_lambda_metrics_cleaner.yml'
 
 jobs:
   build:
@@ -28,20 +28,20 @@ jobs:
             dep ensure
         fi
 
-    - name: Build the snapshot lamdba
-      run: make build-snapshot-lambda
+    - name: Build the metrics cleaner lamdba
+      run: make build-metrics-cleaner-lambda
     
-    - name: Zip the snapshot
+    - name: Zip the metrics cleaner code
       run: |
-        cp bin/snapshot bin/main
-        zip -j bin/snapshot.zip bin/main
+        cp bin/metrics bin/main
+        zip -j bin/metrics.zip bin/main
     
     - name: Upload artifact (only on master)
       if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v1
       with:
-        name: snapshot
-        path: bin/snapshot.zip
+        name: metrics
+        path: bin/metrics.zip
 
   deploy:
     name: Deploy
@@ -59,9 +59,9 @@ jobs:
     - name: Download artifact
       uses: actions/download-artifact@v1
       with:
-        name: snapshot
+        name: metrics
 
     - name: Deploy and update lambda
       run: |
-        aws s3 cp snapshot/snapshot.zip s3://tzlink-snapshot-lambda-dev/v1.0.0/snapshot.zip
-        aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/snapshot.zip
+        aws s3 cp metrics/metrics.zip s3://tzlink-metrics-lambda-dev/v1.0.0/metrics.zip
+        aws lambda update-function-code --function-name metrics --s3-bucket tzlink-metrics-lambda-dev --s3-key v1.0.0/metrics.zip

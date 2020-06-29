@@ -2,6 +2,12 @@ resource "aws_security_group" "database" {
   name        = "database"
   description = "Security group for database"
   vpc_id      = data.aws_vpc.tzlink.id
+
+  tags = {
+    Name      = "database"
+    Project   = var.PROJECT_NAME
+    BuildWith = var.BUILD_WITH
+  }
 }
 
 resource "aws_security_group_rule" "all_ingress_for_database" {
