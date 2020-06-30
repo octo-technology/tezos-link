@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -115,13 +116,22 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 	expResponse.projectDatabaseResponse = &prj
 	t.Run("Returns no response When there is no cache and an proxy error",
 		testProxyUsecaseFunc(&whitelistedCacheableNotCachedRequest, &expResponse))
+
+	redirectionRequest := pkgmodel.NewRequest("/chains/main/blocks/head", "UUID", pkgmodel.OBTAIN, localURL)
+	expResponse = newDummyResponse()
+	expResponse.expResp = "Dummy proxy response(redirection)"
+	expResponse.cacheErr = errors.New("no cache available")
+	expResponse.projectDatabaseResponse = &prj
+	t.Run("Returns no response When there is no cache and an proxy error",
+		testProxyUsecaseFunc(&redirectionRequest, &expResponse))
 }
 
 func testProxyUsecaseFunc(req *pkgmodel.Request, resp *dummyResponse) func(t *testing.T) {
 	return func(t *testing.T) {
+		rollingUrlPattern := "http://" + config.ProxyConfig.Tezos.RollingHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.RollingPort)
 		// Given
 		mockCache := stubBlockchainRepository([]byte("Dummy cache response"), resp.cacheErr)
-		mockProxy := stubBlockchainRepository([]byte("Dummy proxy response"), resp.proxyErr)
+		mockProxy := stubProxyBlockchainRepository([]byte("Dummy proxy response"), resp.proxyErr, rollingUrlPattern, []byte("Dummy proxy response(redirection)"))
 		mockMetricsRepo := stubMetricsRepository(resp.metricErr)
 		mockProjectRepo := stubProjectRepository(resp.projectDatabaseResponse, resp.projectErr)
 		mockProjectCacheRepo := stubProjectRepository(nil, resp.projectCacheErr)
@@ -139,10 +149,27 @@ func testProxyUsecaseFunc(req *pkgmodel.Request, resp *dummyResponse) func(t *te
 	}
 }
 
+func stubProxyBlockchainRepository(response interface{}, error error, pattern string, responseRedirection interface{}) *mockBlockchainRepository {
+	mockBlockchainRepository := &mockBlockchainRepository{}
+	mockBlockchainRepository.
+		On("Get", mock.Anything, mock.MatchedBy(func(url string) bool { return strings.Contains(url, pattern) })).
+		Return(responseRedirection, error).
+		Once()
+	mockBlockchainRepository.
+		On("Get", mock.Anything, mock.Anything).
+		Return(response, error).
+		Once()
+	mockBlockchainRepository.
+		On("Add", mock.Anything, mock.Anything).
+		Return(error).
+		Once()
+	return mockBlockchainRepository
+}
+
 func stubBlockchainRepository(response interface{}, error error) *mockBlockchainRepository {
 	mockBlockchainRepository := &mockBlockchainRepository{}
 	mockBlockchainRepository.
-		On("Get", mock.Anything).
+		On("Get", mock.Anything, mock.Anything).
 		Return(response, error).
 		Once()
 	mockBlockchainRepository.
@@ -246,10 +273,15 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	now := time.Now().UTC()
+	nowMinusOneMonth := now.AddDate(0, -1, 0)
+	rangeTime := now.Sub(nowMinusOneMonth)
+	nbDaysThisMonth := int(rangeTime.Hours() / 24)
+
 	assert.Equal(t, "New Project", projectOutputWithMetrics.Data.Title)
 	assert.Equal(t, uuid, projectOutputWithMetrics.Data.UUID)
 	assert.Equal(t, 1, projectOutputWithMetrics.Data.Metrics.RequestsCount)
-	assert.Equal(t, 29, len(projectOutputWithMetrics.Data.Metrics.RequestsByDay))
+	assert.Equal(t, nbDaysThisMonth, len(projectOutputWithMetrics.Data.Metrics.RequestsByDay))
 	assert.Equal(t, 1, len(projectOutputWithMetrics.Data.Metrics.RPCUsage))
 	assert.Equal(t, 1, projectOutputWithMetrics.Data.Metrics.RPCUsage[0].Value)
 	assert.Equal(t, "/mockserver/status", projectOutputWithMetrics.Data.Metrics.RPCUsage[0].ID)

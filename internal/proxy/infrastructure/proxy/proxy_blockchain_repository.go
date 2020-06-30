@@ -8,28 +8,25 @@ import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"time"
 )
 
 type proxyBlockchainRepository struct {
-	baseURL string
-	client  *http.Client
+	client *http.Client
 }
 
 // NewProxyBlockchainRepository returns a new blockchain proxy repository
 func NewProxyBlockchainRepository() repository.BlockchainRepository {
-	baseURL := "http://" + config.ProxyConfig.Tezos.Host + ":" + strconv.Itoa(config.ProxyConfig.Tezos.Port)
+
 	client := &http.Client{Timeout: time.Duration(config.ProxyConfig.Proxy.ReadTimeout) * time.Second}
 
 	return &proxyBlockchainRepository{
-		baseURL: baseURL,
-		client:  client,
+		client: client,
 	}
 }
 
-func (p proxyBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, error) {
-	url := p.baseURL + request.Path
+func (p proxyBlockchainRepository) Get(request *pkgmodel.Request, url string) (interface{}, error) {
+	// redirect to Archive nodes by default
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

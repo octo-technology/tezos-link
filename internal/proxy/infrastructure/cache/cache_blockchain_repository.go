@@ -26,7 +26,7 @@ func NewCacheBlockchainRepository() repository.BlockchainRepository {
 	}
 }
 
-func (l cacheBlockchainRepository) Get(request *pkgmodel.Request) (interface{}, error) {
+func (l cacheBlockchainRepository) Get(request *pkgmodel.Request, url string) (interface{}, error) {
 	val, ok := l.cache.Get(request.Path)
 	if !ok {
 		return nil, fmt.Errorf("could not get cache for path: %s", request.Path)

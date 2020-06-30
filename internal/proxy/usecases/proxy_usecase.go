@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -25,6 +26,9 @@ type ProxyUsecase struct {
 	whitelisted      []*regexp.Regexp
 	blacklisted      []*regexp.Regexp
 	dontCache        []*regexp.Regexp
+	rollingPatterns  []*regexp.Regexp
+	baseArchiveURL   string
+	baseRollingURL   string
 }
 
 // ProxyUsecaseInterface contains all methods implemented by the proxyRepo use-case
@@ -43,6 +47,9 @@ func NewProxyUsecase(
 	projectRepo pkgrepository.ProjectRepository,
 	projectCacheRepo pkgrepository.ProjectRepository,
 	metricsCacheRepo repository.MetricInputRepository) *ProxyUsecase {
+
+	baseArchiveURL := "http://" + config.ProxyConfig.Tezos.ArchiveHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.ArchivePort)
+	baseRollingURL := "http://" + config.ProxyConfig.Tezos.RollingHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.RollingPort)
 	return &ProxyUsecase{
 		cacheRepo:        cacheRepo,
 		proxyRepo:        proxyRepo,
@@ -53,6 +60,9 @@ func NewProxyUsecase(
 		whitelisted:      setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedMethods),
 		blacklisted:      setupRegexpFor(config.ProxyConfig.Proxy.BlockedMethods),
 		dontCache:        setupRegexpFor(config.ProxyConfig.Proxy.DontCache),
+		rollingPatterns:  setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedRolling),
+		baseArchiveURL:   baseArchiveURL,
+		baseRollingURL:   baseRollingURL,
 	}
 }
 
@@ -73,6 +83,7 @@ func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) error {
 	return nil
 }
 
+
 func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 	logrus.Info("Starting to write cached requests to database")
 	cachedMetrics, err := p.metricsCacheRepo.GetAll()
@@ -86,6 +97,21 @@ func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 	}
 	logrus.Infof("Successfully saved %d cached metrics in database", len(cachedMetrics))
 	time.Sleep(time.Duration(config.ProxyConfig.Proxy.RoutineDelaySeconds) * time.Second)
+}
+
+func (p *ProxyUsecase) IsRollingRedirection(url string) bool {
+	ret := false
+	urls := strings.Split(url, "?")
+	url = "/" + strings.Trim(urls[0], "/")
+
+	for _, wl := range p.rollingPatterns {
+		if wl.Match([]byte(url)) {
+			ret = true
+			break
+		}
+	}
+
+	return ret
 }
 
 // Proxy proxy an http request to the right repositories
@@ -105,11 +131,17 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 	}
 
 	if request.Action == pkgmodel.OBTAIN && p.isCacheable(request.Path) {
-		response, err := p.cacheRepo.Get(request)
+		url := p.baseArchiveURL + request.Path
+
+		response, err := p.cacheRepo.Get(request, url)
 		if err != nil {
 			logrus.Info("path not cached, fetching to node: ", request.Path)
 
-			response, err = p.proxyRepo.Get(request)
+			if p.IsRollingRedirection(request.Path) {
+				url = p.baseRollingURL + request.Path
+			}
+
+			response, err = p.proxyRepo.Get(request, url)
 			if err != nil {
 				logrus.Errorf("could not request to proxy: %s", err)
 				return errors.ErrNoProxyResponse.Error(), false, errors.ErrNoProxyResponse

@@ -37,3 +37,10 @@ services:
       SERVER_PORT: 1090
     ports:
       - "8765:1090"
+  node-rolling:
+    image: mockserver/mockserver:mockserver-5.9.0
+    environment:
+      LOG_LEVEL: "DEBUG"
+      SERVER_PORT: 1090
+    ports:
+      - "8765:1090"
