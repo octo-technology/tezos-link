@@ -1,21 +1,19 @@
 import styled from 'styled-components/macro'
-import { Card } from '../../../../styles'
+import { Card, backgroundColor, primaryColor, backgroundColor2 } from '../../../../styles'
 
 export const ModalTitle = styled.h2`
   text-align: center;
 `
 
 export const Modal = styled(Card)`
-  background: #fff;
+  background: ${backgroundColor2};
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
-  bottom: 0;
+  top: 150px;
   margin: auto;
   width: 600px;
-  height: 400px;
-  box-shadow: 0 5px 10px 2px rgba(195, 192, 192, 0.5);
+  max-width: 90vw;
   padding: 20px;
 `
 
@@ -30,9 +28,9 @@ export const DashboardOverlay = styled.div`
 `
 
 export const Code = styled.span`
-  background-color: #eee;
+  background-color: ${backgroundColor};
   border-radius: 2px;
-  color: #002b36;
+  color: ${primaryColor};
   -moz-osx-font-smoothing: auto;
   -webkit-font-smoothing: auto;
   font-family: monospace;

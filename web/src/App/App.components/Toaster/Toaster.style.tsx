@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components/macro'
 
-import { subTextColor, textColor } from '../../../styles'
+import { subTextColor, textColor, backgroundColor2 } from '../../../styles'
 
 export const ToasterStyled = styled.div`
   position: fixed;
@@ -12,7 +12,7 @@ export const ToasterStyled = styled.div`
   margin: 10px;
   padding: 21px 20px;
   border-radius: 4px;
-  background-color: white;
+  background-color: ${backgroundColor2};
   box-shadow: 1px 7px 14px -5px rgba(0, 0, 0, 0.2);
   transform: translate3d(0px, 0, 0);
   transition: transform 1s ease-in-out;

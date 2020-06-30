@@ -7,6 +7,7 @@ import {
 import * as PropTypes from 'prop-types'
 import { ResponsiveLine } from '@nivo/line'
 import { RequestByDay } from '../../../../entities/ProjectWithMetrics'
+import { primaryColor } from 'src/styles'
 
 type RequestsByDayLineViewProps = { requestsByDay: RequestByDay[] }
 
@@ -40,7 +41,7 @@ export const RequestsByDayLineView = ({ requestsByDay }: RequestsByDayLineViewPr
         <ResponsiveLine
           data={data}
           margin={{ top: 30, right: 10, bottom: 55, left: 40 }}
-          colors="#F3CC4B"
+          colors={primaryColor}
           xScale={{
             type: 'time',
             format: '%Y-%m-%d',

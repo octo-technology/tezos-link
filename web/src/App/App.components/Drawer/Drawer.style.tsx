@@ -1,6 +1,6 @@
-import { primaryColor, textColor } from 'src/styles'
 import styled from 'styled-components/macro'
 
+import { primaryColor, textColor, backgroundColor } from '../../../styles'
 import { DrawerBackward } from './Drawer.styles/DrawerBackward'
 import { DrawerForward } from './Drawer.styles/DrawerForward'
 
@@ -30,7 +30,7 @@ export const DrawerStyled = styled.div`
   width: 300px;
   max-width: calc(100vw - 20px);
   padding: 60px 20px 20px 30px;
-  background-color: white;
+  background-color: ${backgroundColor};
   box-shadow: 1px 7px 14px -5px rgba(0, 0, 0, 0.2);
   transform: translate3d(-300px, 0, 0);
   transition: 0.2s ease-in-out;

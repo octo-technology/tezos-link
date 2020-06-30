@@ -6,7 +6,7 @@ import { hideDrawer, showDrawer } from '../Drawer/Drawer.actions'
 
 export const Hamburger = () => {
   const dispatch = useDispatch()
-  const activated = useSelector((state: any) => (state && state.drawer ? state.drawer.showing : false))
+  const activated = useSelector((state: any) => state.drawer && state.drawer.showing)
 
   const activateCallback = () => {
     dispatch(activated ? hideDrawer() : showDrawer())

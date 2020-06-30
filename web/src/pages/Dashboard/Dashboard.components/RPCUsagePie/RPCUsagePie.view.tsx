@@ -17,15 +17,15 @@ export const RPCUsagePieView = ({ rpcUsage, rpcTotalCount }: RPCUsagePieViewProp
   const rpcUsagePieData =
     rpcUsage && Array.isArray(rpcUsage)
       ? rpcUsage.map(rpc => {
-        const rpcPieUsage: PieDatum = {
-          id: rpc.id,
-          label: rpc.label,
-          value: rpc.value,
-          color: 'hsl(46, 87%, 62%)'
-        }
+          const rpcPieUsage: PieDatum = {
+            id: rpc.id,
+            label: rpc.label,
+            value: rpc.value,
+            color: 'hsl(177, 78%, 58%)'
+          }
 
-        return rpcPieUsage
-      })
+          return rpcPieUsage
+        })
       : []
 
   return (

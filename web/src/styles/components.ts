@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 
 import { fadeIn, fadeInFromLeft, fadeInFromTop, fadeInFromRight, fadeInFromBottom } from './animations'
+import { backgroundColor2, shadowColor } from '.'
 
 export const Ellipsis = styled.div`
   text-overflow: ellipsis;
@@ -19,14 +20,15 @@ export const IconSmall = styled.img`
 
 export const Card = styled.div`
   border-radius: 6px;
-  background: white;
-  box-shadow: 0 1px 10px rgba(151, 164, 175, 0.1);
+  background: ${backgroundColor2};
+  box-shadow: 0 1px 10px ${shadowColor}80;
+  margin: auto;
 `
 
 export const AnimatedCard = styled.div`
   border-radius: 6px;
-  background: white;
-  box-shadow: 0 1px 10px rgba(151, 164, 175, 0.1);
+  background: ${backgroundColor2};
+  box-shadow: 0 1px 10px ${shadowColor}80;
   will-change: opacity, transform;
   animation: ${fadeInFromLeft} 500ms;
 `

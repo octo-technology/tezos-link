@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components/macro'
-import { backgroundColor, textColor, placeholderColor, primaryColor, secondaryColor } from "./colors";
+import { backgroundColor, textColor, placeholderColor, primaryColor, secondaryColor } from './colors'
 import { fadeInFromLeft } from './animations'
 
 export const GlobalStyle = createGlobalStyle`
@@ -47,10 +47,11 @@ body {
   margin: 0;
   padding: 0;
   background-color: ${backgroundColor};
-  background-image: url("/background.svg");
+  background-image: url("/bg.svg");
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: cover;
+  background-size: inherit;
+  background-position: top center;
   color: ${textColor};
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
@@ -61,8 +62,16 @@ h1 {
   font-family: 'Proxima Nova', Helvetica, Arial, sans-serif;
   font-size: 40px;
   font-weight: 700;
-  display: inline-block;
+  display: block;
   margin: 20px 0px;
+}
+
+h3 {
+  font-family: 'Proxima Nova', Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 300;
+  display: block;
+  margin: 0px;
 }
 
 input {
@@ -112,14 +121,14 @@ code {
 
 blockquote {
   margin: 0 10px 0 10px;
-  padding 2px 10px 2px 10px;
+  padding: 2px 10px 2px 10px;
   border-left: 5px solid ${primaryColor};
 }
 
 .markdown code {
-  background-color: #eee;
+  background-color: ${backgroundColor};
   border-radius: 2px;
-  color: #002b36;
+  color: ${primaryColor};
   -moz-osx-font-smoothing: auto;
   -webkit-font-smoothing: auto;
   font-family: monospace;
@@ -128,7 +137,7 @@ blockquote {
 }
 
 .markdown pre {
-  background-color: #002b36;
+  background-color: ${backgroundColor};
   border-radius: 2px;
   margin-bottom: 1.5rem;
   padding: 1rem;
