@@ -2,9 +2,15 @@ package main
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 	"github.com/aws/aws-lambda-go/lambda"
+	pkgdatabase "github.com/octo-technology/tezos-link/backend/pkg/infrastructure/database"
 	"log"
+	"os"
 )
+
+//var configPath = flag.String("conf", "", "Path to TOML config")
 
 func main() {
 	lambda.Start(HandleRequest)
@@ -14,5 +20,35 @@ func main() {
 func HandleRequest(ctx context.Context) (string, error) {
 	log.Print("metrics clean starting")
 
+	log.Print("RDS_ENDPOINT", os.Getenv("DATABASE_URL"))
+	dnsStr := fmt.Sprintf("postgres://%s:%s@%s/%s", os.Getenv("DATABASE_USERNAME"), os.Getenv("DATABASE_PASSWORD"), os.Getenv("DATABASE_URL"), os.Getenv("DATABASE_TABLE"))
+	log.Print("dnsStr", dnsStr)
+
+	var Connection *sql.DB
+	con, err := sql.Open("postgres", dnsStr)
+	if err != nil {
+		log.Fatal("Could not open DB: ", err)
+	}
+	// max_connection RDS is set to ~700
+	con.SetMaxOpenConns(600)
+
+	err = con.Ping()
+	if err != nil {
+		log.Fatal("Could not open DB: ", err)
+	}
+
+	log.Println("DB initialized")
+	Connection = con
+
+/*	log.Print("DB URL", config.ProxyConfig.Database.Url)
+	log.Print("RDS ", os.Getenv("RDS_ENDPOINT"))
+	database.Configure()*/
+	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(Connection)
+
+	numberMetrics, err := metricsRepo.CountAll("dummy_project_id")
+
+	log.Print(numberMetrics, err)
+
 	return "metric clean started.", nil
 }
+
