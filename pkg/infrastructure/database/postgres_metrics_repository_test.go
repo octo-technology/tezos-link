@@ -76,6 +76,61 @@ func TestPostgresMetricsRepository_Count_Unit(t *testing.T) {
 	assert.Equal(t, 2, n, "Bad count")
 }
 
+func TestPostgresMetricsRepository_RemoveOldMetrics_Unit(t *testing.T) {
+	// Given
+	pool := getDockerPool()
+	pg, resource := GetPostgresClient(*pool)
+	defer pool.Purge(resource)
+
+	pgr := NewPostgresMetricsRepository(pg)
+	r := &model.Request{
+		Path:       "/random/path",
+		UUID:       "UUID",
+		Action:     0,
+		RemoteAddr: "0.0.0.0",
+	}
+
+	firstMetric := inputs.NewMetricsInput(r, time.Now().UTC().AddDate(0, -4, 0))
+	secondMetric := inputs.NewMetricsInput(r, time.Now().UTC().Add(time.Duration(1)*time.Second))
+	thirdMetric := inputs.NewMetricsInput(r, time.Now().UTC().AddDate(0, -5, 0))
+
+	// When there is no row
+	n, err := pgr.CountAll("UUID")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// then
+	assert.Equal(t, 0, n, "Bad count")
+
+	err = pgr.Save(&firstMetric)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = pgr.Save(&secondMetric)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = pgr.Save(&thirdMetric)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// When there is a row
+	err = pgr.Remove3MonthOldMetrics()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cnt, err := pgr.CountAll("UUID")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Then
+	assert.Equal(t, 1, cnt, "Bad count")
+}
+
+
 func TestPostgresMetricsRepository_FindRequestsByDay_Unit(t *testing.T) {
 	// Given
 	pool := getDockerPool()

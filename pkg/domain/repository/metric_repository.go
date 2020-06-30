@@ -14,4 +14,5 @@ type MetricsRepository interface {
 	FindRequestsByDay(uuid string, from time.Time, to time.Time) ([]*model.RequestsByDayMetrics, error)
 	CountRPCPathUsage(uuid string, from time.Time, to time.Time) ([]*model.RPCUsageMetrics, error)
 	FindLastRequests(uuid string) ([]string, error)
+	Remove3MonthOldMetrics() (error)
 }

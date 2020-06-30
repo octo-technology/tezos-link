@@ -98,6 +98,22 @@ func (pg postgresMetricsRepository) CountAll(uuid string) (int, error) {
 	return count, nil
 }
 
+func (pg postgresMetricsRepository) Remove3MonthOldMetrics() (error) {
+	_, err := pg.connection.
+		Exec("DELETE FROM metrics WHERE date_request <= now() - INTERVAL '3 MONTH'")
+
+	if errors.Is(err, sql.ErrNoRows) {
+		logrus.Errorf("could not get 3-month old requests : %s", err)
+		return modelerrors.ErrNoMetricsFound
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (pg postgresMetricsRepository) FindRequestsByDay(uuid string, from time.Time, to time.Time) ([]*model.RequestsByDayMetrics, error) {
 	rows, err := pg.connection.Query("SELECT "+
 		"EXTRACT(month from date_request) AS mon, "+
