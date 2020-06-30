@@ -17,7 +17,10 @@ inputs = {
   LAMBDA_NAME = "metrics"
   LAMBDA_DESCRIPTION = "RDS old metrics cleaner lambda"
   LAMBDA_ENVIRONMENT_VARIABLES = {
-    RDS_ENDPOINT = "postgres://xxxxx:xxxxx@tzlink-database.cluster-cmeu9dixowfa.eu-west-1.rds.amazonaws.com"
+    DATABASE_USERNAME = "administrator"
+    DATABASE_TABLE = "tezoslink"
+    DATABASE_PASSWORD = "${get_env("TF_VAR_DATABASE_PASSWORD")}"
+    DATABASE_URL = "tzlink-database.cluster-cmeu9dixowfa.eu-west-1.rds.amazonaws.com"
   }
 
   LAMBDA_VPC_CONFIG_ENABLE = true
