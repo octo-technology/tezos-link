@@ -45,14 +45,11 @@ func NewProxyUsecase(
 	proxyRepo repository.BlockchainRepository,
 	metricsRepo pkgrepository.MetricsRepository,
 	projectRepo pkgrepository.ProjectRepository,
-<<<<<<< HEAD
 	projectCacheRepo pkgrepository.ProjectRepository,
 	metricsCacheRepo repository.MetricInputRepository) *ProxyUsecase {
-=======
-	projectCacheRepo pkgrepository.ProjectRepository) *ProxyUsecase {
+
 	baseArchiveURL := "http://" + config.ProxyConfig.Tezos.ArchiveHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.ArchivePort)
 	baseRollingURL := "http://" + config.ProxyConfig.Tezos.RollingHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.RollingPort)
->>>>>>> 4d96d02... Move IsRollingRedirection to usecase section + isRollingredirection unit-test + fix integration test Requestbydays
 	return &ProxyUsecase{
 		cacheRepo:        cacheRepo,
 		proxyRepo:        proxyRepo,
@@ -86,7 +83,7 @@ func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) error {
 	return nil
 }
 
-<<<<<<< HEAD
+
 func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 	logrus.Info("Starting to write cached requests to database")
 	cachedMetrics, err := p.metricsCacheRepo.GetAll()
@@ -100,7 +97,8 @@ func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 	}
 	logrus.Infof("Successfully saved %d cached metrics in database", len(cachedMetrics))
 	time.Sleep(time.Duration(config.ProxyConfig.Proxy.RoutineDelaySeconds) * time.Second)
-=======
+}
+
 func (p *ProxyUsecase) IsRollingRedirection(url string) bool {
 	ret := false
 	urls := strings.Split(url, "?")
@@ -114,7 +112,6 @@ func (p *ProxyUsecase) IsRollingRedirection(url string) bool {
 	}
 
 	return ret
->>>>>>> 4d96d02... Move IsRollingRedirection to usecase section + isRollingredirection unit-test + fix integration test Requestbydays
 }
 
 // Proxy proxy an http request to the right repositories
