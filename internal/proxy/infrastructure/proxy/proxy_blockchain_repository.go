@@ -12,7 +12,7 @@ import (
 )
 
 type proxyBlockchainRepository struct {
-	client         	*http.Client
+	client *http.Client
 }
 
 // NewProxyBlockchainRepository returns a new blockchain proxy repository
@@ -21,7 +21,7 @@ func NewProxyBlockchainRepository() repository.BlockchainRepository {
 	client := &http.Client{Timeout: time.Duration(config.ProxyConfig.Proxy.ReadTimeout) * time.Second}
 
 	return &proxyBlockchainRepository{
-		client:         client,
+		client: client,
 	}
 }
 
@@ -55,4 +55,3 @@ func (p proxyBlockchainRepository) Get(request *pkgmodel.Request, url string) (i
 func (p proxyBlockchainRepository) Add(request *pkgmodel.Request, response interface{}) error {
 	panic("not implemented")
 }
-

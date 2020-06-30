@@ -64,8 +64,8 @@ func NewProxyUsecase(
 		blacklisted:      setupRegexpFor(config.ProxyConfig.Proxy.BlockedMethods),
 		dontCache:        setupRegexpFor(config.ProxyConfig.Proxy.DontCache),
 		rollingPatterns:  setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedRolling),
-		baseArchiveURL: baseArchiveURL,
-		baseRollingURL: baseRollingURL,
+		baseArchiveURL:   baseArchiveURL,
+		baseRollingURL:   baseRollingURL,
 	}
 }
 

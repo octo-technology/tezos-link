@@ -276,7 +276,7 @@ func TestProxyUsecase_Proxy_RedirectToMockServer_Integration(t *testing.T) {
 	now := time.Now().UTC()
 	nowMinusOneMonth := now.AddDate(0, -1, 0)
 	rangeTime := now.Sub(nowMinusOneMonth)
-	nbDaysThisMonth := int(rangeTime.Hours()/24)
+	nbDaysThisMonth := int(rangeTime.Hours() / 24)
 
 	assert.Equal(t, "New Project", projectOutputWithMetrics.Data.Title)
 	assert.Equal(t, uuid, projectOutputWithMetrics.Data.UUID)
