@@ -41,6 +41,11 @@ func (m *mockMetricsRepository) CountAll(uuid string) (int, error) {
 	return args.Int(0), args.Error(1)
 }
 
+func (m *mockMetricsRepository) Remove3MonthOldMetrics() (error) {
+	args := m.Called()
+	return args.Error(0)
+}
+
 func (m *mockMetricsRepository) FindRequestsByDay(uuid string, from time.Time, to time.Time) ([]*pkgmodel.RequestsByDayMetrics, error) {
 	args := m.Called(uuid, from, to)
 	return args.Get(0).([]*pkgmodel.RequestsByDayMetrics), args.Error(1)

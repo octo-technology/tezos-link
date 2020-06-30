@@ -20,9 +20,7 @@ func main() {
 func HandleRequest(ctx context.Context) (string, error) {
 	log.Print("metrics clean starting")
 
-	log.Print("RDS_ENDPOINT", os.Getenv("DATABASE_URL"))
 	dnsStr := fmt.Sprintf("postgres://%s:%s@%s/%s", os.Getenv("DATABASE_USERNAME"), os.Getenv("DATABASE_PASSWORD"), os.Getenv("DATABASE_URL"), os.Getenv("DATABASE_TABLE"))
-	log.Print("dnsStr", dnsStr)
 
 	var Connection *sql.DB
 	con, err := sql.Open("postgres", dnsStr)
@@ -45,9 +43,9 @@ func HandleRequest(ctx context.Context) (string, error) {
 	database.Configure()*/
 	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(Connection)
 
-	numberMetrics, err := metricsRepo.CountAll("dummy_project_id")
+	err2 := metricsRepo.Remove3MonthOldMetrics()
 
-	log.Print(numberMetrics, err)
+	log.Print(err2)
 
 	return "metric clean started.", nil
 }
