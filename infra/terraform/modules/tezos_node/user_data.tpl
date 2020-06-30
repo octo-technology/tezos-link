@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 
 dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-dnf install docker-ce unzip --nobest -y
+dnf install docker-ce unzip jq --nobest -y
 systemctl enable --now docker
 usermod -aG docker ec2-user
 
@@ -35,13 +35,14 @@ elif [ ${mode} == "rolling" ]; then
 aws s3 cp s3://tzlink-blockchain-data-dev/${network}_rolling-snapshot.tar.gz ${network}_rolling-snapshot.tar.gz
 tar xvf ${network}_rolling-snapshot.tar.gz
 mv snapshot.rolling /home/ec2-user/snapshot.rolling
+
+rm ${network}_rolling-snapshot.tar.gz
+
 else
 
 echo "Error: unknown mode declared. Possible choice : [rolling, archive]"
 
 fi
-
-
 
 curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/${computed_network}/scripts/alphanet.sh
 chmod +x /usr/local/bin/${network}.sh
@@ -58,8 +59,7 @@ elif [ ${mode} == "rolling" ]; then
 ${network}.sh snapshot import /home/ec2-user/snapshot.rolling
 ${network}.sh node start --rpc-port 8000 --history-mode experimental-rolling
 
-rm ${network}_rolling-snapshot.tar.gz
-rm rolling-snapshot.tar.gz
+rm snapshot.rolling
 
 else
 
@@ -82,7 +82,7 @@ EOF
 
 systemctl daemon-reload
 
-cat > export-tezos-snap.sh << EOF
+cat > export-tezos-snap.sh << 'EOF'
 #!/bin/bash -e
 
 aws autoscaling suspend-processes --auto-scaling-group-name tzlink-mainnet-archive --scaling-processes ReplaceUnhealthy
@@ -92,8 +92,10 @@ cp /.tezos-${network}/docker-compose.yml .tezos-${network}/docker-compose.yml
 
 echo "> Snapshot rolling-mode node"
 
+current_hash=$(${network}.sh head | tail -n +9 | jq .hash)
+echo ">>> Using the block $${current_hash}"
 echo ">>> Generate the snapshot.rolling file"
-docker exec mainnet_node_1 sh -c "tezos-node snapshot export snapshot.rolling --data-dir /var/run/tezos/node/data --rolling && mv snapshot.rolling /var/run/tezos/client/snapshot.rolling"
+docker exec mainnet_node_1 sh -c "tezos-node snapshot export snapshot.rolling --block $${current_hash} --data-dir /var/run/tezos/node/data --rolling && mv snapshot.rolling /var/run/tezos/client/snapshot.rolling"
 
 cd /var/lib/docker/volumes/mainnet_client_data/_data/
 

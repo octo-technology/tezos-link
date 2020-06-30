@@ -21,6 +21,7 @@ type ProxyUsecase struct {
 	metricsRepo      pkgrepository.MetricsRepository
 	projectRepo      pkgrepository.ProjectRepository
 	projectCacheRepo pkgrepository.ProjectRepository
+	metricsCacheRepo repository.MetricInputRepository
 	whitelisted      []*regexp.Regexp
 	blacklisted      []*regexp.Regexp
 	dontCache        []*regexp.Regexp
@@ -40,13 +41,15 @@ func NewProxyUsecase(
 	proxyRepo repository.BlockchainRepository,
 	metricsRepo pkgrepository.MetricsRepository,
 	projectRepo pkgrepository.ProjectRepository,
-	projectCacheRepo pkgrepository.ProjectRepository) *ProxyUsecase {
+	projectCacheRepo pkgrepository.ProjectRepository,
+	metricsCacheRepo repository.MetricInputRepository) *ProxyUsecase {
 	return &ProxyUsecase{
 		cacheRepo:        cacheRepo,
 		proxyRepo:        proxyRepo,
 		metricsRepo:      metricsRepo,
 		projectRepo:      projectRepo,
 		projectCacheRepo: projectCacheRepo,
+		metricsCacheRepo: metricsCacheRepo,
 		whitelisted:      setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedMethods),
 		blacklisted:      setupRegexpFor(config.ProxyConfig.Proxy.BlockedMethods),
 		dontCache:        setupRegexpFor(config.ProxyConfig.Proxy.DontCache),
@@ -68,6 +71,21 @@ func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) error {
 	}
 
 	return nil
+}
+
+func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
+	logrus.Info("Starting to write cached requests to database")
+	cachedMetrics, err := p.metricsCacheRepo.GetAll()
+	if err != nil {
+		logrus.Errorf("could not get cached metrics: %s", err)
+	}
+	logrus.Infof("got %d cached metrics", len(cachedMetrics))
+	err = p.metricsRepo.SaveMany(cachedMetrics)
+	if err != nil {
+		logrus.Errorf("could not save metrics in database: %s", err)
+	}
+	logrus.Infof("Successfully saved %d cached metrics in database", len(cachedMetrics))
+	time.Sleep(time.Duration(config.ProxyConfig.Proxy.RoutineDelaySeconds) * time.Second)
 }
 
 // Proxy proxy an http request to the right repositories
@@ -112,10 +130,28 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 
 func (p *ProxyUsecase) saveMetrics(request *pkgmodel.Request) {
 	metrics := inputs.NewMetricsInput(request, time.Now().UTC())
-	err := p.metricsRepo.Save(&metrics)
+
+	// add to cache
+	err := p.metricsCacheRepo.Add(&metrics)
 	if err != nil {
-		logrus.Errorf("could not save metrics: %s", err)
+		logrus.Errorf("could not cache the metrics: %s", err)
 	}
+
+	logrus.Info("metric input has been added to cache metrics")
+	// check limit reached if yes save in database
+	nb := p.metricsCacheRepo.Len()
+	if nb >= config.ProxyConfig.Proxy.CacheMaxMetricItems {
+		logrus.Info("cache metrics limit has been reached, saving cached metrics in database ...")
+		allRequests, err := p.metricsCacheRepo.GetAll()
+		if err != nil {
+			logrus.Errorf("could not retrieve cached metrics: %s", err)
+		}
+		err = p.metricsRepo.SaveMany(allRequests)
+		if err != nil {
+			logrus.Errorf("could not save metrics in database: %s", err)
+		}
+	}
+
 }
 
 func (p *ProxyUsecase) isAllowed(url string) bool {

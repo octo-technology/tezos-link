@@ -8,7 +8,8 @@ import (
 
 // MetricsRepository contains all available methods of the metrics repository
 type MetricsRepository interface {
-	Save(metrics *inputs.MetricsInput) error
+	SaveMany(metricInputs []*inputs.MetricsInput) error
+	Save(metricInput *inputs.MetricsInput) error
 	CountAll(uuid string) (int, error)
 	FindRequestsByDay(uuid string, from time.Time, to time.Time) ([]*model.RequestsByDayMetrics, error)
 	CountRPCPathUsage(uuid string, from time.Time, to time.Time) ([]*model.RPCUsageMetrics, error)

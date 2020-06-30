@@ -26,6 +26,12 @@ SNAPSHOT_PATH=$(CMD_PATH)/$(SNAPSHOT)
 SNAPSHOT_CMD=./cmd/$(SNAPSHOT)
 SNAPSHOT_BIN=./bin/$(SNAPSHOT)
 
+# old metrics cleaner lambda
+METRICS_CLEANER=metrics
+METRICS_CLEANER_PATH=$(CMD_PATH)/$(METRICS_CLEANER)
+METRICS_CLEANER_CMD=./cmd/$(METRICS_CLEANER)
+METRICS_CLEANER_BIN=./bin/$(METRICS_CLEANER)
+
 .PHONY: all build build-unix build-api build-proxy build-snapshot-lambda test clean clean-app run deps docker-images docker-tag docs
 
 all: test build
@@ -33,15 +39,18 @@ build: build-frontend
 	$(GOBUILD) -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
 	$(GOBUILD) -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
 	$(GOBUILD) -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
+	$(GOBUILD) -o $(METRICS_CLEANER_BIN) $(METRICS_CLEANER_CMD) && chmod +x $(METRICS_CLEANER_BIN)
 build-frontend:
 	cd web && yarn build
 build-snapshot-lambda:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(SNAPSHOT_BIN) $(SNAPSHOT_CMD) && chmod +x $(SNAPSHOT_BIN)
+build-metrics-cleaner-lambda:
+	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(METRICS_CLEANER_BIN) $(METRICS_CLEANER_CMD) && chmod +x $(METRICS_CLEANER_BIN)
 build-proxy:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
 build-api:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
-build-unix: build-snapshot-lambda build-proxy build-api
+build-unix: build-snapshot-lambda build-metrics-cleaner-lambda build-proxy build-api
 unit-test:
 	$(GOTEST) -run Unit ./... -v
 integration-test:
@@ -53,9 +62,11 @@ clean-app:
 	$(GOCLEAN) $(API_PATH)
 	$(GOCLEAN) $(PROXY_PATH)
 	$(GOCLEAN) $(SNAPSHOT_PATH)
+	$(GOCLEAN) $(METRICS_CLEANER_PATH)
 	rm -f $(API_BIN)
 	rm -f $(PROXY_BIN)
 	rm -f $(SNAPSHOT_BIN)
+	rm -f ${METRICS_CLEANER_BIN}
 build-docker: build-unix
 	docker-compose build
 run:
@@ -81,12 +92,18 @@ docker-push:
 	docker push ${REGISTRY}:$(PROXY)-dev
 deploy-frontend:
 	aws s3 sync web/build s3://tezoslink-front
-deploy-lambda:
-	cp bin/snapshot bin/main
-	zip -j bin/snapshot.zip bin/main
-	aws s3 cp $(SNAPSHOT_BIN).zip s3://tzlink-snapshot-lambda-dev/v1.0.0/$(SNAPSHOT).zip
-	rm bin/snapshot.zip bin/main
-	aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/snapshot.zip --region eu-west-1
+deploy-snapshot-lambda:
+	cp $(SNAPSHOT_BIN) bin/main
+	zip -j bin/$(SNAPSHOT).zip bin/main
+	aws s3 cp bin/$(SNAPSHOT).zip s3://tzlink-snapshot-lambda-dev/v1.0.0/$(SNAPSHOT).zip
+	rm bin/$(SNAPSHOT).zip bin/main
+	aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/$(SNAPSHOT).zip --region eu-west-1
+deploy-metrics-cleaner-lambda:
+	cp $(METRICS_CLEANER_BIN) bin/main
+	zip -j bin/$(METRICS_CLEANER).zip bin/main
+	aws s3 cp bin/$(METRICS_CLEANER).zip s3://tzlink-metrics-lambda-dev/v1.0.0/$(METRICS_CLEANER).zip
+	rm bin/$(METRICS_CLEANER).zip bin/main
+	aws lambda update-function-code --function-name metrics --s3-bucket tzlink-metrics-lambda-dev --s3-key v1.0.0/$(METRICS_CLEANER).zip --region eu-west-1
 docs:
 	if ! which swag; then go get -u github.com/swaggo/swag/cmd/swag ; fi
 	swag init --generalInfo rest_controller.go --dir internal/$(API)/infrastructure/rest --output api-docs/$(API)
