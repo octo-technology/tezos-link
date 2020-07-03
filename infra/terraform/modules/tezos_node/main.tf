@@ -45,7 +45,7 @@ resource "aws_autoscaling_group" "tz_nodes" {
   max_size         = var.MAX_INSTANCE_NUMBER
   min_size         = var.MIN_INSTANCE_NUMBER
 
-  health_check_grace_period = 900 # 15mins <- rolling-node
+  health_check_grace_period = var.HEALTH_CHECK_GRACE_PERIOD
   health_check_type         = "ELB"
   force_delete              = true
   launch_configuration      = aws_launch_configuration.tz_node.id
@@ -82,11 +82,6 @@ resource "aws_autoscaling_group" "tz_nodes" {
     }
   ]
 }
-
-#resource "aws_autoscaling_attachment" "tz_farm" {
-#  autoscaling_group_name = aws_autoscaling_group.tz_nodes.id
-#  alb_target_group_arn   = aws_alb_target_group.tz_farm.arn
-#}
 
 
 resource "aws_alb" "tz_farm" {

@@ -3,7 +3,7 @@ resource "aws_autoscaling_policy" "cpu_out" {
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "1"
-  cooldown               = 1080 #sec (18 mins)
+  cooldown               = var.CPU_OUT_SCALING_COOLDOWN
   policy_type            = "SimpleScaling"
 }
 
@@ -12,7 +12,7 @@ resource "aws_autoscaling_policy" "cpu_down" {
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "-1"
-  cooldown               = 300 #sec (5 mins)
+  cooldown               = var.CPU_DOWN_SCALING_COOLDOWN
   policy_type            = "SimpleScaling"
 }
 
@@ -25,16 +25,16 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_out" {
   statistic           = "Average"
   metric_name         = "CPUUtilization"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  threshold           = 40 #%
+  threshold           = var.CPU_OUT_SCALING_THRESHOLD
 
   period             = 60
-  evaluation_periods = 12
+  evaluation_periods = var.CPU_OUT_EVALUATION_PERIODS
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.tz_nodes.name
   }
 
-  alarm_description = "Average CPUUtilization >= 40% (duration >= 2min)"
+  alarm_description = "Average CPUUtilization >= ${var.CPU_OUT_SCALING_THRESHOLD}% (duration >= ${var.CPU_OUT_EVALUATION_PERIODS}min)"
   alarm_actions     = [aws_autoscaling_policy.cpu_out.arn]
 }
 
@@ -46,15 +46,15 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_down" {
   statistic           = "Average"
   metric_name         = "CPUUtilization"
   comparison_operator = "LessThanOrEqualToThreshold"
-  threshold           = 5 #%
+  threshold           = var.CPU_DOWN_SCALING_THRESHOLD
 
   period             = 60
-  evaluation_periods = 5
+  evaluation_periods = var.CPU_DOWN_EVALUATION_PERIODS
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.tz_nodes.name
   }
 
-  alarm_description = "Average CPUUtilization <= 5% (duration >= 10min)"
+  alarm_description = "Average CPUUtilization <= ${var.CPU_DOWN_SCALING_THRESHOLD}% (duration >= ${var.CPU_DOWN_EVALUATION_PERIODS}min)"
   alarm_actions     = [aws_autoscaling_policy.cpu_down.arn]
 }
