@@ -45,11 +45,13 @@ resource "aws_autoscaling_group" "tz_nodes" {
   max_size         = var.MAX_INSTANCE_NUMBER
   min_size         = var.MIN_INSTANCE_NUMBER
 
-  health_check_grace_period = 600 # 10mins <- rolling-nodes
+  health_check_grace_period = 900 # 15mins <- rolling-node
   health_check_type         = "ELB"
   force_delete              = true
   launch_configuration      = aws_launch_configuration.tz_node.id
   vpc_zone_identifier       = tolist(data.aws_subnet_ids.tzlink.ids)
+
+  enabled_metrics = ["GroupInServiceInstances", "GroupPendingInstances", "GroupStandbyInstances", "GroupTerminatingInstances", "GroupTotalInstances"]
 
   target_group_arns = [aws_alb_target_group.tz_farm.arn]
 
@@ -113,9 +115,9 @@ resource "aws_alb_target_group" "tz_farm" {
     port                = 8000
     protocol            = "HTTP"
     healthy_threshold   = 2
-    unhealthy_threshold = 10
-    interval            = 60
-    timeout             = 59
+    unhealthy_threshold = 2
+    interval            = 30
+    timeout             = 29
   }
 
   tags = {

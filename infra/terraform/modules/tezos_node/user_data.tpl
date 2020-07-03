@@ -92,7 +92,7 @@ cp /.tezos-${network}/docker-compose.yml .tezos-${network}/docker-compose.yml
 
 echo "> Snapshot rolling-mode node"
 
-current_hash=$(${network}.sh head | tail -n +9 | jq .hash)
+current_hash=$(curl -s localhost:8000/chains/main/blocks/head | jq .hash)
 echo ">>> Using the block $${current_hash}"
 echo ">>> Generate the snapshot.rolling file"
 docker exec mainnet_node_1 sh -c "tezos-node snapshot export snapshot.rolling --block $${current_hash} --data-dir /var/run/tezos/node/data --rolling && mv snapshot.rolling /var/run/tezos/client/snapshot.rolling"

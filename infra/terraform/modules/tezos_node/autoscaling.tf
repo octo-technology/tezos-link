@@ -3,7 +3,7 @@ resource "aws_autoscaling_policy" "cpu_out" {
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "1"
-  cooldown               = 600 #sec (10 min)
+  cooldown               = 1080 #sec (18 mins)
   policy_type            = "SimpleScaling"
 }
 
@@ -12,7 +12,7 @@ resource "aws_autoscaling_policy" "cpu_down" {
   autoscaling_group_name = aws_autoscaling_group.tz_nodes.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "-1"
-  cooldown               = 900 #sec (15 min)
+  cooldown               = 300 #sec (5 mins)
   policy_type            = "SimpleScaling"
 }
 
@@ -28,7 +28,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_out" {
   threshold           = 40 #%
 
   period             = 60
-  evaluation_periods = 2
+  evaluation_periods = 12
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.tz_nodes.name
@@ -49,7 +49,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_down" {
   threshold           = 5 #%
 
   period             = 60
-  evaluation_periods = 10
+  evaluation_periods = 5
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.tz_nodes.name

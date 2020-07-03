@@ -18,6 +18,6 @@ inputs = {
   DESIRED_INSTANCE_NUMBER = 1
   MAX_INSTANCE_NUMBER = 5
 
-  INSTANCE_TYPE = "t2.small"
+  INSTANCE_TYPE = "t3.small"
   KEY_PAIR_NAME = "adbo"
 }
