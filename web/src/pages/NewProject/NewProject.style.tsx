@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { Card, fadeInFromLeft } from '../../styles'
 
 export const NewProjectCard = styled(Card)`
-  margin-top: 10%;
+  margin-top: 150px;
   padding: 20px;
   width: 100%;
   height: 100%;
@@ -13,5 +13,9 @@ export const NewProjectCard = styled(Card)`
 
   > h1 {
     margin-top: 0;
+  }
+
+  button {
+    margin-top: 10px;
   }
 `

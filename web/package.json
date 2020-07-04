@@ -5,7 +5,7 @@
   "author": "Loup Theron",
   "license": "Apache",
   "scripts": {
-    "start": "PORT=8080 REACT_APP_BACKEND_URL=http://localhost:8000 react-scripts -r @cypress/instrument-cra start && open http://localhost:8080",
+    "start": "PORT=8080 REACT_APP_BACKEND_URL=https://api.tezoslink.io react-scripts -r @cypress/instrument-cra start && open http://localhost:8080",
     "build": "REACT_APP_BACKEND_URL=https://api.tezoslink.io react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

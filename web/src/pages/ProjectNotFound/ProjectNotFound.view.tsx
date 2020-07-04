@@ -7,7 +7,7 @@ import { HomeButton, ProjectNotFoundStyled, ProjectNotFoundText } from './Projec
 export const ProjectNotFound = () => (
   <ProjectNotFoundStyled>
     <img alt="Unplugged" height="50" src="/icons/island.svg" /> Oops
-    <ProjectNotFoundText>This project is not known from our side...</ProjectNotFoundText>
+    <ProjectNotFoundText>Unknown project...</ProjectNotFoundText>
     <HomeButton>
       <Link to="/">
         <Button text="Go to Home" icon="cards" />

@@ -34,14 +34,9 @@
     </symbol>
     <symbol id="plus-card" viewBox="0 0 24 24">
 		<g id="Outline_Icons_1_">
-			<g id="Outline_Icons">
-				<g>
-					<rect x="3.5" y="0.5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" width="20" height="20"></rect>
-					<polygon fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="20.5,8.5      15.5,8.5 15.5,3.5 11.5,3.5 11.5,8.5 6.5,8.5 6.5,12.5 11.5,12.5 11.5,17.5 15.5,17.5 15.5,12.5 20.5,12.5    "></polygon>
-					<polyline fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="3.5,4.5      0.5,4.5 0.5,23.5 19.5,23.5 19.5,20.5    "></polyline>
-				</g>
-			</g>
-			<g id="New_icons_1_"></g>
+			<rect x="3.5" y="0.5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" width="20" height="20"></rect>
+			<polygon fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="20.5,8.5      15.5,8.5 15.5,3.5 11.5,3.5 11.5,8.5 6.5,8.5 6.5,12.5 11.5,12.5 11.5,17.5 15.5,17.5 15.5,12.5 20.5,12.5    "></polygon>
+			<polyline fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="3.5,4.5      0.5,4.5 0.5,23.5 19.5,23.5 19.5,20.5    "></polyline>
 		</g>
 		<g id="Invisible_Shape">
             <rect fill="none" stroke="none" width="24" height="24"></rect>
@@ -256,9 +251,47 @@
             <rect fill="none" stroke="none" width="24" height="24"></rect>
         </g>
     </symbol>
-    <symbol id="XXXX" viewBox="0 0 24 24">
+    <symbol id="documentation" viewBox="0 0 24 24">
         <g id="Outline_Icons">
-
+            <polygon fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="20.5,23.5     3.5,23.5 3.5,0.5 14.5,0.5 20.5,6.5   "></polygon>
+            <polyline fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="14.5,0.5     14.5,6.5 20.5,6.5   "></polyline>
+            <line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="7.5" y1="7.5" x2="12" y2="7.5"></line>
+            <line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="7.5" y1="10.5" x2="16.5" y2="10.5"></line>
+            <line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="7.5" y1="13.5" x2="16.5" y2="13.5"></line>
+            <line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="7.5" y1="16.5" x2="16.5" y2="16.5"></line>
+            <line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="7.5" y1="19.5" x2="16.5" y2="19.5"></line
+        </g>
+        <g id="Invisible_Shape">
+            <rect fill="none" stroke="none" width="24" height="24"></rect>
+        </g>
+    </symbol>
+    <symbol id="status" viewBox="0 0 24 24">
+        <g id="Outline_Icons">
+            <rect x="0.5" y="0.5" fill="none" stroke-linejoin="round" stroke-miterlimit="10" width="23" height="23"></rect>
+            <polyline fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="3.5,7.5      5.5,9.5 10.5,4.5    "></polyline>
+            <polyline fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="     3.5,16.5 5.5,18.5 10.5,13.5    "></polyline>
+            <line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="12.5" y1="8.5" x2="20.5" y2="8.5"></line>
+            <line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="12.5" y1="17.5" x2="20.5" y2="17.5"></line>
+        </g>
+        <g id="Invisible_Shape">
+            <rect fill="none" stroke="none" width="24" height="24"></rect>
+        </g>
+    </symbol>
+    <symbol id="plus-email" viewBox="0 0 24 24">
+        <g id="Outline_Icons">
+            <g>
+                <line fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="23.5" y1="0.5" x2="9" y2="15"></line>
+                <polygon fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="     13.5,23.5 9,15 0.5,10.5 23.5,0.5    "></polygon>
+            </g>
+        </g>
+        <g id="New_icons_1_"></g>
+        <g id="Invisible_Shape">
+            <rect fill="none" stroke="none" width="24" height="24"></rect>
+        </g>
+    </symbol>
+    <symbol id="arrow" viewBox="0 0 24 24">
+        <g id="Outline_Icons">
+            <path fill="none" d="M11.5963 0.187247L11.2175 0.563846C10.9665 0.813455 10.9665 1.21818 11.2175 1.46784L20.7797 10.9757H0.642858C0.28784 10.9757 0 11.2619 0 11.6149V12.1476C0 12.5006 0.28784 12.7868 0.642858 12.7868H20.7797L11.2175 22.2946C10.9665 22.5443 10.9665 22.949 11.2175 23.1986L11.5963 23.5752C11.8473 23.8248 12.2544 23.8248 12.5054 23.5752L23.8117 12.3332C24.0628 12.0836 24.0628 11.6789 23.8117 11.4292L12.5054 0.187247C12.2544 -0.0624157 11.8473 -0.0624157 11.5963 0.187247Z" fill="black"/>
         </g>
         <g id="Invisible_Shape">
             <rect fill="none" stroke="none" width="24" height="24"></rect>
@@ -280,5 +313,12 @@
             <rect fill="none" stroke="none" width="24" height="24"></rect>
         </g>
     </symbol>
-</svg>
+    <symbol id="XXXX" viewBox="0 0 24 24">
+        <g id="Outline_Icons">
+
+        </g>
+        <g id="Invisible_Shape">
+            <rect fill="none" stroke="none" width="24" height="24"></rect>
+        </g>
+    </symbol>
 </svg>

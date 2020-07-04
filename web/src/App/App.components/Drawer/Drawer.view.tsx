@@ -7,68 +7,70 @@ import { DrawerItem, DrawerMask, DrawerStyled } from './Drawer.style'
 type DrawerViewProps = {
   showing: boolean
   hideCallback: () => void
-  route: string
+  pathname: string
   user: any
   removeAuthUserCallback: () => void
 }
 
-export const DrawerView = ({ showing, hideCallback, route, user, removeAuthUserCallback }: DrawerViewProps) => (
+export const DrawerView = ({ showing, hideCallback, pathname, user, removeAuthUserCallback }: DrawerViewProps) => (
   <>
     <DrawerMask className={`${showing}`} onClick={() => hideCallback()} />
     <DrawerStyled className={`${showing}`}>
       <h1>Menu</h1>
 
-      {user ? loggedInDrawer(user, route, hideCallback, removeAuthUserCallback) : loggedOutDrawer(route, hideCallback)}
+      {user
+        ? loggedInDrawer(user, pathname, hideCallback, removeAuthUserCallback)
+        : loggedOutDrawer(pathname, hideCallback)}
 
-      <DrawerItem className={route === '/' ? 'current-path' : 'other-path'}>
-        <Link to="/" onClick={() => hideCallback()}>
+      <DrawerItem className={pathname === '/status' ? 'current-path' : 'other-path'}>
+        <Link to="/status" onClick={() => hideCallback()}>
           <svg>
             <use xlinkHref="/icons/sprites.svg#cards" />
           </svg>
-          Dashboard
+          Status
         </Link>
       </DrawerItem>
 
-      <DrawerItem className={route === '/new-post' ? 'current-path' : 'other-path'}>
-        <Link to="/new-post" onClick={() => hideCallback()}>
+      <DrawerItem className={pathname === '/documentation' ? 'current-path' : 'other-path'}>
+        <Link to="/documentation" onClick={() => hideCallback()}>
           <svg>
-            <use xlinkHref="/icons/sprites.svg#plus-card" />
+            <use xlinkHref="/icons/sprites.svg#documentation" />
           </svg>
-          New Post
+          Documentation
         </Link>
       </DrawerItem>
     </DrawerStyled>
   </>
 )
 
-function loggedOutDrawer(route: any, hideCallback: any) {
+function loggedOutDrawer(pathname: any, hideCallback: any) {
   return (
     <>
-      <DrawerItem className={route === '/login' ? 'current-path' : 'other-path'}>
-        <Link to="/login" onClick={() => hideCallback()}>
+      <DrawerItem className={pathname === '/sign-in-project' ? 'current-path' : 'other-path'}>
+        <Link to="/sign-in-project" onClick={() => hideCallback()}>
           <svg>
             <use xlinkHref="/icons/sprites.svg#login" />
           </svg>
-          Login
+          Sign In
         </Link>
       </DrawerItem>
 
-      <DrawerItem className={route === '/sign-up' ? 'current-path' : 'other-path'}>
-        <Link to="/sign-up" onClick={() => hideCallback()}>
+      <DrawerItem className={pathname === '/new-project' ? 'current-path' : 'other-path'}>
+        <Link to="/new-project" onClick={() => hideCallback()}>
           <svg>
-            <use xlinkHref="/icons/sprites.svg#sign-up" />
+            <use xlinkHref="/icons/sprites.svg#plus-card" />
           </svg>
-          Sign Up
+          Create
         </Link>
       </DrawerItem>
     </>
   )
 }
 
-function loggedInDrawer(user: any, route: any, hideCallback: any, removeAuthUserCallback: any) {
+function loggedInDrawer(user: any, pathname: any, hideCallback: any, removeAuthUserCallback: any) {
   return (
     <>
-      <DrawerItem className={route === '/profile' ? 'current-path' : 'other-path'}>
+      <DrawerItem className={pathname === '/profile' ? 'current-path' : 'other-path'}>
         <Link to="/profile" onClick={() => hideCallback()}>
           <img alt={user.username} src="/images/user1.jpg" />
           {user.username}
@@ -96,7 +98,7 @@ function loggedInDrawer(user: any, route: any, hideCallback: any, removeAuthUser
 DrawerView.propTypes = {
   showing: PropTypes.bool,
   hideCallback: PropTypes.func.isRequired,
-  route: PropTypes.string.isRequired,
+  pathname: PropTypes.string.isRequired,
   user: PropTypes.object,
   removeAuthUserCallback: PropTypes.func.isRequired
 }

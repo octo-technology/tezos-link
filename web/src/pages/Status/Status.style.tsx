@@ -5,7 +5,7 @@ import { Card, FadeInFromLeft } from '../../styles'
 export const StatusViewStyled = styled(FadeInFromLeft)`
   width: 50%;
   max-width: 840px;
-  margin: 100px auto 20px auto;
+  margin: 200px auto 20px auto;
 `
 
 export const StatusViewContent = styled(Card)`

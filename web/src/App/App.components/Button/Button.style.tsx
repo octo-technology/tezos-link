@@ -1,4 +1,4 @@
-import { primaryColor, secondaryColor, textColor } from 'src/styles'
+import { primaryColor, secondaryColor, textColor, backgroundColor } from 'src/styles'
 import styled, { keyframes } from 'styled-components/macro'
 
 export const clickWave = keyframes`
@@ -28,7 +28,7 @@ export const ButtonStyled = styled.button`
   }
 
   &.primary {
-    color: white;
+    color: ${backgroundColor};
     background-color: ${primaryColor};
   }
 
@@ -63,7 +63,7 @@ export const ButtonIcon = styled.svg`
   margin-left: 15px;
 
   &.primary {
-    stroke: white;
+    stroke: ${backgroundColor};
   }
 
   &.secondary {

@@ -249,13 +249,15 @@ export function showConfetis() {
   // Get canvas & context
   canvas = document.getElementById('confetis')
   // @ts-ignore
-  canvas.style.zIndex = '999'
-  canvas.width = window.innerWidth
-  canvas.height = window.innerHeight
-  ctx = canvas.getContext('2d')
-  // initialise animation & variables
-  initialiseElements()
-  startAnimation()
+  if (canvas) {
+    canvas.style.zIndex = '999'
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    ctx = canvas.getContext('2d')
+    // initialise animation & variables
+    initialiseElements()
+    startAnimation()
+  }
 }
 
 function drawBackground() {

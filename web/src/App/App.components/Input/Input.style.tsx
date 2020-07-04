@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components/macro'
 
-import { backgroundColor, downColor, upColor } from '../../../styles'
+import { backgroundColor, downColor, upColor, borderColor, primaryColor } from '../../../styles'
 
 export const InputStyled = styled.div`
   position: relative;
@@ -15,19 +15,19 @@ export const InputComponent = styled.input`
   padding: 12px 16px 12px 40px;
   border-width: 1px;
   border-style: solid;
-  border-color: white;
+  border-color: ${borderColor};
   border-radius: 4px;
   transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   will-change: border-color, box-shadow;
   background-color: ${backgroundColor};
 
   &:hover {
-    border-color: rgba(243, 204, 75, 0.5);
+    border-color: ${primaryColor}80;
   }
 
   &:focus {
-    box-shadow: 0 0 0 2px rgba(243, 204, 75, 0.1);
-    border-color: rgba(243, 204, 75, 0.5);
+    box-shadow: 0 0 0 2px ${primaryColor}20;
+    border-color: ${primaryColor}80;
   }
 
   &.error {

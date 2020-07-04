@@ -2,8 +2,8 @@ import { FadeInFromTop, FadeInFromRight } from 'src/styles'
 import styled from 'styled-components/macro'
 
 export const DashboardStyled = styled.div`
-  width: 80%;
-  max-width: 1140px;
+  width: 1140px;
+  max-width: 90vw;
   margin: 100px auto 20px auto;
 `
 
@@ -11,6 +11,10 @@ export const DashboardTopStyled = styled.div`
   display: grid;
   grid-template-columns: calc(100% - 320px) 300px;
   grid-gap: 20px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: auto;
+  }
 `
 
 export const DashboardBottomStyled = styled.div`
