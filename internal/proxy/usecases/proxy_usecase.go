@@ -77,7 +77,7 @@ func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) error {
 			return err
 		}
 
-		_, err = p.projectCacheRepo.Save(prj.Title, prj.UUID, prj.CreationDate)
+		_, err = p.projectCacheRepo.Save(prj.Title, prj.UUID, prj.CreationDate, prj.Network)
 	}
 
 	return nil

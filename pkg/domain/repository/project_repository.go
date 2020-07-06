@@ -9,6 +9,6 @@ import (
 type ProjectRepository interface {
 	FindAll() ([]*pkgmodel.Project, error)
 	FindByUUID(uuid string) (*pkgmodel.Project, error)
-	Save(title string, uuid string, creationDate time.Time) (*pkgmodel.Project, error)
+	Save(title string, uuid string, creationDate time.Time, network string) (*pkgmodel.Project, error)
 	Ping() error
 }

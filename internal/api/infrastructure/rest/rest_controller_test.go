@@ -19,13 +19,14 @@ import (
 func TestRestController_PostProject_Unit(t *testing.T) {
 	// Given
 	creationDate := time.Now().UTC()
-	p := pkgmodel.NewProject(1, "PROJECT_NAME", "AN_UUID", creationDate)
+	p := pkgmodel.NewProject(1, "PROJECT_NAME", "AN_UUID", creationDate, "CARTAGENET")
 	rc := buildControllerWithProjectUseCaseError(&p, nil, "CreateProject")
 	rcWithError := buildControllerWithProjectUseCaseError(nil, errors.New("error from the DB"), "CreateProject")
 	rcWithEmptyNameError := buildControllerWithProjectUseCaseError(nil, modelerrors.ErrNoProjectName, "CreateProject")
 
 	jsonBody, _ := json.Marshal(inputs.NewProject{
 		Title: "New Project",
+		Network: "CARTAGENET",
 	})
 	unexpectedJSONBody := `{"BADDDDD":"BAD_KEY"}`
 
@@ -63,7 +64,7 @@ func TestRestController_GetProject_Unit(t *testing.T) {
 	creationDate := time.Now().UTC()
 	stubRPCUSageMetrics := []*pkgmodel.RPCUsageMetrics{rpcUsage}
 	stubRequestsMetrics := []*pkgmodel.RequestsByDayMetrics{firstRequestsMetrics, secondRequestsMetrics}
-	p := pkgmodel.NewProject(123, "A Project", "A_UUID_666", creationDate)
+	p := pkgmodel.NewProject(123, "A Project", "A_UUID_666", creationDate, "CARTAGENET")
 	m := pkgmodel.NewMetrics(3, stubRequestsMetrics, stubRPCUSageMetrics, []string{"/a/path", "/another/path"})
 
 	mockProjectUsecase := &mockProjectUsecase{}

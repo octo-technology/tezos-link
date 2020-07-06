@@ -37,9 +37,9 @@ func (l lruProjectRepository) FindByUUID(uuid string) (*pkgmodel.Project, error)
 	return &ret, nil
 }
 
-func (l lruProjectRepository) Save(title string, uuid string, creationDate time.Time) (*pkgmodel.Project, error) {
+func (l lruProjectRepository) Save(title string, uuid string, creationDate time.Time, network string) (*pkgmodel.Project, error) {
 	noID := 0
-	project := pkgmodel.NewProject(int64(noID), title, uuid, creationDate)
+	project := pkgmodel.NewProject(int64(noID), title, uuid, creationDate, network)
 
 	l.cache.Add(uuid, project)
 

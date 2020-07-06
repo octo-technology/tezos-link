@@ -8,14 +8,16 @@ type Project struct {
 	Title        string
 	UUID         string
 	CreationDate time.Time
+	Network		 string
 }
 
 // NewProject returns a new project
-func NewProject(ID int64, title string, uuid string, creationDate time.Time) Project {
+func NewProject(ID int64, title string, uuid string, creationDate time.Time, network string) Project {
 	return Project{
 		ID:           ID,
 		Title:        title,
 		UUID:         uuid,
 		CreationDate: creationDate,
+		Network:      network,
 	}
 }

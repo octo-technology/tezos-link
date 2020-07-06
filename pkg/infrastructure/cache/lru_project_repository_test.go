@@ -17,10 +17,11 @@ func TestLRUProjectRepository_FindByUUID_Unit(t *testing.T) {
 	projectCache := NewLRUProjectRepository()
 	projectUUID := "12234"
 	projectTitle := "DummyProject"
+	projectNetwork := "CARTAGENET"
 	projectCreationDate := time.Now()
 
 	// When
-	_, err = projectCache.Save(projectTitle, projectUUID, projectCreationDate)
+	_, err = projectCache.Save(projectTitle, projectUUID, projectCreationDate, projectNetwork)
 	if err != nil {
 		t.Fatal("could not save in cache", err)
 	}

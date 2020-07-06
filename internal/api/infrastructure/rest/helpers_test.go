@@ -16,8 +16,8 @@ type mockProjectUsecase struct {
 	mock.Mock
 }
 
-func (m *mockProjectUsecase) CreateProject(name string) (*pkgmodel.Project, error) {
-	args := m.Called(name)
+func (m *mockProjectUsecase) CreateProject(name string, network string) (*pkgmodel.Project, error) {
+	args := m.Called(name, network)
 	if args.Get(0) != nil {
 		return args.Get(0).(*pkgmodel.Project), args.Error(1)
 	}
@@ -64,7 +64,7 @@ func buildControllerWithProjectUseCaseError(project *pkgmodel.Project, error err
 	mockHealthUsecase := &mockHealthUsecase{}
 	mockProjectUsecase := &mockProjectUsecase{}
 	mockProjectUsecase.
-		On(ucMethod, mock.Anything).
+		On(ucMethod, mock.Anything, mock.Anything).
 		Return(project, error).
 		Twice()
 	rcc := NewRestController(chi.NewRouter(), mockProjectUsecase, mockHealthUsecase)

@@ -51,7 +51,7 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 	if err != nil {
 		t.Fatal("could not parse conf", err)
 	}
-	prj := pkgmodel.NewProject(123, "DUMMY_TITLE", "DUMMY_UUID", time.Now())
+	prj := pkgmodel.NewProject(123, "DUMMY_TITLE", "DUMMY_UUID", time.Now(), "CARTAGENET")
 	localURL := "127.0.0.1"
 
 	blockedRequest := pkgmodel.NewRequest("/dummy/path", "UUID", pkgmodel.OBTAIN, localURL)
@@ -186,7 +186,7 @@ func stubProjectRepository(response *pkgmodel.Project, error error) *mockProject
 		Return(response, error).
 		Once()
 	mockProjectRepository.
-		On("Save", mock.Anything, mock.Anything, mock.Anything).
+		On("Save", mock.Anything, mock.Anything, mock.Anything, mock.Anything).
 		Return(nil, error).
 		Once()
 	return mockProjectRepository

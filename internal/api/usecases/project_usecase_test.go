@@ -10,7 +10,7 @@ import (
 
 func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 	// Given
-	p := pkgmodel.NewProject(123, "A PROJECT", "AN_UUID", time.Now().UTC())
+	p := pkgmodel.NewProject(123, "A PROJECT", "AN_UUID", time.Now().UTC(), "CARTAGENET")
 	str := "2014-11-12T11:45:26.371Z"
 	now, err := time.Parse(time.RFC3339, str)
 	if err != nil {

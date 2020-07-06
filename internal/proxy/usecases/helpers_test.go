@@ -73,8 +73,8 @@ func (mp *mockProjectRepository) FindByUUID(uuid string) (*pkgmodel.Project, err
 	return args.Get(0).(*pkgmodel.Project), args.Error(1)
 }
 
-func (mp *mockProjectRepository) Save(title string, uuid string, creationDate time.Time) (*pkgmodel.Project, error) {
-	args := mp.Called(title, uuid, creationDate)
+func (mp *mockProjectRepository) Save(title string, uuid string, creationDate time.Time, network string) (*pkgmodel.Project, error) {
+	args := mp.Called(title, uuid, creationDate, network)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
