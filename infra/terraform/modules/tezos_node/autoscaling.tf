@@ -18,7 +18,7 @@ resource "aws_autoscaling_policy" "cpu_down" {
 
 
 resource "aws_cloudwatch_metric_alarm" "cpu_scale_out" {
-  actions_enabled = true
+  actions_enabled = false
 
   alarm_name          = format("tzlink-%s-%s-out-cpu", var.TZ_NETWORK, var.TZ_MODE)
   namespace           = "AWS/EC2"

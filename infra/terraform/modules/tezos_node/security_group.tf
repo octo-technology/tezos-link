@@ -41,13 +41,27 @@ resource "aws_security_group_rule" "rpc_ingress_for_tezos_node" {
   security_group_id = aws_security_group.tezos_node.id
 }
 
-resource "aws_security_group_rule" "p2p_ingress_for_tezos_node" {
+resource "aws_security_group_rule" "p2p_ingress_for_tezos_mainnet_node" {
+  count = var.TZ_NETWORK == "carthagenet" ? 0 : 1
   type        = "ingress"
   from_port   = 9732
   to_port     = 9732
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 
+
+  security_group_id = aws_security_group.tezos_node.id
+}
+
+resource "aws_security_group_rule" "p2p_ingress_for_tezos_carthagenet_node" {
+  count = var.TZ_NETWORK == "carthagenet" ? 1 : 0
+  type        = "ingress"
+  from_port   = 19732
+  to_port     = 19732
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  #source_security_group_id = aws_security_group.tezos_node_lb.id
 
   security_group_id = aws_security_group.tezos_node.id
 }
