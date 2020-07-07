@@ -5,6 +5,7 @@ import * as React from 'react'
 import { Button } from '../../App/App.components/Button/Button.controller'
 import { Input } from '../../App/App.components/Input/Input.controller'
 import { FormInputField } from './NewProject.components/FormInputField/FormInputField.controller'
+import { FormInputNetworkSelector } from './NewProject.components/FormInputNetworkSelector/FormInputNetworkSelector.controller'
 import { NewProjectCard } from './NewProject.style'
 import { newProjectValidator } from './NewProject.validator'
 
@@ -28,7 +29,9 @@ export const NewProjectView = ({ handleSubmitForm, loading }: NewPostViewProps) 
         const { handleSubmit } = formikProps
         return (
           <form onSubmit={handleSubmit}>
-            <Field InputType={Input} component={FormInputField} icon="user" name="title" placeholder="Project title" />
+              <Field InputType={Input} component={FormInputNetworkSelector} icon="network" name="network" />
+
+              <Field InputType={Input} component={FormInputField} icon="user" name="title" placeholder="Project title" />
 
             <Button text="Create project" icon="sign-up" type="submit" loading={loading} />
           </form>

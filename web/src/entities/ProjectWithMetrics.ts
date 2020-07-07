@@ -1,6 +1,7 @@
 export interface ProjectWithMetrics {
   title: string
   uuid: string
+  network : string
   metrics: {
     requestsCount: number
     requestsByDay: RequestByDay[]
