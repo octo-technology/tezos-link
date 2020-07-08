@@ -48,7 +48,6 @@ resource "aws_security_group_rule" "p2p_ingress_for_tezos_node" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 
-  #source_security_group_id = aws_security_group.tezos_node_lb.id
 
   security_group_id = aws_security_group.tezos_node.id
 }
