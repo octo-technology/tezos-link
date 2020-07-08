@@ -72,6 +72,9 @@ build-docker: build-unix
 run:
 	docker-compose up -d postgres node $(API) $(PROXY)
 	cd web && yarn start
+run-dev:
+	docker-compose up -d postgres node $(API) $(PROXY)
+	cd web && yarn start-local
 down:
 	docker-compose down
 stop:

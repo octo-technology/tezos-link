@@ -41,8 +41,8 @@ export const DashboardView = ({ loading, project }: DashboardViewProps) => (
       </DashboardLeftSide>
       <DashboardRightSide>
         <ProjectNameView name={project.title} />
-        <ProjectTokenView token={project.uuid} />
         <ProjectNetworkView network={project.network} />
+        <ProjectTokenView token={project.uuid} />
       </DashboardRightSide>
     </DashboardTopStyled>
     <DashboardBottomStyled>

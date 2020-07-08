@@ -8,7 +8,7 @@ type ProjectNetworkViewProps = {
 }
 
 export const ProjectNetworkView = ({ network }: ProjectNetworkViewProps) => {
-  return <ProjectNetworkCard>Project {network}</ProjectNetworkCard>
+  return <ProjectNetworkCard>Network {network}</ProjectNetworkCard>
 }
 
 ProjectNetworkView.propTypes = {

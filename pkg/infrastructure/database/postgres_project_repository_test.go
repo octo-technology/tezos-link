@@ -32,6 +32,7 @@ func TestPostgresProjectRepository_FindByUUID_Unit(t *testing.T) {
 	assert.Equal(t, expectedProject.UUID, p.UUID, "Bad project")
 	assert.Equal(t, expectedProject.ID, p.ID, "Bad project")
 	assert.Equal(t, expectedProject.Title, p.Title, "Bad project")
+	assert.Equal(t, expectedProject.Network, p.Network, "Bad project")
 	assert.Equal(t, "Etc/UTC", p.CreationDate.Location().String(), "Bad project")
 }
 

@@ -2,7 +2,7 @@ import * as PropTypes from "prop-types";
 import * as React from "react";
 import { useState, useEffect } from "react";
 
-import { SelectStyled } from "./FormInputNetworkSelector.style";
+import { SelectStyled } from "./Select.style";
 
 type SelectViewProps = {
     options: string[];
