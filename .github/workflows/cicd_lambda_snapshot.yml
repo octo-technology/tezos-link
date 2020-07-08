@@ -1,0 +1,67 @@
+name: CI/CD Lambda Snapshot
+
+on:
+  push:
+    paths:
+    - 'cmd/snapshot/**'
+    - 'Makefile'
+    - '.github/workflows/cicd_lambda_snapshot.yml'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
+
+    - uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        go get -v -d ./...
+        if [ -f Gopkg.toml ]; then
+            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+            dep ensure
+        fi
+
+    - name: Build the snapshot lamdba
+      run: make build-snapshot-lambda
+    
+    - name: Zip the snapshot
+      run: |
+        cp bin/snapshot bin/main
+        zip -j bin/snapshot.zip bin/main
+    
+    - name: Upload artifact (only on master)
+      if: github.ref == 'refs/heads/master'
+      uses: actions/upload-artifact@v1
+      with:
+        name: snapshot
+        path: bin/snapshot.zip
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-18.04
+    needs: [build]
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - name: Configure AWS cli
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+
+    - name: Download artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: snapshot
+
+    - name: Deploy and update lambda
+      run: |
+        aws s3 cp snapshot/snapshot.zip s3://tzlink-snapshot-lambda-dev/v1.0.0/snapshot.zip
+        aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/snapshot.zip

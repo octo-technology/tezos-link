@@ -10,9 +10,4 @@ SUBNET_TZ_PRIVATE_PROXY_CIDR    = "10.1.2.0/24"
 SUBNET_TZ_PRIVATE_DATABASE_CIDR = "10.1.3.0/24"
 
 DATABASE_USERNAME = "administrator"
-
-NODE_USER = "ec2-user"
-
-SNAPSHOT_S3_KEY = "v1.0.0/snapshot.zip"
-
-S3_LAMBDA_KEY = "snapshot_lambda_key"
+DATABASE_TABLE = "tezoslink"
