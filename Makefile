@@ -20,6 +20,12 @@ PROXY_PATH=$(CMD_PATH)/$(PROXY)
 PROXY_CMD=./cmd/$(PROXY)
 PROXY_BIN=./bin/$(PROXY)
 
+# proxy service for Test Network
+PROXY_CARTHAGENET=proxy-carthagenet
+PROXY_CARTHAGENET_PATH=$(CMD_PATH)/$(PROXY_CARTHAGENET)
+PROXY_CARTHAGENET_CMD=./cmd/$(PROXY_CARTHAGENET)
+PROXY_CARTHAGENET_BIN=./bin/$(PROXY_CARTHAGENET)
+
 # snapshot lambda
 SNAPSHOT=snapshot
 SNAPSHOT_PATH=$(CMD_PATH)/$(SNAPSHOT)
@@ -73,7 +79,7 @@ run:
 	docker-compose up -d postgres node $(API) $(PROXY)
 	cd web && yarn start
 run-dev:
-	docker-compose up -d postgres node $(API) $(PROXY)
+	docker-compose up -d postgres node node-rolling $(API) $(PROXY) $(PROXY_CARTHAGENET)
 	cd web && yarn start-local
 down:
 	docker-compose down

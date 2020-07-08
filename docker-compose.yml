@@ -30,6 +30,17 @@ services:
     restart: on-failure
     depends_on:
       - postgres
+  proxy-carthagenet:
+    build:
+      context: .
+      dockerfile: build/package/proxy.Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      ENV: local
+    restart: on-failure
+    depends_on:
+      - postgres
   node:
     image: mockserver/mockserver:mockserver-5.9.0
     environment:
