@@ -76,8 +76,16 @@ jobs:
 
     - uses: actions/checkout@v2
     
-    - name: Deploy proxy ecs-tasks
+    - name: Deploy proxy mainnet ecs-tasks
       working-directory: infra/terragrunt/02_service_proxy
+      run: |
+        TF_VAR_DOCKER_IMAGE_VERSION="proxy-${GITHUB_SHA::8}" terragrunt apply -auto-approve
+      env:
+        TF_VAR_DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+
+    - name: Deploy proxy carthagenet ecs-tasks
+      working-directory: infra/terragrunt/02_service_proxy_carthagenet
       run: |
         TF_VAR_DOCKER_IMAGE_VERSION="proxy-${GITHUB_SHA::8}" terragrunt apply -auto-approve
       env:
