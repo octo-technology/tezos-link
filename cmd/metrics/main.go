@@ -10,8 +10,6 @@ import (
 	"os"
 )
 
-//var configPath = flag.String("conf", "", "Path to TOML config")
-
 func main() {
 	lambda.Start(HandleRequest)
 }
@@ -38,9 +36,6 @@ func HandleRequest(ctx context.Context) (string, error) {
 	log.Println("DB initialized")
 	Connection = con
 
-/*	log.Print("DB URL", config.ProxyConfig.Database.Url)
-	log.Print("RDS ", os.Getenv("RDS_ENDPOINT"))
-	database.Configure()*/
 	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(Connection)
 
 	err2 := metricsRepo.Remove3MonthOldMetrics()
