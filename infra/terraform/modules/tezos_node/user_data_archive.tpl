@@ -52,7 +52,7 @@ ${network}.sh node start --rpc-port 8000 --history-mode archive
 cat > export-tezos-snap.sh << 'EOF'
 #!/bin/bash -e
 
-aws autoscaling suspend-processes --auto-scaling-group-name tzlink-mainnet-archive --scaling-processes ReplaceUnhealthy
+aws autoscaling suspend-processes --auto-scaling-group-name tzlink-${network}-archive --scaling-processes ReplaceUnhealthy
 
 mkdir -p .tezos-${network}
 cp /.tezos-${network}/docker-compose.yml .tezos-${network}/docker-compose.yml 
@@ -124,7 +124,7 @@ aws s3 cp ./${network}_node_data.tar.gz s3://tzlink-blockchain-data-dev
 echo ">>> Clear temporary files"
 sudo rm -rf archive ${network}_node_data.tar.gz
 
-aws autoscaling resume-processes --auto-scaling-group-name tzlink-mainnet-archive --scaling-processes ReplaceUnhealthy
+aws autoscaling resume-processes --auto-scaling-group-name tzlink-${network}-archive --scaling-processes ReplaceUnhealthy
 EOF
 
 chmod +x export-tezos-snap.sh
