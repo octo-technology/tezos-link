@@ -61,3 +61,31 @@ variable "KEY_PAIR_NAME" {
   type    = string
   default = "AWS-TEZOS-KEY"
 }
+
+variable "CPU_OUT_SCALING_COOLDOWN" {
+  type = number
+}
+
+variable "CPU_OUT_SCALING_THRESHOLD" {
+  type = number
+}
+
+variable "CPU_OUT_EVALUATION_PERIODS" {
+  type = number
+}
+
+variable "CPU_DOWN_SCALING_COOLDOWN" {
+  type = number
+}
+
+variable "CPU_DOWN_SCALING_THRESHOLD" {
+  type = number
+}
+
+variable "CPU_DOWN_EVALUATION_PERIODS" {
+  type = number
+}
+
+variable "HEALTH_CHECK_GRACE_PERIOD" {
+  type = number
+}

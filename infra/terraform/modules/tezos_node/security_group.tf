@@ -41,6 +41,17 @@ resource "aws_security_group_rule" "rpc_ingress_for_tezos_node" {
   security_group_id = aws_security_group.tezos_node.id
 }
 
+resource "aws_security_group_rule" "p2p_ingress_for_tezos_node" {
+  type        = "ingress"
+  from_port   = 9732
+  to_port     = 9732
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+
+  security_group_id = aws_security_group.tezos_node.id
+}
+
 resource "aws_security_group_rule" "ssh_ingress_for_tezos_node" {
   type        = "ingress"
   from_port   = 22
