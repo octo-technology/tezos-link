@@ -42,7 +42,7 @@ resource "aws_security_group_rule" "rpc_ingress_for_tezos_node" {
 }
 
 resource "aws_security_group_rule" "p2p_ingress_for_tezos_mainnet_node" {
-  count = var.TZ_NETWORK == "carthagenet" ? 0 : 1
+  count       = var.TZ_NETWORK == "carthagenet" ? 0 : 1
   type        = "ingress"
   from_port   = 9732
   to_port     = 9732
@@ -54,7 +54,7 @@ resource "aws_security_group_rule" "p2p_ingress_for_tezos_mainnet_node" {
 }
 
 resource "aws_security_group_rule" "p2p_ingress_for_tezos_carthagenet_node" {
-  count = var.TZ_NETWORK == "carthagenet" ? 1 : 0
+  count       = var.TZ_NETWORK == "carthagenet" ? 1 : 0
   type        = "ingress"
   from_port   = 19732
   to_port     = 19732
