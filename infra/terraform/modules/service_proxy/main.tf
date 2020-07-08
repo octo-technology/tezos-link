@@ -34,6 +34,8 @@ resource "aws_ecs_task_definition" "proxy" {
       tezos_rolling_hostname = format("%s-%s.internal.tezoslink.io", var.TZ_NETWORK, "rolling"),
       tezos_rolling_port     = var.TEZOS_FARM_ROLLING_PORT,
 
+      tezos_network = var.TZ_NETWORK,
+
       environment_config = var.PROXY_CONFIGURATION_FILE,
 
       log_group_name          = aws_cloudwatch_log_group.proxy.name,

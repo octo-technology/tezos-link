@@ -55,6 +55,10 @@
           "value": "${tezos_rolling_port}"
         },
         {
+          "name": "TEZOS_NETWORK",
+          "value": "${tezos_network}"
+        },
+        {
           "name": "ENV",
           "value": "${environment_config}"
         }
