@@ -19,6 +19,7 @@ type ProxyConf struct {
 		ArchivePort int
 		RollingHost string
 		RollingPort int
+		Network     string
 	}
 	Server struct {
 		Port int
@@ -55,6 +56,8 @@ func ParseProxyConf(cfg string) (*ProxyConf, error) {
 			return nil, errors.New("could not read TOML config")
 		}
 	}
+
+	conf.Tezos.Network = getEnv("TEZOS_NETWORK", "MAINNET")
 
 	dbUrl := getEnv("DATABASE_URL", "postgres:5432")
 	dbUser := getEnv("DATABASE_USERNAME", "user")

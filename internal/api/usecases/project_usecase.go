@@ -33,6 +33,10 @@ func NewProjectUsecase(projectRepo pkgrepository.ProjectRepository, metricsRepo 
 
 // CreateProject create and save a new project
 func (pu *ProjectUsecase) CreateProject(name string, network string) (*pkgmodel.Project, error) {
+	// this proxy can handle only network MAINNET and CARTHAGENET
+	if network != "MAINNET" && network != "CARTHAGENET" {
+		return nil, modelerrors.ErrInvalidNetwork
+	}
 	creationDate := time.Now().UTC()
 	if name == "" {
 		logrus.Error("empty project name", name)

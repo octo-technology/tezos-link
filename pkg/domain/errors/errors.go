@@ -12,3 +12,6 @@ var ErrNoProjectName = errors.New("project name not defined")
 var ErrNoProxyResponse = errors.New("no response from proxy")
 
 var ErrNoMetricsFound = errors.New("no old metrics")
+
+// ErrNoProjectName when a project has no name
+var ErrInvalidNetwork = errors.New("invalid network")

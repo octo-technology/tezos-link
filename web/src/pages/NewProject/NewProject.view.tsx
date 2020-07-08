@@ -15,12 +15,8 @@ type NewPostViewProps = {
   loading: boolean
 }
 
-export const NewProjectView = ({ handleSubmitForm, loading }: NewPostViewProps) => {
+export const NewProjectView = ({ handleSubmitForm, loading  }: NewPostViewProps) => {
         const [networkValue, setNetwork] = useState('MAINNET')
-
-        function applyNetwork(e: string) {
-            setNetwork(e)
-        }
 
         return (
         <NewProjectCard>
@@ -36,9 +32,9 @@ export const NewProjectView = ({ handleSubmitForm, loading }: NewPostViewProps) 
                     return (
                         <div>
                             <Select
-                                options={['MAINNET', 'CARTAGENET']}
+                                options={['MAINNET', 'CARTHAGENET']}
                                 defaultOption={networkValue}
-                                selectCallback={(e: string) => applyNetwork(e)}
+                                selectCallback={(e: string) => setNetwork(e)}
                             />
                             <form onSubmit={handleSubmit}>
 

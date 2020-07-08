@@ -17,7 +17,7 @@ func TestLRUProjectRepository_FindByUUID_Unit(t *testing.T) {
 	projectCache := NewLRUProjectRepository()
 	projectUUID := "12234"
 	projectTitle := "DummyProject"
-	projectNetwork := "CARTAGENET"
+	projectNetwork := "CARTHAGENET"
 	projectCreationDate := time.Now()
 
 	// When

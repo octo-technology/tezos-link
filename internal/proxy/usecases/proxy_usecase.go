@@ -29,6 +29,7 @@ type ProxyUsecase struct {
 	rollingPatterns  []*regexp.Regexp
 	baseArchiveURL   string
 	baseRollingURL   string
+	network          string
 }
 
 // ProxyUsecaseInterface contains all methods implemented by the proxyRepo use-case
@@ -50,6 +51,7 @@ func NewProxyUsecase(
 
 	baseArchiveURL := "http://" + config.ProxyConfig.Tezos.ArchiveHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.ArchivePort)
 	baseRollingURL := "http://" + config.ProxyConfig.Tezos.RollingHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.RollingPort)
+
 	return &ProxyUsecase{
 		cacheRepo:        cacheRepo,
 		proxyRepo:        proxyRepo,
@@ -63,6 +65,7 @@ func NewProxyUsecase(
 		rollingPatterns:  setupRegexpFor(config.ProxyConfig.Proxy.WhitelistedRolling),
 		baseArchiveURL:   baseArchiveURL,
 		baseRollingURL:   baseRollingURL,
+		network:          config.ProxyConfig.Tezos.Network,
 	}
 }
 
