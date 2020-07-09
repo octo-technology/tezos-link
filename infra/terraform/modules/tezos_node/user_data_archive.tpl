@@ -66,9 +66,9 @@ echo "> Snapshot rolling-mode node"
 current_hash=$(curl -s localhost:8000/chains/main/blocks/head | jq .hash)
 echo ">>> Using the block $${current_hash}"
 echo ">>> Generate the snapshot.rolling file"
-docker exec mainnet_node_1 sh -c "tezos-node snapshot export snapshot.rolling --block $${current_hash} --data-dir /var/run/tezos/node/data --rolling && mv snapshot.rolling /var/run/tezos/client/snapshot.rolling"
+docker exec ${network}_node_1 sh -c "tezos-node snapshot export snapshot.rolling --block $${current_hash} --data-dir /var/run/tezos/node/data --rolling && mv snapshot.rolling /var/run/tezos/client/snapshot.rolling"
 
-cd /var/lib/docker/volumes/mainnet_client_data/_data/
+cd /var/lib/docker/volumes/${network}_client_data/_data/
 
 echo ">>> Generate ${network}_rolling-snapshot.tar.gz from the snapshot"
 sudo tar zcvf ${network}_rolling-snapshot.tar.gz snapshot.rolling
