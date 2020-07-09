@@ -82,37 +82,37 @@ func getInstanceIP() *string {
 
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
-			&ec2.Filter{
+			{
 				Name: aws.String("instance-state-name"),
 				Values: []*string{
 					aws.String("running"),
 				},
 			},
-			&ec2.Filter{
+			{
 				Name: aws.String("tag:Name"),
 				Values: []*string{
 					aws.String(fmt.Sprintf("tzlink-%s", os.Getenv("NETWORK"))),
 				},
 			},
-			&ec2.Filter{
+			{
 				Name: aws.String("tag:Project"),
 				Values: []*string{
 					aws.String("tezos-link"),
 				},
 			},
-			&ec2.Filter{
+			{
 				Name: aws.String("tag:BuildWith"),
 				Values: []*string{
 					aws.String("terraform"),
 				},
 			},
-			&ec2.Filter{
+			{
 				Name: aws.String("tag:aws:autoscaling:groupName"),
 				Values: []*string{
 					aws.String(fmt.Sprintf("tzlink-%s-archive", os.Getenv("NETWORK"))),
 				},
 			},
-			&ec2.Filter{
+			{
 				Name: aws.String("tag:Mode"),
 				Values: []*string{
 					aws.String("archive"),
