@@ -69,21 +69,25 @@ func NewProxyUsecase(
 	}
 }
 
-func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) error {
-	_, err := p.projectCacheRepo.FindByUUID(UUID)
+func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) (*pkgmodel.Project, error) {
+	cachePrj, errCache := p.projectCacheRepo.FindByUUID(UUID)
 
-	if err != nil {
-		logrus.Debug("project ID not found in cache: ", UUID, err.Error())
+	if errCache != nil {
+		logrus.Debug("project ID not found in cache: ", UUID, errCache.Error())
 		prj, err := p.projectRepo.FindByUUID(UUID)
 		if err != nil {
 			logrus.Debug("project ID not found: ", UUID, err.Error())
-			return err
+			return prj, err
 		}
 
-		_, err = p.projectCacheRepo.Save(prj.Title, prj.UUID, prj.CreationDate, prj.Network)
+		cachePrj, err = p.projectCacheRepo.Save(prj.Title, prj.UUID, prj.CreationDate, prj.Network)
+		if err != nil {
+			logrus.Debug("could not save project (found in DB) in cache: ", UUID, err.Error())
+			return cachePrj, err
+		}
 	}
 
-	return nil
+	return cachePrj, nil
 }
 
 
@@ -122,10 +126,16 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 	logrus.Info("received proxy request for path: ", request.Path)
 	response := []byte("call blacklisted")
 
-	err := p.findInDatabaseIfNotFoundInCache(request.UUID)
+	prj, err := p.findInDatabaseIfNotFoundInCache(request.UUID)
 
 	if err != nil {
 		return err.Error(), false, err
+	}
+
+	if prj != nil && prj.Network != p.network {
+		response := []byte("invalid network")
+		logrus.Debug("This proxy instance can handle network: ", p.network, " but project network is ", prj.Network)
+		return string(response), false, nil
 	}
 
 	if !p.isAllowed(request.Path) {
