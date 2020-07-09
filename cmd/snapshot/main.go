@@ -91,7 +91,7 @@ func getInstanceIP() *string {
 			&ec2.Filter{
 				Name: aws.String("tag:Name"),
 				Values: []*string{
-					aws.String("tzlink-mainnet"),
+					aws.String(fmt.Sprintf("tzlink-%s", os.Getenv("NETWORK"))),
 				},
 			},
 			&ec2.Filter{
@@ -109,7 +109,7 @@ func getInstanceIP() *string {
 			&ec2.Filter{
 				Name: aws.String("tag:aws:autoscaling:groupName"),
 				Values: []*string{
-					aws.String("tzlink-mainnet-archive"),
+					aws.String(fmt.Sprintf("tzlink-%s-archive", os.Getenv("NETWORK"))),
 				},
 			},
 			&ec2.Filter{
