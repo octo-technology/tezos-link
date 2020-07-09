@@ -33,7 +33,7 @@ services:
   proxy-carthagenet:
     build:
       context: .
-      dockerfile: build/package/proxy.Dockerfile
+      dockerfile: build/package/proxy-carthagenet.Dockerfile
     ports:
       - "8002:8002"
     environment:
@@ -54,4 +54,4 @@ services:
       LOG_LEVEL: "DEBUG"
       SERVER_PORT: 1090
     ports:
-      - "8765:1090"
+      - "8766:1090"
