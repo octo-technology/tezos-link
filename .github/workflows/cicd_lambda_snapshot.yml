@@ -61,7 +61,12 @@ jobs:
       with:
         name: snapshot
 
-    - name: Deploy and update lambda
+    - name: Deploy and update lambda for mainnet
       run: |
         aws s3 cp snapshot/snapshot.zip s3://tzlink-snapshot-lambda-dev/v1.0.0/snapshot.zip
-        aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/snapshot.zip
+        aws lambda update-function-code --function-name snapshot-mainnet --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/snapshot.zip
+
+    - name: Deploy and update lambda for carthagenet
+      run: |
+        aws s3 cp snapshot/snapshot.zip s3://tzlink-snapshot-lambda-dev/v1.0.0/snapshot.zip
+        aws lambda update-function-code --function-name snapshot-carthagenet --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/snapshot.zip
