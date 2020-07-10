@@ -126,7 +126,7 @@ func (rc *Controller) PostProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p, errSaving := rc.projectUsecase.CreateProject(inputProject.Title)
+	p, errSaving := rc.projectUsecase.CreateProject(inputProject.Title, inputProject.Network)
 	if errSaving != nil {
 		_, _ = jsend.Wrap(w).Data(errSaving.Error()).Status(http.StatusBadRequest).Send()
 		return

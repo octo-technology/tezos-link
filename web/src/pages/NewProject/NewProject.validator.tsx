@@ -9,5 +9,6 @@ export const newProjectValidator = yup.object().shape({
     .string()
     .min(3, minMessage(3))
     .max(255, maxMessage(255))
-    .required(requiredMessage('Project title'))
+    .required(requiredMessage('Project title')),
+  network: yup.string()
 })

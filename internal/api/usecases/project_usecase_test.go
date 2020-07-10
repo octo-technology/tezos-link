@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"github.com/octo-technology/tezos-link/backend/config"
+	modelerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -8,9 +10,70 @@ import (
 	"time"
 )
 
+func TestProjectUsecase_CreateProject_Unit(t *testing.T) {
+	_, err := config.ParseAPIConf("../../../test/proxy/conf/test.toml")
+	if err != nil {
+		t.Fatal("could not parse conf", err)
+	}
+	p := pkgmodel.NewProject(123, "A PROJECT", "AN_UUID", time.Now().UTC(), "CARTHAGENET")
+
+	// Given
+	title := "A PROJECT"
+	network := "CARTHAGENET"
+
+	mockProjectRepository := &mockProjectRepository{}
+	mockProjectRepository.
+		On("Save", mock.Anything, mock.Anything, mock.Anything, mock.Anything).
+		Return(&p, nil).
+		Once()
+
+	mockMetricsRepository := &mockMetricsRepository{}
+
+	pu := NewProjectUsecase(mockProjectRepository, mockMetricsRepository)
+
+	// When
+	project, err := pu.CreateProject(title, network)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Then
+	assert.Equal(t, title, project.Title)
+	assert.Equal(t, network, project.Network)
+}
+
+func TestProjectUsecase_CreateProject_InvalidNetwork_Unit(t *testing.T) {
+	_, err := config.ParseAPIConf("../../../test/proxy/conf/test.toml")
+	if err != nil {
+		t.Fatal("could not parse conf", err)
+	}
+	p := pkgmodel.NewProject(123, "A PROJECT", "AN_UUID", time.Now().UTC(), "CARTHAGENET")
+
+	// Given
+	title := "A PROJECT"
+	network := "UNKNOWNNET"
+
+	mockProjectRepository := &mockProjectRepository{}
+	mockProjectRepository.
+		On("Save", mock.Anything, mock.Anything, mock.Anything, mock.Anything).
+		Return(&p, nil).
+		Once()
+
+	mockMetricsRepository := &mockMetricsRepository{}
+
+
+	pu := NewProjectUsecase(mockProjectRepository, mockMetricsRepository)
+
+	// When
+	project, err := pu.CreateProject(title, network)
+
+	// Then
+	assert.Nil(t, project)
+	assert.Equal(t, modelerrors.ErrInvalidNetwork, err)
+}
+
 func TestProjectUsecase_FindProjectAndMetrics_Unit(t *testing.T) {
 	// Given
-	p := pkgmodel.NewProject(123, "A PROJECT", "AN_UUID", time.Now().UTC())
+	p := pkgmodel.NewProject(123, "A PROJECT", "AN_UUID", time.Now().UTC(), "CARTHAGENET")
 	str := "2014-11-12T11:45:26.371Z"
 	now, err := time.Parse(time.RFC3339, str)
 	if err != nil {

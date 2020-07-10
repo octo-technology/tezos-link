@@ -26,6 +26,7 @@ type APIConf struct {
 	Jwt struct {
 		SignKey string
 	}
+	Networks []string
 }
 
 var APIConfig APIConf

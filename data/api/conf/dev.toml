@@ -6,3 +6,5 @@ path = "file://./data/migrations"
 
 [jwt]
 signkey = "dFcgNAqajhoQPqyOivx-n2VWt5KpSPkuPxLJKbnUPXYFcFONkuvFO_XWMg153otv"
+
+networks = ["MAINNET","CARTHAGENET"]

@@ -17,6 +17,7 @@ export const Dashboard = () => {
   const [project, setProject] = useState({
     title: '',
     uuid: '',
+    network: '',
     metrics: {
       requestsCount: 0,
       requestsByDay: [],

@@ -14,6 +14,7 @@ import {
 } from './Dashboard.style'
 import { ProjectWithMetrics } from '../../entities/ProjectWithMetrics'
 import { ProjectNameView } from './Dashboard.components/ProjectName/ProjectName.view'
+import { ProjectNetworkView } from './Dashboard.components/ProjectNetwork/ProjectNetwork.view'
 import { RequestsByDayLineView } from './Dashboard.components/RequestsByDayLine/RequestsByDayLine.view'
 import { RPCUsagePieView } from './Dashboard.components/RPCUsagePie/RPCUsagePie.view'
 import { LastRequestsView } from './Dashboard.components/LastRequests/LastRequests.view'
@@ -40,6 +41,7 @@ export const DashboardView = ({ loading, project }: DashboardViewProps) => (
       </DashboardLeftSide>
       <DashboardRightSide>
         <ProjectNameView name={project.title} />
+        <ProjectNetworkView network={project.network} />
         <ProjectTokenView token={project.uuid} />
       </DashboardRightSide>
     </DashboardTopStyled>

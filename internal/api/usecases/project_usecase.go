@@ -3,6 +3,7 @@ package usecases
 import (
 	"errors"
 	"github.com/google/uuid"
+	"github.com/octo-technology/tezos-link/backend/config"
 	modelerrors "github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	pkgrepository "github.com/octo-technology/tezos-link/backend/pkg/domain/repository"
@@ -15,31 +16,41 @@ import (
 type ProjectUsecase struct {
 	projectRepo pkgrepository.ProjectRepository
 	metricsRepo pkgrepository.MetricsRepository
+	networks    []string
 }
 
 // ProjectUsecaseInterface contains all available methods of the project use-case
 type ProjectUsecaseInterface interface {
-	CreateProject(name string) (*pkgmodel.Project, error)
+	CreateProject(name string, network string) (*pkgmodel.Project, error)
 	FindProjectAndMetrics(uuid string, from time.Time, to time.Time) (*pkgmodel.Project, *pkgmodel.Metrics, error)
 }
 
 // NewProjectUsecase returns a new project use-case
 func NewProjectUsecase(projectRepo pkgrepository.ProjectRepository, metricsRepo pkgrepository.MetricsRepository) *ProjectUsecase {
+	listNetworks := config.APIConfig.Networks
 	return &ProjectUsecase{
 		projectRepo: projectRepo,
 		metricsRepo: metricsRepo,
+		networks:    listNetworks,
 	}
 }
 
 // CreateProject create and save a new project
-func (pu *ProjectUsecase) CreateProject(name string) (*pkgmodel.Project, error) {
+func (pu *ProjectUsecase) CreateProject(name string, network string) (*pkgmodel.Project, error) {
+	if !isNetworkAllowed(network, pu.networks) {
+		return nil, modelerrors.ErrInvalidNetwork
+	}
+	// this proxy can handle only network MAINNET and CARTHAGENET
+	//if network != "MAINNET" && network != "CARTHAGENET" {
+	//	return nil, modelerrors.ErrInvalidNetwork
+	//}
 	creationDate := time.Now().UTC()
 	if name == "" {
 		logrus.Error("empty project name", name)
 		return nil, modelerrors.ErrNoProjectName
 	}
 
-	p, err := pu.projectRepo.Save(name, uuid.New().String(), creationDate)
+	p, err := pu.projectRepo.Save(name, uuid.New().String(), creationDate, network)
 	if err != nil {
 		logrus.Error("could not save project", name)
 		return nil, err
@@ -130,4 +141,13 @@ func checkIfDayIsFoundInRequests(computedRequests []*pkgmodel.RequestsByDayMetri
 	}
 
 	return dateFound
+}
+
+func isNetworkAllowed(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }

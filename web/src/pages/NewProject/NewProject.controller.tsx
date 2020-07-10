@@ -16,7 +16,7 @@ export const NewProject = () => {
   const [redirectURL, setRedirectURL] = useState('')
 
   const handleSubmitForm = async (values: any, actions: any) => {
-    const { title } = values
+    const { title, network } = values
     const { setErrors, setSubmitting } = actions
     dispatch(showProgressBar())
     setLoading(true)
@@ -25,7 +25,8 @@ export const NewProject = () => {
       method: 'post',
       url: process.env.REACT_APP_BACKEND_URL + '/api/v1/projects',
       data: {
-        title: title
+        title: title,
+        network: network
       }
     })
       .then(function(response: any) {
