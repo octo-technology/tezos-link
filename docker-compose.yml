@@ -27,17 +27,20 @@ services:
       - "8001:8001"
     environment:
       ENV: local
+      TEZOS_NETWORK: MAINNET
     restart: on-failure
     depends_on:
       - postgres
   proxy-carthagenet:
     build:
       context: .
-      dockerfile: build/package/proxy-carthagenet.Dockerfile
+      dockerfile: build/package/proxy.Dockerfile
     ports:
       - "8002:8002"
     environment:
       ENV: local
+      TEZOS_NETWORK: CARTHAGENET
+      SERVER_PORT: 8002
     restart: on-failure
     depends_on:
       - postgres

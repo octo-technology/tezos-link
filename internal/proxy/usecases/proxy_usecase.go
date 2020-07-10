@@ -70,10 +70,10 @@ func NewProxyUsecase(
 }
 
 func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) (*pkgmodel.Project, error) {
-	cachePrj, errCache := p.projectCacheRepo.FindByUUID(UUID)
+	cachePrj, err := p.projectCacheRepo.FindByUUID(UUID)
 
-	if errCache != nil {
-		logrus.Debug("project ID not found in cache: ", UUID, errCache.Error())
+	if err != nil {
+		logrus.Debug("project ID not found in cache: ", UUID, err.Error())
 		prj, err := p.projectRepo.FindByUUID(UUID)
 		if err != nil {
 			logrus.Debug("project ID not found: ", UUID, err.Error())

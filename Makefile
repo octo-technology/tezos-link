@@ -22,9 +22,7 @@ PROXY_BIN=./bin/$(PROXY)
 
 # proxy service for Test Network
 PROXY_CARTHAGENET=proxy-carthagenet
-PROXY_CARTHAGENET_PATH=$(CMD_PATH)/$(PROXY_CARTHAGENET)
-PROXY_CARTHAGENET_CMD=./cmd/$(PROXY_CARTHAGENET)
-PROXY_CARTHAGENET_BIN=./bin/$(PROXY_CARTHAGENET)
+
 
 # snapshot lambda
 SNAPSHOT=snapshot
@@ -38,7 +36,7 @@ METRICS_CLEANER_PATH=$(CMD_PATH)/$(METRICS_CLEANER)
 METRICS_CLEANER_CMD=./cmd/$(METRICS_CLEANER)
 METRICS_CLEANER_BIN=./bin/$(METRICS_CLEANER)
 
-.PHONY: all build build-unix build-api build-proxy build-proxy-carthagenet build-snapshot-lambda test clean clean-app run deps docker-images docker-tag docs
+.PHONY: all build build-unix build-api build-proxy build-snapshot-lambda test clean clean-app run deps docker-images docker-tag docs
 
 all: test build
 build: build-frontend
@@ -54,11 +52,9 @@ build-metrics-cleaner-lambda:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(METRICS_CLEANER_BIN) $(METRICS_CLEANER_CMD) && chmod +x $(METRICS_CLEANER_BIN)
 build-proxy:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_BIN) $(PROXY_CMD) && chmod +x $(PROXY_BIN)
-build-proxy-carthagenet:
-	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(PROXY_CARTHAGENET_BIN) $(PROXY_CMD) && chmod +x $(PROXY_CARTHAGENET_BIN)
 build-api:
 	CGO_ENABLED=0 GOOS=linux $(GOBUILD) -a -installsuffix cgo -o $(API_BIN) $(API_CMD) && chmod +x $(API_BIN)
-build-unix: build-snapshot-lambda build-metrics-cleaner-lambda build-proxy build-proxy-carthagenet build-api
+build-unix: build-snapshot-lambda build-metrics-cleaner-lambda build-proxy build-api
 unit-test:
 	$(GOTEST) -run Unit ./... -v
 integration-test:
@@ -69,18 +65,16 @@ clean : clean-app
 clean-app:
 	$(GOCLEAN) $(API_PATH)
 	$(GOCLEAN) $(PROXY_PATH)
-	$(GOCLEAN) $(PROXY_CARTHAGENET_PATH)
 	$(GOCLEAN) $(SNAPSHOT_PATH)
 	$(GOCLEAN) $(METRICS_CLEANER_PATH)
 	rm -f $(API_BIN)
 	rm -f $(PROXY_BIN)
-	rm -f $(PROXY_CARTHAGENET_BIN)
 	rm -f $(SNAPSHOT_BIN)
 	rm -f ${METRICS_CLEANER_BIN}
 build-docker: build-unix
 	docker-compose build
 run:
-	docker-compose up -d postgres node $(API) $(PROXY)
+	docker-compose up -d postgres node node-rolling $(API) $(PROXY) $(PROXY_CARTHAGENET)
 	cd web && yarn start
 run-dev:
 	docker-compose up -d postgres node node-rolling $(API) $(PROXY) $(PROXY_CARTHAGENET)
@@ -96,16 +90,13 @@ deps:
 docker-images: build-unix
 	docker build -t $(API) -f build/package/$(API).Dockerfile .
 	docker build -t $(PROXY) -f build/package/$(PROXY).Dockerfile .
-	docker build -t $(PROXY_CARTHAGENET) -f build/package/$(PROXY_CARTHAGENET).Dockerfile .
 docker-tag:
 	docker tag $(API) ${REGISTRY}:$(API)-dev
 	docker tag $(PROXY) ${REGISTRY}:$(PROXY)-dev
-	docker tag $(PROXY_CARTHAGENET) ${REGISTRY}:$(PROXY_CARTHAGENET)-dev
 docker-push:
 	echo ${PASSWORD} | docker login -u ${USERNAME} --password-stdin
 	docker push ${REGISTRY}:$(API)-dev
 	docker push ${REGISTRY}:$(PROXY)-dev
-	docker push ${REGISTRY}:$(PROXY_CARTHAGENET)-dev
 deploy-frontend:
 	aws s3 sync web/build s3://tezoslink-front
 deploy-snapshot-lambda:
