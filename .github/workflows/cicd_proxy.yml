@@ -77,7 +77,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Deploy proxy mainnet ecs-tasks
-      working-directory: infra/terragrunt/02_service_proxy
+      working-directory: infra/terragrunt/02_service_proxy_mainnet
       run: |
         TF_VAR_DOCKER_IMAGE_VERSION="proxy-${GITHUB_SHA::8}" terragrunt apply -auto-approve
       env:
