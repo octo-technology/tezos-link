@@ -7,6 +7,7 @@ on:
     - 'Makefile'
     - '.github/workflows/cicd_api.yml'
     - 'infra/terraform/modules/service_api'
+    - 'data/api/conf/**.toml'
     - 'data/api/migrations/**.sql'
 
 jobs:
