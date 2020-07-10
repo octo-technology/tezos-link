@@ -26,7 +26,7 @@ resource "aws_launch_configuration" "tz_node" {
 
   enable_monitoring = true
 
-  user_data = templatefile("${path.module}/user_data.tpl", {
+  user_data = templatefile("${path.module}/user_data_${var.TZ_MODE}.tpl", {
     network           = var.TZ_NETWORK
     lambda_public_key = file("${path.module}/lambda_public_key")
     computed_network  = var.TZ_NETWORK == "mainnet" ? "babylonnet" : var.TZ_NETWORK
