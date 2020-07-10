@@ -6,9 +6,9 @@ on:
     - '**.go'
     - 'Makefile'
     - '.github/workflows/cicd_proxy.yml'
-    - 'infra/terraform/modules/service_proxy'
+    - 'infra/terraform/modules/service_proxy/**.tf'
     - 'data/proxy/conf/**.toml'
-    - 'infra/terragrunt/02_service_proxy_*'
+    - 'infra/terragrunt/02_service_proxy_*/terragrunt.hcl'
 
 jobs:
   build:
