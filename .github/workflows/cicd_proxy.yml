@@ -8,6 +8,7 @@ on:
     - '.github/workflows/cicd_proxy.yml'
     - 'infra/terraform/modules/service_proxy'
     - 'data/proxy/conf/**.toml'
+    - 'infra/terragrunt/02_service_proxy_*'
 
 jobs:
   build:
