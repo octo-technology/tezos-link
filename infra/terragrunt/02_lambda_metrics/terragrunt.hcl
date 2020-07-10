@@ -27,5 +27,5 @@ inputs = {
   LAMBDA_SUBNET_NAME = "tzlink-private-database-*"
   LAMBDA_SECURITY_GROUP_NAME = "database"
 
-  RUN_EVERY = "rate(24 hours)"
+  RUN_EVERY = "cron(0 1 * * ? *)"
 }

@@ -2,19 +2,12 @@ data "aws_iam_role" "tzlink_lambdas_access" {
   name = "tzlink_lambdas_access"
 }
 
-resource "aws_s3_bucket" "lambda_dedicated" {
+data "aws_s3_bucket" "lambda_dedicated" {
   bucket = var.S3_BUCKET_NAME
-  acl    = "private"
-
-  tags = {
-    Name      = var.S3_BUCKET_NAME
-    Project   = var.PROJECT_NAME
-    BuildWith = var.BUILD_WITH
-  }
 }
 
 resource "aws_lambda_function" "executor" {
-  s3_bucket     = aws_s3_bucket.lambda_dedicated.bucket
+  s3_bucket     = data.aws_s3_bucket.lambda_dedicated.bucket
   s3_key        = var.S3_CODE_PATH
   function_name = var.LAMBDA_NAME
   role          = data.aws_iam_role.tzlink_lambdas_access.arn
