@@ -22,7 +22,7 @@ inputs = {
 
   TEZOS_FARM_ARCHIVE_PORT = 80
   TEZOS_FARM_ROLLING_PORT = 80
-  TZ_NETWORK = "carthagenet"
+  TZ_NETWORK = "CARTHAGENET"
 
   DATABASE_PASSWORD = "${get_env("TF_VAR_DATABASE_PASSWORD", "xxxx")}"
 }
