@@ -28,11 +28,8 @@ mount /dev/nvme0n1 /var/lib/docker/volumes
 
 # Install Tezos docker-compose wrapper
 
-if [ "${network}" == "mainnet" ]; then
-  curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/${computed_network}/scripts/alphanet.sh
-else 
-  curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
-fi
+curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
+
 chmod +x /usr/local/bin/${network}.sh
 
 # Import archive from the S3 bucket
