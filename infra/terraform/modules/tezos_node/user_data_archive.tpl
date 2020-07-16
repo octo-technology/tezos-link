@@ -29,7 +29,6 @@ mount /dev/nvme0n1 /var/lib/docker/volumes
 # Install Tezos docker-compose wrapper
 
 curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
-
 chmod +x /usr/local/bin/${network}.sh
 
 # Import archive from the S3 bucket
@@ -89,8 +88,6 @@ sudo cp -r ${network}_node_data archive
 
 echo ">>> Restart the node"
 ${network}.sh node start --rpc-port 8000 --history-mode archive
-echo ">>> Restart the healthcheck system"
-aws autoscaling resume-processes --auto-scaling-group-name tzlink-${network}-archive
 
 echo ">>> Remove files:"
 
@@ -132,7 +129,7 @@ sudo rm -rf archive ${network}_node_data.tar.gz
 
 echo ">>> Post snapshot cooling time (5 minutes)"
 sleep 5m
-echo ">>> Restart the autoscaling system"
+echo ">>> Restart the autoscaling and the healthcheck system"
 aws autoscaling resume-processes --auto-scaling-group-name tzlink-${network}-archive
 EOF
 
