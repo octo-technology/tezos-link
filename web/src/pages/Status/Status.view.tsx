@@ -13,11 +13,14 @@ import * as PropTypes from 'prop-types'
 
 type StatusViewProps = {
   proxyStatus: boolean
-  nodeStatus: boolean
+  nodeMainnetArchiveStatus: boolean
+  nodeMainnetRollingStatus: boolean
+  nodeCarthagenetArchiveStatus: boolean
+  nodeCarthagenetRollingStatus: boolean
   date: string
 }
 
-export const StatusView = ({ proxyStatus, nodeStatus, date }: StatusViewProps) => (
+export const StatusView = ({ proxyStatus, nodeMainnetArchiveStatus, nodeMainnetRollingStatus, nodeCarthagenetArchiveStatus, nodeCarthagenetRollingStatus, date }: StatusViewProps) => (
   <StatusViewStyled>
     <StatusViewContent>
       <h2>Services status</h2>
@@ -27,8 +30,23 @@ export const StatusView = ({ proxyStatus, nodeStatus, date }: StatusViewProps) =
         <StatusViewSubtitle>As of {date}.</StatusViewSubtitle>
       </StatusViewHeader>
       <StatusViewHeader>
-        {nodeStatus ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />}
-        <StatusViewTitle>Node RPC services are {nodeStatus ? 'online' : 'offline'}.</StatusViewTitle>
+        {nodeMainnetArchiveStatus ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />}
+        <StatusViewTitle>Archive-node RPC services for Alphanet are {nodeMainnetArchiveStatus ? 'online' : 'offline'}.</StatusViewTitle>
+        <StatusViewSubtitle>As of {date}.</StatusViewSubtitle>
+      </StatusViewHeader>
+      <StatusViewHeader>
+        {nodeMainnetRollingStatus ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />}
+        <StatusViewTitle>Rolling-node RPC services for Alphanet are {nodeMainnetRollingStatus ? 'online' : 'offline'}.</StatusViewTitle>
+        <StatusViewSubtitle>As of {date}.</StatusViewSubtitle>
+      </StatusViewHeader>
+      <StatusViewHeader>
+        {nodeCarthagenetArchiveStatus ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />}
+        <StatusViewTitle>Archive-node RPC services for Carthagenet Testnet are {nodeCarthagenetArchiveStatus ? 'online' : 'offline'}.</StatusViewTitle>
+        <StatusViewSubtitle>As of {date}.</StatusViewSubtitle>
+      </StatusViewHeader>
+      <StatusViewHeader>
+        {nodeCarthagenetRollingStatus ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />}
+        <StatusViewTitle>Rolling-node RPC services for Carthagenet Testnet are {nodeCarthagenetRollingStatus ? 'online' : 'offline'}.</StatusViewTitle>
         <StatusViewSubtitle>As of {date}.</StatusViewSubtitle>
       </StatusViewHeader>
     </StatusViewContent>
