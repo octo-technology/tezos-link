@@ -4,7 +4,8 @@ import axios, { AxiosResponse } from 'axios'
 import { StatusView } from './Status.view'
 
 export const Status = () => {
-  const [proxyStatus, setProxyStatus] = useState(true)
+  const [proxyMainnetStatus, setMainnetProxyStatus] = useState(true)
+  const [proxyCarthagenetStatus, setCarthagenetProxyStatus] = useState(true)
   const [nodeMainnetArchiveStatus, setMainnetArchiveNodeStatus] = useState(true)
   const [nodeCarthagenetArchiveStatus, setCarthagenetArchiveNodeStatus] = useState(true)
   const [nodeMainnetRollingStatus, setMainnetRollingNodeStatus] = useState(true)
@@ -18,7 +19,12 @@ export const Status = () => {
 
     axios.get(mainnetProxyUrl + '/health').catch((error: any) => {
       console.error(error)
-      setProxyStatus(false)
+      setMainnetProxyStatus(false)
+    })
+
+    axios.get(carthagenetProxyUrl + '/health').catch((error: any) => {
+      console.error(error)
+      setCarthagenetProxyStatus(false)
     })
 
     axios({
@@ -50,7 +56,9 @@ export const Status = () => {
 
   return (
     <>
-      <StatusView proxyStatus={proxyStatus}
+      <StatusView
+      proxyMainnetStatus={proxyMainnetStatus}
+      proxyCarthagenetStatus={proxyCarthagenetStatus}
       nodeMainnetArchiveStatus={nodeMainnetArchiveStatus}
       nodeMainnetRollingStatus={nodeMainnetRollingStatus}
       nodeCarthagenetArchiveStatus={nodeCarthagenetArchiveStatus}
