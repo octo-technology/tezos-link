@@ -70,7 +70,7 @@ cat > health-logs-analysis.sh << 'EOF'
 
 if [[ $(docker logs ${network}_node_1 2>&1 | grep 'validator.peer: Fetch of operations ' | grep ' timed out' | wc -l) > 0 ]]; then
   echo "$(date -R) - health-logs-analysis - Warning : dysfunctionment detected. Killing the node"
-  mainnet.sh stop
+  ${network}.sh stop
 else
   echo "$(date -R) - health-logs-analysis - Node healthy, doing nothing"
 fi
