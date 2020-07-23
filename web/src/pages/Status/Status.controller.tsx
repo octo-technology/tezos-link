@@ -31,9 +31,9 @@ export const Status = () => {
       method: 'get',
       url: mainnetProxyUrl + '/status'
     }).then((response : AxiosResponse) => {
-      let jdata = JSON.parse(response.data)
-      setMainnetArchiveNodeStatus(jdata["data"]["archive_node"])
-      setMainnetRollingNodeStatus(jdata["data"]["rolling_node"])
+      let jdata = response.data.data
+      setMainnetArchiveNodeStatus(jdata["archive_node"])
+      setMainnetRollingNodeStatus(jdata["rolling_node"])
     }).catch((error: any) => {
       console.error(error)
       setMainnetArchiveNodeStatus(false)
@@ -44,9 +44,9 @@ export const Status = () => {
       method: 'get',
       url: carthagenetProxyUrl + '/status'
     }).then((response : AxiosResponse) => {
-      let jdata = JSON.parse(response.data)
-      setCarthagenetArchiveNodeStatus(jdata["data"]["archive_node"])
-      setCarthagenetRollingNodeStatus(jdata["data"]["rolling_node"])
+      let jdata = response.data.data
+      setCarthagenetArchiveNodeStatus(jdata["archive_node"])
+      setCarthagenetRollingNodeStatus(jdata["rolling_node"])
     }).catch((error: any) => {
       console.error(error)
       setCarthagenetArchiveNodeStatus(false)
