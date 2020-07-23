@@ -3,6 +3,14 @@ package http
 import (
 	"errors"
 	"fmt"
+	"log"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/gamegos/jsend"
 	"github.com/go-chi/chi"
 	"github.com/octo-technology/tezos-link/backend/config"
@@ -13,13 +21,6 @@ import (
 	"github.com/ulule/limiter"
 	"github.com/ulule/limiter/drivers/middleware/stdlib"
 	"github.com/ulule/limiter/drivers/store/memory"
-	"log"
-	"net/http"
-	"net/http/httputil"
-	"net/url"
-	"regexp"
-	"strings"
-	"time"
 )
 
 // Controller represent an http proxy controller
@@ -51,12 +52,51 @@ func (p *Controller) Initialize() {
 	middleware := setupLimiterMiddleware()
 	http.Handle("/"+basePath, middleware.Handler(http.HandlerFunc(handleProxying(p, basePath))))
 	http.Handle("/health", http.HandlerFunc(p.GetHealth))
+	http.Handle("/status", http.HandlerFunc(p.GetStatus))
 }
 
 // GetHealth get the health of the service
 func (p *Controller) GetHealth(w http.ResponseWriter, r *http.Request) {
 	optionsHeaders(w)
 	_, _ = jsend.Wrap(w).Status(http.StatusOK).Send()
+}
+
+// GetStatus define the request process for the /status url.
+// It permits to run readiness probes on the container.
+func (p *Controller) GetStatus(w http.ResponseWriter, r *http.Request) {
+	optionsHeaders(w)
+
+	// Default to unhealthy (false)
+	archiveNodeStatus := false
+	rollingNodeStatus := false
+
+	archiveTestURL := fmt.Sprintf("http://%s:%d%s", config.ProxyConfig.Tezos.ArchiveHost, config.ProxyConfig.Tezos.ArchivePort, "/chains/main/blocks/head")
+	resp, err := http.Get(archiveTestURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
+		archiveNodeStatus = true
+	}
+
+	rollingTestURL := fmt.Sprintf("http://%s:%d%s", config.ProxyConfig.Tezos.RollingHost, config.ProxyConfig.Tezos.RollingPort, "/chains/main/blocks/head")
+	resp, err = http.Get(rollingTestURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
+		rollingNodeStatus = true
+	}
+
+	data := map[string]interface{}{
+		"archive_node": archiveNodeStatus,
+		"rolling_node": rollingNodeStatus,
+	}
+
+	jsend.Wrap(w).
+		Status(http.StatusOK).
+		Data(data).
+		Send()
 }
 
 // Run runs the controller

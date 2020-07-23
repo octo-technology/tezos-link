@@ -1,34 +1,69 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { StatusView } from './Status.view'
 
 export const Status = () => {
-  const [proxyStatus, setProxyStatus] = useState(true)
-  const [nodeStatus, setNodeStatus] = useState(true)
+  const [proxyMainnetStatus, setMainnetProxyStatus] = useState(true)
+  const [proxyCarthagenetStatus, setCarthagenetProxyStatus] = useState(true)
+  const [nodeMainnetArchiveStatus, setMainnetArchiveNodeStatus] = useState(true)
+  const [nodeCarthagenetArchiveStatus, setCarthagenetArchiveNodeStatus] = useState(true)
+  const [nodeMainnetRollingStatus, setMainnetRollingNodeStatus] = useState(true)
+  const [nodeCarthagenetRollingStatus, setCarthagenetRollingNodeStatus] = useState(true)
   const [date, setDate] = useState('')
 
   useEffect(() => {
     setDate(new Date(Date.now()).toLocaleString())
-    const proxyUrl = 'https://mainnet.tezoslink.io'
+    const mainnetProxyUrl = 'https://mainnet.tezoslink.io'
+    const carthagenetProxyUrl = 'https://carthagenet.tezoslink.io'
 
-    axios.get(proxyUrl + '/health').catch((error: any) => {
+    axios.get(mainnetProxyUrl + '/health').catch((error: any) => {
       console.error(error)
-      setProxyStatus(false)
+      setMainnetProxyStatus(false)
+    })
+
+    axios.get(carthagenetProxyUrl + '/health').catch((error: any) => {
+      console.error(error)
+      setCarthagenetProxyStatus(false)
     })
 
     axios({
       method: 'get',
-      url: proxyUrl + '/v1/b8b7c55c-23a2-4c95-b69c-8e2c21c23322/chains/main/blocks/head'
+      url: mainnetProxyUrl + '/status'
+    }).then((response : AxiosResponse) => {
+      let jdata = JSON.parse(response.data)
+      setMainnetArchiveNodeStatus(jdata["data"]["archive_node"])
+      setMainnetRollingNodeStatus(jdata["data"]["rolling_node"])
     }).catch((error: any) => {
       console.error(error)
-      setNodeStatus(false)
+      setMainnetArchiveNodeStatus(false)
+      setMainnetRollingNodeStatus(false)
+    })
+
+    axios({
+      method: 'get',
+      url: carthagenetProxyUrl + '/status'
+    }).then((response : AxiosResponse) => {
+      let jdata = JSON.parse(response.data)
+      setCarthagenetArchiveNodeStatus(jdata["data"]["archive_node"])
+      setCarthagenetRollingNodeStatus(jdata["data"]["rolling_node"])
+    }).catch((error: any) => {
+      console.error(error)
+      setCarthagenetArchiveNodeStatus(false)
+      setCarthagenetRollingNodeStatus(false)
     })
   })
 
   return (
     <>
-      <StatusView proxyStatus={proxyStatus} nodeStatus={nodeStatus} date={date} />
+      <StatusView
+      proxyMainnetStatus={proxyMainnetStatus}
+      proxyCarthagenetStatus={proxyCarthagenetStatus}
+      nodeMainnetArchiveStatus={nodeMainnetArchiveStatus}
+      nodeMainnetRollingStatus={nodeMainnetRollingStatus}
+      nodeCarthagenetArchiveStatus={nodeCarthagenetArchiveStatus}
+      nodeCarthagenetRollingStatus={nodeCarthagenetRollingStatus}
+      date={date} />
     </>
   )
 }
