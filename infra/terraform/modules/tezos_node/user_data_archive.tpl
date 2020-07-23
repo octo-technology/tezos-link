@@ -28,11 +28,7 @@ mount /dev/nvme0n1 /var/lib/docker/volumes
 
 # Install Tezos docker-compose wrapper
 
-if [ "${network}" == "mainnet" ]; then
-  curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/${computed_network}/scripts/alphanet.sh
-else 
-  curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
-fi
+curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
 chmod +x /usr/local/bin/${network}.sh
 
 # Import archive from the S3 bucket
@@ -55,8 +51,6 @@ ${network}.sh node start --rpc-port 8000 --history-mode archive
 
 cat > export-tezos-snap.sh << 'EOF'
 #!/bin/bash -e
-
-aws autoscaling suspend-processes --auto-scaling-group-name tzlink-${network}-archive --scaling-processes ReplaceUnhealthy
 
 mkdir -p .tezos-${network}
 cp /.tezos-${network}/docker-compose.yml .tezos-${network}/docker-compose.yml 
@@ -83,6 +77,8 @@ cd -
 
 echo "> Snapshot archive node"
 
+echo ">>> Disable the healthckeck system for the maintenance"
+aws autoscaling suspend-processes --auto-scaling-group-name tzlink-${network}-archive --scaling-processes HealthCheck
 echo ">>> Stop the node for snapshot"
 ${network}.sh stop
 
@@ -119,6 +115,9 @@ else
   echo "absent. (doing nothing)"
 fi
 
+echo ">>> Disable the autoscaling system during the tarball generation"
+aws autoscaling suspend-processes --auto-scaling-group-name tzlink-${network}-archive --scaling-processes AlarmNotification
+
 echo ">>> Generate ${network}_node_data.tar.gz from archive"
 sudo tar zcvf ${network}_node_data.tar.gz ./archive
 
@@ -128,7 +127,10 @@ aws s3 cp ./${network}_node_data.tar.gz s3://tzlink-blockchain-data-dev
 echo ">>> Clear temporary files"
 sudo rm -rf archive ${network}_node_data.tar.gz
 
-aws autoscaling resume-processes --auto-scaling-group-name tzlink-${network}-archive --scaling-processes ReplaceUnhealthy
+echo ">>> Post snapshot cooling time (5 minutes)"
+sleep 5m
+echo ">>> Restart the autoscaling and the healthcheck system"
+aws autoscaling resume-processes --auto-scaling-group-name tzlink-${network}-archive
 EOF
 
 chmod +x export-tezos-snap.sh
