@@ -1,18 +1,98 @@
+terraform {
+  required_version = "0.12.20"
+  backend "s3" {}
+}
+
+provider "random" {
+  version = "2.3.0"
+}
+
+# Network configuration
+
+data "aws_vpc" "tzlink" {
+  cidr_block = var.vpc_cidr
+
+  tags = {
+    Name    = "tzlink"
+    Project = var.project_name
+  }
+}
+
+data "aws_subnet_ids" "database" {
+  vpc_id = data.aws_vpc.tzlink.id
+
+  tags = {
+    Name    = "tzlink-private-database-*"
+    Project = var.project_name
+  }
+}
+
 resource "aws_db_subnet_group" "database" {
   name       = "tzlink-database"
   subnet_ids = tolist(data.aws_subnet_ids.database.ids)
+}
+
+# Network access control
+
+resource "aws_security_group" "database" {
+  name        = "tzlink-database"
+  description = "Security group for database"
+  vpc_id      = data.aws_vpc.tzlink.id
+
+  tags = {
+    Name    = "tzlink-database"
+    Project = var.project_name
+  }
+}
+
+resource "aws_security_group_rule" "all_ingress_from_vpc" {
+  type        = "ingress"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = [var.vpc_cidr]
+
+  security_group_id = aws_security_group.database.id
+}
+
+resource "aws_security_group_rule" "all_egress_from_vpc" {
+  type        = "egress"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = [var.vpc_cidr]
+
+  security_group_id = aws_security_group.database.id
+}
+
+# Serverless Aurora postgresql
+
+resource "random_password" "database_master_password" {
+  length           = 32
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "aws_secretsmanager_secret" "database_master_password" {
+  name        = "tzlink-database-password"
+  description = "The associated password to connect on the database"
+}
+
+resource "aws_secretsmanager_secret_version" "database_master_password" {
+  secret_id     = aws_secretsmanager_secret.database_master_password.id
+  secret_string = random_password.database_master_password.result
 }
 
 resource "aws_rds_cluster" "database" {
   cluster_identifier = "tzlink-database"
   engine             = "aurora-postgresql"
   engine_version     = "10.7"
-  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  availability_zones = ["${var.region}a", "${var.region}b", "${var.region}c"]
 
-  database_name = var.DATABASE_TABLE
+  database_name = var.database_name
 
-  master_username = var.DATABASE_USERNAME
-  master_password = var.DATABASE_PASSWORD
+  master_username = var.database_master_username
+  master_password = random_password.database_master_password.result
 
   backup_retention_period = 7
   preferred_backup_window = "01:00-02:00"
@@ -45,9 +125,8 @@ resource "aws_rds_cluster" "database" {
   storage_encrypted                   = true
 
   tags = {
-    Name      = "tzlink-database"
-    Project   = var.PROJECT_NAME
-    BuildWith = var.BUILD_WITH
+    Name    = "tzlink-database"
+    Project = var.project_name
   }
 
   depends_on = [aws_db_subnet_group.database]
