@@ -6,6 +6,4 @@ terraform {
   source = "../../terraform/modules/network"
 }
 
-inputs = {
-  ENABLE_FLOW_LOGS = true
-}
+inputs = {}

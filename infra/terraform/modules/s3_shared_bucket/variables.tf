@@ -1,22 +1,15 @@
-variable "REGION" {
+variable "region" {
   type        = string
   description = "The region where the module is deployed"
   default     = "eu-west-1"
 }
 
-variable "PROJECT_NAME" {
+variable "project_name" {
   type        = string
-  description = "The name of the project associated to the lambda."
-  default     = "tezos-link"
+  description = "The name of the project"
 }
 
-variable "BUILD_WITH" {
+variable "s3_bucket_name" {
   type        = string
-  description = "Permits to know on the AWS tags that objects are build with IaC."
-  default     = "terraform"
-}
-
-variable "S3_BUCKET_NAME" {
-  type        = string
-  description = "The S3 bucket name that will be associated to the lambda"
+  description = "The S3 bucket name"
 }
