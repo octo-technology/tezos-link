@@ -50,7 +50,7 @@ func (m *mockMetricsRepository) CountAll(uuid string) (int, error) {
 	return args.Int(0), args.Error(1)
 }
 
-func (m *mockMetricsRepository) Remove3MonthOldMetrics() error {
+func (m *mockMetricsRepository) RemoveThreeMonthsOldMetrics() error {
 	args := m.Called()
 	return args.Error(0)
 }

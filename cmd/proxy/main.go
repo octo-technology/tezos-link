@@ -49,12 +49,19 @@ func writeCachedRequestsRoutine(p *usecases.ProxyUsecase) {
 }
 
 func main() {
-	reverseURL, err := url.Parse("http://" + config.ProxyConfig.Tezos.ArchiveHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.ArchivePort))
+	archiveReverseURL, err := url.Parse("http://" + config.ProxyConfig.Tezos.ArchiveHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.ArchivePort))
 	if err != nil {
 		log.Fatal(fmt.Sprintf("could not read blockchain node reverse url from configuration: %s", err))
 	}
-	logrus.Info("proxying requests to node: ", reverseURL)
-	reverseProxy := httputil.NewSingleHostReverseProxy(reverseURL)
+	logrus.Info("proxying requests to archive node: ", archiveReverseURL)
+	archiveReverseProxy := httputil.NewSingleHostReverseProxy(archiveReverseURL)
+
+	rollingReverseURL, err := url.Parse("http://" + config.ProxyConfig.Tezos.RollingHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.RollingPort))
+	if err != nil {
+		log.Fatal(fmt.Sprintf("could not read blockchain node reverse url from configuration: %s", err))
+	}
+	logrus.Info("proxying requests to rolling node: ", rollingReverseURL)
+	rollingReverseProxy := httputil.NewSingleHostReverseProxy(rollingReverseURL)
 
 	// Repositories
 	cacheBlockchainRepo := cache.NewCacheBlockchainRepository()
@@ -77,7 +84,7 @@ func main() {
 		WriteTimeout: time.Duration(config.ProxyConfig.Proxy.WriteTimeout) * time.Second,
 		IdleTimeout:  time.Duration(config.ProxyConfig.Proxy.IdleTimeout) * time.Second,
 	}
-	httpController := httpinfra.NewHTTPController(proxyUsecase, reverseProxy, &server)
+	httpController := httpinfra.NewHTTPController(proxyUsecase, archiveReverseProxy, rollingReverseProxy, &server)
 	httpController.Initialize()
 	httpController.Run()
 }

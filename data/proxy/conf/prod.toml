@@ -29,4 +29,5 @@ routineDelaySeconds = 60
 whitelistedRolling = [
   "(.*?)/head/(.*?)",
   "(.*?)/head",
+  "(.*?)/injection/operation",
 ]

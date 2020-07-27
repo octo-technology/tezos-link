@@ -116,7 +116,7 @@ func TestPostgresMetricsRepository_RemoveOldMetrics_Unit(t *testing.T) {
 		t.Fatal(err)
 	}
 	// When there is a row
-	err = pgr.Remove3MonthOldMetrics()
+	err = pgr.RemoveThreeMonthsOldMetrics()
 	if err != nil {
 		t.Fatal(err)
 	}
