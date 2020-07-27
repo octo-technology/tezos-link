@@ -22,6 +22,15 @@ resource "aws_vpc" "tzlink" {
   }
 }
 
+resource "aws_default_security_group" "tzlink" {
+  vpc_id = aws_vpc.tzlink.id
+
+  tags = {
+    Name        = format("%s-default", var.project_name)
+    Project     = var.project_name
+  }
+}
+
 # VPC Logflow
 
 resource "aws_cloudwatch_log_group" "tzlink_vpc_flowlog" {
