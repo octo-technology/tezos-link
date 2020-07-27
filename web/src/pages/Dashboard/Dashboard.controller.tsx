@@ -54,6 +54,7 @@ export const Dashboard = () => {
       .then(function(response: any) {
         // TODO: Mock a long request to have a nice loader
         setProject(response.data.data)
+        project.metrics.requestsByDay.sort((a : any, b : any) => a.date.CompareTo(b.date))
         dispatch(hideProgressBar())
         setLoading(false)
       })
