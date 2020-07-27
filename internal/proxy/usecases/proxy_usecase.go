@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/model"
 	"regexp"
 	"strconv"
 	"strings"
@@ -34,11 +35,8 @@ type ProxyUsecase struct {
 
 // ProxyUsecaseInterface contains all methods implemented by the proxyRepo use-case
 type ProxyUsecaseInterface interface {
-	Proxy(request *pkgmodel.Request) (string, bool, error)
+	Proxy(request *pkgmodel.Request) (string, bool, model.NodeType, error)
 }
-
-// NoProxyResponse is the error message when there is no response from the proxyRepo
-const NoProxyResponse = "no response from proxy"
 
 // NewProxyUsecase returns a new proxy use-case
 func NewProxyUsecase(
@@ -122,25 +120,25 @@ func (p *ProxyUsecase) isRollingRedirection(url string) bool {
 }
 
 // Proxy proxy an http request to the right repositories
-func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
+func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, model.NodeType, error) {
 	logrus.Info("received proxy request for path: ", request.Path)
 	response := []byte("call blacklisted")
 
 	prj, err := p.findInDatabaseIfNotFoundInCache(request.UUID)
 
 	if err != nil {
-		return err.Error(), false, err
+		return err.Error(), false, model.NodeTypeUnknown, err
 	}
 
 	if prj != nil && prj.Network != p.network {
 		response := []byte("invalid network")
-		logrus.Debug("This proxy instance can handle network: ", p.network, " but project network is ", prj.Network)
-		return string(response), false, nil
+		logrus.Debug("this proxy instance can handle network: ", p.network, " but project network is ", prj.Network)
+		return string(response), false, model.NodeTypeUnknown, nil
 	}
 
 	if !p.isAllowed(request.Path) {
 		logrus.Debug("not allowed to proxy on the path: ", request.Path)
-		return string(response), false, nil
+		return string(response), false, model.NodeTypeUnknown, nil
 	}
 
 	if request.Action == pkgmodel.OBTAIN && p.isCacheable(request.Path) {
@@ -160,20 +158,25 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 			response, err = p.proxyRepo.Get(request, url)
 			if err != nil {
 				logrus.Errorf("could not request to proxy: %s", err)
-				return errors.ErrNoProxyResponse.Error(), false, errors.ErrNoProxyResponse
+				return errors.ErrNoProxyResponse.Error(), false, model.NodeTypeUnknown, errors.ErrNoProxyResponse
 			}
 			logrus.Info("received response from node: ", string(response.([]byte)))
 
 			_ = p.cacheRepo.Add(request, response)
 		}
 
-		// TODO save that it is cached from the LRU or not
 		p.saveMetrics(request)
-		return string(response.([]byte)), false, nil
+		return string(response.([]byte)), false, model.NodeTypeUnknown, nil
 	}
 
 	p.saveMetrics(request)
-	return "", true, nil
+	if p.IsRollingNodeRedirection(request.Path) {
+		logrus.Info("forwarding request directly to rolling node (as a reverse proxy)")
+		return "", true, model.RollingNode, nil
+	} else {
+		logrus.Info("forwarding request directly to archive node (as a reverse proxy)")
+		return "", true, model.ArchiveNode, nil
+	}
 }
 
 func (p *ProxyUsecase) saveMetrics(request *pkgmodel.Request) {

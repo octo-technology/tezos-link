@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/model"
 	"github.com/octo-technology/tezos-link/backend/pkg/domain/errors"
 	pkgmodel "github.com/octo-technology/tezos-link/backend/pkg/domain/model"
 	"github.com/stretchr/testify/assert"
@@ -14,15 +15,15 @@ import (
 func TestHttpController_Run_WhenThereIsCachedRequest_Unit(t *testing.T) {
 	// Given
 	http.DefaultServeMux = new(http.ServeMux)
-	req, err := http.NewRequest("GET", "/v1/123e4567-e89b-12d3-a456-426655440000/chains/main/head", nil)
+	req, err := http.NewRequest("GET", "/v1/123e4567-e89b-12d3-a456-426655440000/chains/main/blocks/head", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	mockProxyUsecase := &mockProxyUsecase{}
-	httpController := NewHTTPController(mockProxyUsecase, nil, &http.Server{})
+	httpController := NewHTTPController(mockProxyUsecase, nil, nil, &http.Server{})
 	httpController.Initialize()
 	expectedRequest := pkgmodel.NewRequest(
-		"/chains/main/head",
+		"/chains/main/blocks/head",
 		"123e4567-e89b-12d3-a456-426655440000",
 		pkgmodel.OBTAIN,
 		"")
@@ -30,7 +31,7 @@ func TestHttpController_Run_WhenThereIsCachedRequest_Unit(t *testing.T) {
 	// When
 	mockProxyUsecase.
 		On("Proxy", &expectedRequest).
-		Return(`{"data":{"dummy":response},"status":"success"}`, false, nil).
+		Return(`{"data":{"dummy":response},"status":"success"}`, false, model.NodeTypeUnknown, nil).
 		Once()
 
 	rr := httptest.NewRecorder()
@@ -43,7 +44,7 @@ func TestHttpController_Run_WhenThereIsCachedRequest_Unit(t *testing.T) {
 	assert.Equal(t, expectedResponse, getStringWithoutNewLine(rr.Body.String()), "Bad body")
 }
 
-func TestHttpController_Run_WhenThereIsProxiedRequest_Unit(t *testing.T) {
+func TestHttpController_Run_WhenThereIsArchiveNodeProxiedRequest_Unit(t *testing.T) {
 	// Given
 	http.DefaultServeMux = new(http.ServeMux)
 	req, err := http.NewRequest("POST", "/v1/123e4567-e89b-12d3-a456-426655440000/chains/main/head", nil)
@@ -55,9 +56,9 @@ func TestHttpController_Run_WhenThereIsProxiedRequest_Unit(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	rp := httputil.NewSingleHostReverseProxy(reverseURL)
+	arp := httputil.NewSingleHostReverseProxy(reverseURL)
 	mockProxyUsecase := &mockProxyUsecase{}
-	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
+	httpController := NewHTTPController(mockProxyUsecase, arp, nil, &http.Server{})
 	httpController.Initialize()
 	request := pkgmodel.NewRequest(
 		"/chains/main/head",
@@ -68,7 +69,44 @@ func TestHttpController_Run_WhenThereIsProxiedRequest_Unit(t *testing.T) {
 	// When
 	mockProxyUsecase.
 		On("Proxy", &request).
-		Return("", true, nil).
+		Return("", true, model.ArchiveNode, nil).
+		Once()
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(handleProxying(httpController, "v1/"))
+	handler.ServeHTTP(rr, req)
+
+	// Then, the request is forwarded to the node
+	assert.Equal(t, http.StatusBadGateway, rr.Code, "Bad status code")
+	assert.Equal(t, "", getStringWithoutNewLine(rr.Body.String()), "Bad body")
+}
+
+func TestHttpController_Run_WhenThereIsRollingNodeProxiedRequest_Unit(t *testing.T) {
+	// Given
+	http.DefaultServeMux = new(http.ServeMux)
+	req, err := http.NewRequest("POST", "/v1/123e4567-e89b-12d3-a456-426655440000/chains/main/head", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	reverseURL, err := url.Parse("http://localhost")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rrp := httputil.NewSingleHostReverseProxy(reverseURL)
+	mockProxyUsecase := &mockProxyUsecase{}
+	httpController := NewHTTPController(mockProxyUsecase, nil, rrp, &http.Server{})
+	httpController.Initialize()
+	request := pkgmodel.NewRequest(
+		"/chains/main/head",
+		"123e4567-e89b-12d3-a456-426655440000",
+		pkgmodel.PUSH,
+		"")
+
+	// When
+	mockProxyUsecase.
+		On("Proxy", &request).
+		Return("", true, model.RollingNode, nil).
 		Once()
 
 	rr := httptest.NewRecorder()
@@ -94,7 +132,7 @@ func TestHttpController_Returns500_WhenThereIsProxyError_Unit(t *testing.T) {
 	}
 	rp := httputil.NewSingleHostReverseProxy(reverseURL)
 	mockProxyUsecase := &mockProxyUsecase{}
-	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
+	httpController := NewHTTPController(mockProxyUsecase, rp, nil, &http.Server{})
 	httpController.Initialize()
 	request := pkgmodel.NewRequest(
 		"/chains/main/head",
@@ -105,7 +143,7 @@ func TestHttpController_Returns500_WhenThereIsProxyError_Unit(t *testing.T) {
 	// When
 	mockProxyUsecase.
 		On("Proxy", &request).
-		Return("no response from proxy", false, errors.ErrNoProxyResponse).
+		Return("no response from proxy", false, model.NodeTypeUnknown, errors.ErrNoProxyResponse).
 		Once()
 
 	rr := httptest.NewRecorder()
@@ -131,7 +169,7 @@ func TestHttpController_Returns400_WhenThereIsProjectNotFoundError_Unit(t *testi
 	}
 	rp := httputil.NewSingleHostReverseProxy(reverseURL)
 	mockProxyUsecase := &mockProxyUsecase{}
-	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
+	httpController := NewHTTPController(mockProxyUsecase, rp, nil, &http.Server{})
 	httpController.Initialize()
 	request := pkgmodel.NewRequest(
 		"/chains/main/head",
@@ -142,7 +180,7 @@ func TestHttpController_Returns400_WhenThereIsProjectNotFoundError_Unit(t *testi
 	// When
 	mockProxyUsecase.
 		On("Proxy", &request).
-		Return("project not found", false, errors.ErrProjectNotFound).
+		Return("project not found", false, model.NodeTypeUnknown, errors.ErrProjectNotFound).
 		Once()
 
 	rr := httptest.NewRecorder()
@@ -157,25 +195,25 @@ func TestHttpController_Returns400_WhenThereIsProjectNotFoundError_Unit(t *testi
 func TestHttpController_ContainsRightPath_WhenPOSTRequest_Unit(t *testing.T) {
 	// Given
 	http.DefaultServeMux = new(http.ServeMux)
-	req, err := http.NewRequest("POST", "/v1/123e4567-e89b-12d3-a456-426655440000/chains/main/number", nil)
+	req, err := http.NewRequest("POST", "/v1/123e4567-e89b-12d3-a456-426655440000/injection/operation", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, "/chains/main/number", r.URL.Path, "Bad path given to the proxy")
+		assert.Equal(t, "/injection/operation", r.URL.Path, "Bad path given to the proxy")
 	}))
 	defer backend.Close()
 	reverseURL, err := url.Parse(backend.URL)
 	if err != nil {
 		t.Fatal(err)
 	}
-	rp := httputil.NewSingleHostReverseProxy(reverseURL)
+	rrp := httputil.NewSingleHostReverseProxy(reverseURL)
 	mockProxyUsecase := &mockProxyUsecase{}
-	httpController := NewHTTPController(mockProxyUsecase, rp, &http.Server{})
+	httpController := NewHTTPController(mockProxyUsecase, nil, rrp, &http.Server{})
 	httpController.Initialize()
 	request := pkgmodel.NewRequest(
-		"/chains/main/number",
+		"/injection/operation",
 		"123e4567-e89b-12d3-a456-426655440000",
 		pkgmodel.PUSH,
 		"")
@@ -183,7 +221,7 @@ func TestHttpController_ContainsRightPath_WhenPOSTRequest_Unit(t *testing.T) {
 	// When
 	mockProxyUsecase.
 		On("Proxy", &request).
-		Return("no response from proxy", true, nil).
+		Return("no response from proxy", true, model.RollingNode, nil).
 		Once()
 
 	rr := httptest.NewRecorder()
@@ -203,7 +241,7 @@ func TestHttpController_GetHealth_Unit(t *testing.T) {
 		t.Fatal(err)
 	}
 	mockProxyUsecase := &mockProxyUsecase{}
-	httpController := NewHTTPController(mockProxyUsecase, nil, &http.Server{})
+	httpController := NewHTTPController(mockProxyUsecase, nil, nil, &http.Server{})
 	httpController.Initialize()
 
 	// When

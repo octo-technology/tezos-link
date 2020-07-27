@@ -20,9 +20,8 @@ PROXY_PATH=$(CMD_PATH)/$(PROXY)
 PROXY_CMD=./cmd/$(PROXY)
 PROXY_BIN=./bin/$(PROXY)
 
-# proxy service for Test Network
+# proxy service for Carthagenet Network
 PROXY_CARTHAGENET=proxy-carthagenet
-
 
 # snapshot lambda
 SNAPSHOT=snapshot
@@ -118,4 +117,3 @@ lint:
 	vendor/golint internal/... cmd/... pkg/...
 fmt:
 	go fmt ./...
-

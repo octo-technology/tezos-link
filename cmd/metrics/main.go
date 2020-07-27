@@ -38,7 +38,7 @@ func HandleRequest(ctx context.Context) (string, error) {
 
 	metricsRepo := pkgdatabase.NewPostgresMetricsRepository(Connection)
 
-	err2 := metricsRepo.Remove3MonthOldMetrics()
+	err2 := metricsRepo.RemoveThreeMonthsOldMetrics()
 
 	log.Print(err2)
 

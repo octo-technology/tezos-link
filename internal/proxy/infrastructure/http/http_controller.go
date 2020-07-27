@@ -3,6 +3,7 @@ package http
 import (
 	"errors"
 	"fmt"
+	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/model"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -27,7 +28,8 @@ import (
 type Controller struct {
 	router       *chi.Mux
 	proxyUsecase usecases.ProxyUsecaseInterface
-	reverseProxy *httputil.ReverseProxy
+	archiveReverseProxy *httputil.ReverseProxy
+	rollingReverseProxy *httputil.ReverseProxy
 	httpServer   *http.Server
 	UUIDRegexp   *regexp.Regexp
 }
@@ -37,10 +39,11 @@ const (
 )
 
 // NewHTTPController returns a new http controller
-func NewHTTPController(uc usecases.ProxyUsecaseInterface, rp *httputil.ReverseProxy, srv *http.Server) *Controller {
+func NewHTTPController(uc usecases.ProxyUsecaseInterface, arp *httputil.ReverseProxy, rrp *httputil.ReverseProxy, srv *http.Server) *Controller {
 	return &Controller{
 		proxyUsecase: uc,
-		reverseProxy: rp,
+		archiveReverseProxy: arp,
+		rollingReverseProxy: rrp,
 		httpServer:   srv,
 		UUIDRegexp:   regexp.MustCompile(uuidRegex),
 	}
@@ -50,7 +53,7 @@ func NewHTTPController(uc usecases.ProxyUsecaseInterface, rp *httputil.ReversePr
 func (p *Controller) Initialize() {
 	basePath := "v1/"
 	middleware := setupLimiterMiddleware()
-	http.Handle("/"+basePath, middleware.Handler(http.HandlerFunc(handleProxying(p, basePath))))
+	http.Handle("/" + basePath, middleware.Handler(http.HandlerFunc(handleProxying(p, basePath))))
 	http.Handle("/health", http.HandlerFunc(p.GetHealth))
 	http.Handle("/status", http.HandlerFunc(p.GetStatus))
 }
@@ -123,15 +126,22 @@ func handleProxying(p *Controller, basePath string) func(w http.ResponseWriter, 
 			getUUIDFromPath(receivedRequest.URL.Path, p.UUIDRegexp),
 			getActionFromHTTPMethod(receivedRequest.Method),
 			receivedRequest.RemoteAddr)
-		logrus.Debug(request.Action, request.Path, request.UUID, request.RemoteAddr)
+		logrus.Debug("received proxy request ", request.Action, request.Path, request.UUID, request.RemoteAddr)
 
-		r, toRawProxy, err := p.proxyUsecase.Proxy(&request)
+		r, toRawProxy, nodeType, err := p.proxyUsecase.Proxy(&request)
 		if err != nil {
 			logrus.Error(fmt.Sprintf("could not proxy request: %s", err))
 		}
 
 		if toRawProxy {
-			forwardRawRequestAndRespond(p, w, receivedRequest, &request)
+			switch nodeType {
+			case model.ArchiveNode:
+				forwardRawRequestAndRespond(p, w, receivedRequest, &request, p.archiveReverseProxy)
+			case model.RollingNode:
+				forwardRawRequestAndRespond(p, w, receivedRequest, &request, p.rollingReverseProxy)
+			default:
+				logrus.Warn("could not find node type to forward proxy request. node type is: ", nodeType)
+			}
 			return
 		}
 
@@ -158,17 +168,19 @@ func getUUIDFromPath(path string, re *regexp.Regexp) string {
 }
 
 func getRPCFromPath(basePath string, path string, re *regexp.Regexp) string {
-	return strings.Replace(path, "/"+basePath+getUUIDFromPath(path, re), "", -1)
+	return strings.Replace(path, "/" + basePath + getUUIDFromPath(path, re), "", -1)
 }
 
-func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, receivedRequest *http.Request, request *pkgmodel.Request) {
+func forwardRawRequestAndRespond(p *Controller, w http.ResponseWriter, receivedRequest *http.Request, request *pkgmodel.Request, reverseProxy *httputil.ReverseProxy) {
+	// reverseURL variable is dummy and not used.
+	// Actual reverse URL is set during reverse proxy instantiation, see cmd/proxy/main.go
 	reverseURL, err := url.Parse("http://dummy" + request.Path)
 	if err != nil {
-		log.Fatal(fmt.Sprintf("could not construct revers URL: %s", err))
+		log.Fatal(fmt.Sprintf("could not construct reverse URL: %s", err))
 	}
 	receivedRequest.URL = reverseURL
 
-	p.reverseProxy.ServeHTTP(w, receivedRequest)
+	reverseProxy.ServeHTTP(w, receivedRequest)
 }
 
 func optionsHeaders(w http.ResponseWriter) {

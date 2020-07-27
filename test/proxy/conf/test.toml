@@ -4,7 +4,6 @@ networks = ["MAINNET","CARTHAGENET"]
 host = "127.0.0.1"
 port = 8765
 
-
 [server]
 port = 8899
 
@@ -22,6 +21,7 @@ blockedMethods = [
 ]
 dontCache = [
   "(.*?)/head/(.*?)",
+  "(.*?)/head",
   "/chains/main/blocks$",
 ]
 rateLimitPeriod = 100
@@ -31,5 +31,7 @@ projectsCacheMaxItems = 1000
 cacheMaxMetricItems = 100
 routineDelaySeconds = 60
 whitelistedRolling = [
- "(.*?)/blocks/head$"
+  "(.*?)/head/(.*?)",
+  "(.*?)/head",
+  "(.*?)/injection/operation",
 ]

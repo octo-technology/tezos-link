@@ -3,10 +3,10 @@ package usecases
 import (
 	"encoding/json"
 	"errors"
+	"github.com/octo-technology/tezos-link/backend/internal/proxy/domain/model"
 	"io/ioutil"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -32,6 +32,7 @@ type dummyResponse struct {
 	projectCacheSaveErr     error
 	projectDatabaseResponse *pkgmodel.Project
 	projectCacheResponse    *pkgmodel.Project
+	expNodeType             model.NodeType
 }
 
 func newDummyResponse() dummyResponse {
@@ -47,6 +48,7 @@ func newDummyResponse() dummyResponse {
 		projectCacheSaveErr:     nil,
 		projectDatabaseResponse: nil,
 		projectCacheResponse:    nil,
+		expNodeType:             model.NodeTypeUnknown,
 	}
 }
 
@@ -74,6 +76,7 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 	expResponse.expToRawProxy = true
 	expResponse.projectDatabaseResponse = &prj
 	expResponse.projectCacheResponse = &prj
+	expResponse.expNodeType = model.RollingNode
 	t.Run("Forward to reverse proxy When there is a PUSH request",
 		testProxyUsecaseFunc(&postRequest, &expResponse))
 
@@ -116,6 +119,7 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 	expResponse.expToRawProxy = true
 	expResponse.projectDatabaseResponse = &prj
 	expResponse.projectCacheResponse = &prj
+	expResponse.expNodeType = model.ArchiveNode
 	t.Run("Returns the proxy response When the path is not cacheable",
 		testProxyUsecaseFunc(&whitelistedNotCachedRequest, &expResponse))
 
@@ -132,10 +136,12 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 
 	redirectionRequest := pkgmodel.NewRequest("/chains/main/blocks/head", "UUID", pkgmodel.OBTAIN, localURL)
 	expResponse = newDummyResponse()
-	expResponse.expResp = "Dummy proxy response(redirection)"
+	expResponse.expToRawProxy = true
+	expResponse.expResp = ""
 	expResponse.cacheErr = errors.New("no cache available")
 	expResponse.projectDatabaseResponse = &prj
 	expResponse.projectCacheResponse = &prj
+	expResponse.expNodeType = model.RollingNode
 	t.Run("Returns a redirection response When the URL is meant to be redirected",
 		testProxyUsecaseFunc(&redirectionRequest, &expResponse))
 
@@ -150,10 +156,9 @@ func TestProxyUsecase_Proxy_Unit(t *testing.T) {
 
 func testProxyUsecaseFunc(req *pkgmodel.Request, resp *dummyResponse) func(t *testing.T) {
 	return func(t *testing.T) {
-		rollingURL := "http://" + config.ProxyConfig.Tezos.RollingHost + ":" + strconv.Itoa(config.ProxyConfig.Tezos.RollingPort)
 		// Given
 		mockBlockchainCacheRepo := stubBlockchainCacheRepository([]byte("Dummy cache response"), resp.cacheErr)
-		mockBlockchainRepo := stubBlockchainRepository([]byte("Dummy proxy response"), resp.proxyErr, rollingURL, []byte("Dummy proxy response(redirection)"))
+		mockBlockchainRepo := stubBlockchainRepository([]byte("Dummy proxy response"), resp.proxyErr)
 		mockMetricsRepo := stubMetricsRepository(resp.metricErr)
 		mockProjectRepo := stubProjectRepository(resp.projectDatabaseResponse, resp.projectErr)
 		mockProjectCacheRepo := stubProjectCacheRepository(resp.projectCacheResponse, resp.projectCacheFindErr, resp.projectCacheSaveErr)
@@ -162,21 +167,18 @@ func testProxyUsecaseFunc(req *pkgmodel.Request, resp *dummyResponse) func(t *te
 		puc := NewProxyUsecase(mockBlockchainCacheRepo, mockBlockchainRepo, mockMetricsRepo, mockProjectRepo, mockProjectCacheRepo, mockCacheMetricsRepo)
 
 		// When
-		proxyResp, toRawProxy, err := puc.Proxy(req)
+		proxyResp, toRawProxy, nodeURL, err := puc.Proxy(req)
 
 		// Then
-		assert.Equal(t, resp.expResp, proxyResp)
-		assert.Equal(t, resp.expToRawProxy, toRawProxy)
-		assert.Equal(t, resp.expErr, err)
+		assert.Equal(t, resp.expResp, proxyResp, "Bad response")
+		assert.Equal(t, resp.expToRawProxy, toRawProxy, "Bad boolean value")
+		assert.Equal(t, resp.expErr, err, "Bad error")
+		assert.Equal(t, resp.expNodeType, nodeURL, "Bad node type")
 	}
 }
 
-func stubBlockchainRepository(response interface{}, error error, rollingURL string, redirectionResponse interface{}) *mockBlockchainRepository {
+func stubBlockchainRepository(response interface{}, error error) *mockBlockchainRepository {
 	mockBlockchainRepository := &mockBlockchainRepository{}
-	mockBlockchainRepository.
-		On("Get", mock.Anything, mock.MatchedBy(func(url string) bool { return strings.Contains(url, rollingURL) })).
-		Return(redirectionResponse, error).
-		Once()
 	mockBlockchainRepository.
 		On("Get", mock.Anything, mock.Anything).
 		Return(response, error).
