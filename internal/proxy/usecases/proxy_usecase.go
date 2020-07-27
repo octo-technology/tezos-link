@@ -104,7 +104,7 @@ func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 	time.Sleep(time.Duration(config.ProxyConfig.Proxy.RoutineDelaySeconds) * time.Second)
 }
 
-func (p *ProxyUsecase) isRollingRedirection(url string) bool {
+func (p *ProxyUsecase) isRollingNodeRedirection(url string) bool {
 	ret := false
 	urls := strings.Split(url, "?")
 	url = "/" + strings.Trim(urls[0], "/")
@@ -148,7 +148,7 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, model.Nod
 		if err != nil {
 			logrus.Info("path not cached, fetching to node: ", request.Path)
 
-			if p.isRollingRedirection(request.Path) {
+			if p.isRollingNodeRedirection(request.Path) {
 				url = p.baseRollingURL + request.Path
 				logrus.Info("fetching from rolling node: ", url)
 			} else {
@@ -170,7 +170,7 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, model.Nod
 	}
 
 	p.saveMetrics(request)
-	if p.IsRollingNodeRedirection(request.Path) {
+	if p.isRollingNodeRedirection(request.Path) {
 		logrus.Info("forwarding request directly to rolling node (as a reverse proxy)")
 		return "", true, model.RollingNode, nil
 	} else {
