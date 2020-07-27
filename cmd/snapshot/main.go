@@ -32,9 +32,9 @@ func HandleRequest(ctx context.Context) (string, error) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	instanceIp := *getInstanceIP()
+	instanceIP := *getInstanceIP()
 
-	conn, err := ssh.Dial("tcp", instanceIp+":22", config)
+	conn, err := ssh.Dial("tcp", instanceIP+":22", config)
 	if err != nil {
 		panic(err)
 	}
@@ -126,11 +126,11 @@ func getInstanceIP() *string {
 		panic(fmt.Sprintf("Error when describe instances :  %v", err))
 	}
 
-	firstIp := res.Reservations[0].Instances[0].PublicIpAddress
+	firstIP := res.Reservations[0].Instances[0].PublicIpAddress
 
-	log.Print(fmt.Sprintf("Running lambda on instance : %s", *firstIp))
+	log.Print(fmt.Sprintf("Running lambda on instance : %s", *firstIP))
 
-	return firstIp
+	return firstIP
 }
 
 func runCommand(cmd string, conn *ssh.Client) {

@@ -90,6 +90,7 @@ func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) (*pkgmodel.P
 	return cachePrj, nil
 }
 
+// WriteCachedRequestsRoutine writes cached requests to the database as a cron job
 func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 	logrus.Info("Starting to write cached requests to database")
 	cachedMetrics, err := p.metricsCacheRepo.GetAll()
@@ -105,7 +106,7 @@ func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 	time.Sleep(time.Duration(config.ProxyConfig.Proxy.RoutineDelaySeconds) * time.Second)
 }
 
-func (p *ProxyUsecase) IsRollingRedirection(url string) bool {
+func (p *ProxyUsecase) isRollingRedirection(url string) bool {
 	ret := false
 	urls := strings.Split(url, "?")
 	url = "/" + strings.Trim(urls[0], "/")
@@ -149,7 +150,7 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 		if err != nil {
 			logrus.Info("path not cached, fetching to node: ", request.Path)
 
-			if p.IsRollingRedirection(request.Path) {
+			if p.isRollingRedirection(request.Path) {
 				url = p.baseRollingURL + request.Path
 				logrus.Info("fetching from rolling node: ", url)
 			} else {
