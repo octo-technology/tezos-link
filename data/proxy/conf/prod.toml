@@ -4,8 +4,8 @@ networks = ["MAINNET","CARTHAGENET"]
 
 
 [proxy]
-readTimeout = 1
-writeTimeout = 5
+readTimeout = 5
+writeTimeout = 30
 idleTimeout = 120
 whitelistedMethods = [
   "/chains/main/blocks(.*?)",
