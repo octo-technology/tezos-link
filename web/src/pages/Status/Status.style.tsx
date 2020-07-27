@@ -5,7 +5,7 @@ import { Card, FadeInFromLeft } from '../../styles'
 export const StatusViewStyled = styled(FadeInFromLeft)`
   width: 50%;
   max-width: 840px;
-  margin: 200px auto 20px auto;
+  margin: 200px auto 0px auto;
 `
 
 export const StatusViewContent = styled(Card)`
@@ -13,7 +13,7 @@ export const StatusViewContent = styled(Card)`
 `
 
 export const StatusViewHeader = styled.div`
-  padding: 20px 40px 40px 40px;
+  padding: 10px 40px 20px 40px;
 `
 
 export const StatusViewIndicatorGreen = styled.div`
@@ -27,12 +27,34 @@ export const StatusViewIndicatorGreen = styled.div`
   filter: alpha(opacity=80);
 `
 
+export const StatusViewIndicatorGreenLittle = styled.div`
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  margin-right: 10px;
+  background: #17d766;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+`
+
 export const StatusViewIndicatorRed = styled.div`
   display: inline-block;
-  width: 15px;
-  height: 15px;
+  width: 10px;
+  height: 10px;
   border-radius: 100%;
   margin-right: 20px;
+  background: #ff0000;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+`
+
+export const StatusViewIndicatorRedLittle = styled.div`
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 100%;
+  margin-right: 10px;
   background: #ff0000;
   opacity: 0.8;
   filter: alpha(opacity=80);
@@ -46,4 +68,6 @@ export const StatusViewTitle = styled.div`
 export const StatusViewSubtitle = styled.div`
   display: block;
   margin-left: 35px;
+  font-style: italic;
+  color: grey;
 `
