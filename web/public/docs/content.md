@@ -28,9 +28,7 @@ You should receive the last received block.
 
 ## Security
 
-Currently only the `Project ID` authorize requests.
-
-In future versions, security will be improved with whitelisting of requests' origin. 
+The `Project ID` authorize requests.
 
 ## RPC Endpoints
 
@@ -54,13 +52,11 @@ All requests of type `/chains/main/blocks(.*?)` are accepted.
 
 Tezos has three types of nodes:
 - Full mode (default mode)
-- Rolling mode
-- **Archive**
+- **Rolling mode**
+- **Archive mode**
 
-**Tezoslink.io use archive nodes and store everything.**
+We use two types of mode:
+- **Archive** to store the whole blockchain. Archive is the heaviest mode as it keeps the whole chain data to be able to query any information stored on the chain since the genesis. It is particularly suitable for indexers or block explorer, that is why we use archive nodes.
+- **Rolling** to store last blocks (and scale them faster)
 
-Archive is the heaviest mode as it keeps the whole chain data to be able to query any information stored on the chain since the genesis.
-It is particularly suitable for indexers or block explorer, that is why we use archive nodes.
-
-[More about history modes](https://blog.nomadic-labs.com/introducing-snapshots-and-history-modes-for-the-tezos-node.html)
-
+> [More about history modes](https://blog.nomadic-labs.com/introducing-snapshots-and-history-modes-for-the-tezos-node.html)

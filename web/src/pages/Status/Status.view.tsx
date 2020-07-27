@@ -2,12 +2,12 @@ import * as React from 'react'
 import {
   StatusViewContent,
   StatusViewHeader,
-  StatusViewIndicatorGreen,
-  StatusViewIndicatorRed,
+  StatusViewIndicatorGreen, StatusViewIndicatorGreenLittle,
+  StatusViewIndicatorRed, StatusViewIndicatorRedLittle,
   StatusViewStyled,
   StatusViewSubtitle,
   StatusViewTitle
-} from './Status.style'
+} from "./Status.style";
 
 import * as PropTypes from 'prop-types'
 
@@ -31,9 +31,10 @@ export const StatusView = ({ proxyMainnetStatus, nodeMainnetArchiveStatus, nodeM
         <StatusViewSubtitle>As of {date}.</StatusViewSubtitle>
       </StatusViewHeader>
       <StatusViewHeader>
-        <StatusViewTitle>Nodes RPC services for Mainnet:</StatusViewTitle>
-        <StatusViewSubtitle>{nodeMainnetArchiveStatus ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />} Archive nodes are {nodeMainnetArchiveStatus ? 'online' : 'offline'}.</StatusViewSubtitle>
-        <StatusViewSubtitle>{nodeMainnetRollingStatus ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />} Rolling nodes are {nodeMainnetRollingStatus ? 'online' : 'offline'}.</StatusViewSubtitle>
+        {(nodeMainnetArchiveStatus && nodeMainnetRollingStatus) ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />}
+        <StatusViewTitle>Nodes RPC services for Mainnet are {(nodeMainnetArchiveStatus && nodeMainnetRollingStatus) ? 'online' : 'offline'}</StatusViewTitle>
+        <StatusViewSubtitle>{nodeMainnetArchiveStatus ? <StatusViewIndicatorGreenLittle /> : <StatusViewIndicatorRedLittle />} Archive nodes are {nodeMainnetArchiveStatus ? 'online' : 'offline'}.</StatusViewSubtitle>
+        <StatusViewSubtitle>{nodeMainnetRollingStatus ? <StatusViewIndicatorGreenLittle /> : <StatusViewIndicatorRedLittle />} Rolling nodes are {nodeMainnetRollingStatus ? 'online' : 'offline'}.</StatusViewSubtitle>
       </StatusViewHeader>
       <StatusViewHeader>
         {proxyCarthagenetStatus ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />}
@@ -41,9 +42,10 @@ export const StatusView = ({ proxyMainnetStatus, nodeMainnetArchiveStatus, nodeM
         <StatusViewSubtitle>As of {date}.</StatusViewSubtitle>
       </StatusViewHeader>
       <StatusViewHeader>
-        <StatusViewTitle>Nodes RPC services for Carthagenet:</StatusViewTitle>
-        <StatusViewSubtitle>{nodeCarthagenetArchiveStatus ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />} Archive nodes are {nodeCarthagenetArchiveStatus ? 'online' : 'offline'}.</StatusViewSubtitle>
-        <StatusViewSubtitle>{nodeCarthagenetRollingStatus ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />} Rolling nodes are {nodeCarthagenetRollingStatus ? 'online' : 'offline'}.</StatusViewSubtitle>
+        {(nodeCarthagenetArchiveStatus && nodeCarthagenetRollingStatus) ? <StatusViewIndicatorGreen /> : <StatusViewIndicatorRed />}
+        <StatusViewTitle>Nodes RPC services for Carthagenet are {(nodeCarthagenetArchiveStatus && nodeCarthagenetRollingStatus) ? 'online' : 'offline'}</StatusViewTitle>
+        <StatusViewSubtitle>{nodeCarthagenetArchiveStatus ? <StatusViewIndicatorGreenLittle /> : <StatusViewIndicatorRedLittle />} Archive nodes are {nodeCarthagenetArchiveStatus ? 'online' : 'offline'}.</StatusViewSubtitle>
+        <StatusViewSubtitle>{nodeCarthagenetRollingStatus ? <StatusViewIndicatorGreenLittle /> : <StatusViewIndicatorRedLittle />} Rolling nodes are {nodeCarthagenetRollingStatus ? 'online' : 'offline'}.</StatusViewSubtitle>
       </StatusViewHeader>
     </StatusViewContent>
   </StatusViewStyled>

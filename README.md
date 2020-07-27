@@ -65,6 +65,7 @@ $> make run
 It will run:
 
 - `tezos-link_proxy`
+- `tezos-link_proxy-carthagenet`
 - `tezos-link_api`
 - `mockserver/mockserver:mockserver-5.9.0`
 - `postgres:9.6`
