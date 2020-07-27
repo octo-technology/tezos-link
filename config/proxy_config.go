@@ -40,7 +40,7 @@ type ProxyConf struct {
 		ProjectsCacheMaxItems           int
 		CacheMaxMetricItems             int
 		RoutineDelaySeconds             int
-		WhitelistedRolling	            []string
+		WhitelistedRolling              []string
 	}
 }
 

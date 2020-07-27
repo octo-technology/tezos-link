@@ -98,7 +98,7 @@ func (pg postgresMetricsRepository) CountAll(uuid string) (int, error) {
 	return count, nil
 }
 
-func (pg postgresMetricsRepository) Remove3MonthOldMetrics() (error) {
+func (pg postgresMetricsRepository) Remove3MonthOldMetrics() error {
 	_, err := pg.connection.
 		Exec("DELETE FROM metrics WHERE date_request <= now() - INTERVAL '3 MONTH'")
 

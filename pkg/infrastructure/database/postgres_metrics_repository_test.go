@@ -130,7 +130,6 @@ func TestPostgresMetricsRepository_RemoveOldMetrics_Unit(t *testing.T) {
 	assert.Equal(t, 1, cnt, "Bad count")
 }
 
-
 func TestPostgresMetricsRepository_FindRequestsByDay_Unit(t *testing.T) {
 	// Given
 	pool := getDockerPool()

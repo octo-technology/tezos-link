@@ -25,7 +25,7 @@ func TestRestController_PostProject_Unit(t *testing.T) {
 	rcWithEmptyNameError := buildControllerWithProjectUseCaseError(nil, modelerrors.ErrNoProjectName, "CreateProject")
 
 	jsonBody, _ := json.Marshal(inputs.NewProject{
-		Title: "New Project",
+		Title:   "New Project",
 		Network: "CARTHAGENET",
 	})
 	unexpectedJSONBody := `{"BADDDDD":"BAD_KEY"}`

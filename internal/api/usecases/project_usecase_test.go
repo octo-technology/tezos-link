@@ -60,7 +60,6 @@ func TestProjectUsecase_CreateProject_InvalidNetwork_Unit(t *testing.T) {
 
 	mockMetricsRepository := &mockMetricsRepository{}
 
-
 	pu := NewProjectUsecase(mockProjectRepository, mockMetricsRepository)
 
 	// When

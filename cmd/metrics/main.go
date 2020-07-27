@@ -44,4 +44,3 @@ func HandleRequest(ctx context.Context) (string, error) {
 
 	return "metric clean started.", nil
 }
-

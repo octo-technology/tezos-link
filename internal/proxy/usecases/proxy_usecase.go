@@ -90,7 +90,6 @@ func (p *ProxyUsecase) findInDatabaseIfNotFoundInCache(UUID string) (*pkgmodel.P
 	return cachePrj, nil
 }
 
-
 func (p *ProxyUsecase) WriteCachedRequestsRoutine() {
 	logrus.Info("Starting to write cached requests to database")
 	cachedMetrics, err := p.metricsCacheRepo.GetAll()
@@ -152,6 +151,9 @@ func (p *ProxyUsecase) Proxy(request *pkgmodel.Request) (string, bool, error) {
 
 			if p.IsRollingRedirection(request.Path) {
 				url = p.baseRollingURL + request.Path
+				logrus.Info("fetching from rolling node: ", url)
+			} else {
+				logrus.Info("fetching from archive node: ", url)
 			}
 
 			response, err = p.proxyRepo.Get(request, url)

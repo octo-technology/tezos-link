@@ -10,7 +10,6 @@ type ProjectOutputWithMetrics struct {
 	UUID    string        `json:"uuid"`
 	Network string        `json:"network"`
 	Metrics MetricsOutput `json:"metrics"`
-
 }
 
 // NewProjectOutputWithMetrics returns a new project with metrics

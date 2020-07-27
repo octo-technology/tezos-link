@@ -8,7 +8,7 @@ type Project struct {
 	Title        string
 	UUID         string
 	CreationDate time.Time
-	Network		 string
+	Network      string
 }
 
 // NewProject returns a new project
