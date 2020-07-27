@@ -27,5 +27,6 @@ projectsCacheMaxItems = 1000
 cacheMaxMetricItems = 100
 routineDelaySeconds = 60
 whitelistedRolling = [
- "(.*?)/blocks(.*?)head(.*?)"
+  "(.*?)/head/(.*?)",
+  "(.*?)/head",
 ]
