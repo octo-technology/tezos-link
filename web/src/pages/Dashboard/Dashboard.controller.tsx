@@ -52,9 +52,8 @@ export const Dashboard = () => {
     const uuid = pageURL.substr(pageURL.lastIndexOf('/') + 1)
     axios(process.env.REACT_APP_BACKEND_URL + '/api/v1/projects/' + uuid)
       .then(function(response: any) {
-        // TODO: Mock a long request to have a nice loader
+        response.data.data.metrics.requestsByDay.sort((a: any, b: any) => Date.parse(b.date) - Date.parse(a.date))
         setProject(response.data.data)
-        project.metrics.requestsByDay.sort((a : any, b : any) => a.date.CompareTo(b.date))
         dispatch(hideProgressBar())
         setLoading(false)
       })

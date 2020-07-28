@@ -51,8 +51,8 @@ export const StatusViewIndicatorRed = styled.div`
 
 export const StatusViewIndicatorRedLittle = styled.div`
   display: inline-block;
-  width: 5px;
-  height: 5px;
+  width: 10px;
+  height: 10px;
   border-radius: 100%;
   margin-right: 10px;
   background: #ff0000;
