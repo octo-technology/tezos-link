@@ -33,6 +33,14 @@ resource "aws_launch_configuration" "tz_node" {
     mode              = var.TZ_MODE
   })
 
+  root_block_device {
+    volume_type = "io1"
+    volume_size = 10 #Gb
+    encrypted = true
+    delete_on_termination = true
+    iops = 500
+  }
+
   lifecycle {
     create_before_destroy = true
   }

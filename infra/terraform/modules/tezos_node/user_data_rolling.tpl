@@ -7,8 +7,8 @@ dnf install docker-ce unzip jq --nobest -y
 systemctl enable --now docker
 usermod -aG docker ec2-user
 
-curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+chmod +x /usr/bin/docker-compose
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
@@ -23,8 +23,8 @@ echo "${lambda_public_key}" >> /home/ec2-user/.ssh/authorized_keys
 
 # Install Tezos docker-compose wrapper
 
-curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
-chmod +x /usr/local/bin/${network}.sh
+curl -o /usr/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
+chmod +x /usr/bin/${network}.sh
 
 cd /home/ec2-user
 
@@ -65,19 +65,21 @@ rm snapshot.rolling
 
 # Setup cronjob to avoid the "timed out" problem on the node
 
-cat > health-logs-analysis.sh << 'EOF'
-#!/bin/bash
-
-if [[ $(docker logs ${network}_node_1 2>&1 | grep 'validator.peer: Fetch of operations ' | grep ' timed out' | wc -l) > 0 ]]; then
-  echo "$(date -R) - health-logs-analysis - Warning : dysfunctionment detected. Killing the node"
-  ${network}.sh stop
-else
-  echo "$(date -R) - health-logs-analysis - Node healthy, doing nothing"
-fi
-EOF
-chmod 755 health-logs-analysis.sh
-echo "*/5 * * * * /home/ec2-user/health-logs-analysis.sh" | crontab -
+#cat > health-logs-analysis.sh << 'EOF'
+##!/bin/bash
+#
+#if [[ $(docker logs mainnet_node_1 2>&1 | grep 'validator.peer: Fetch of operations ' | grep ' timed out' | wc -l) > 0 ]]; then
+#  echo "$(date -R) - health-logs-analysis - Warning : dysfunctionment detected. Killing the node"
+#  mkdir /root/.tezos-mainnet/
+#  cp -r /.tezos-mainnet/docker-compose.yml /root/.tezos-mainnet/docker-compose.yml
+#  mainnet.sh stop
+#else
+#  echo "$(date -R) - health-logs-analysis - Node healthy, doing nothing"
+#fi
+#EOF
+#chmod 755 health-logs-analysis.sh
+#echo "*/5 * * * * /home/ec2-user/health-logs-analysis.sh" | crontab -
 
 # Restart autoscaling CPU alarm
-sleep 10m
+sleep 6m
 aws autoscaling resume-processes --auto-scaling-group-name tzlink-${network}-rolling
