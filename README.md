@@ -59,7 +59,7 @@ To run services locally on the machine, you will need to run those commands :
 ```bash
 $> make deps
 $> make build-docker
-$> make run
+$> make run-dev
 ```
 
 It will run:
@@ -151,7 +151,7 @@ $> make deps
 To run the frontend, execute:
 
 ```bash
-$> cd web && yarn start
+$> cd web && yarn start-local
 ```
 
 ### Build
