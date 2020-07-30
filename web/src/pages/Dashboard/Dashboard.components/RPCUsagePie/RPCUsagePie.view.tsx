@@ -1,11 +1,13 @@
 import * as React from 'react'
+// prettier-ignore
 import {
   RPCUsagePieViewCard,
   RPCUsagePieViewStyled,
   RPCUsagePieViewTitle,
   RPCUsagePieViewNoData,
   RPCUsagePieViewTotalRequestsCount,
-  RPCUsagePieViewTotalRequestsCountNumber
+  RPCUsagePieViewTotalRequestsCountNumber,
+  RPCUsagePieContainer
 } from './RPCUsagePie.style'
 import * as PropTypes from 'prop-types'
 import { RPCUsage } from '../../../../entities/ProjectWithMetrics'
@@ -39,24 +41,26 @@ export const RPCUsagePieView = ({ rpcUsage, rpcTotalCount }: RPCUsagePieViewProp
           </RPCUsagePieViewTotalRequestsCount>
         ) : null}
         {rpcUsagePieData.length > 0 ? (
-          <ResponsivePie
-            data={rpcUsagePieData}
-            margin={{ top: 20, left: 20, bottom: 20, right: 20 }}
-            innerRadius={0.7}
-            padAngle={0.7}
-            cornerRadius={3}
-            colors={{ scheme: 'nivo' }}
-            borderWidth={1}
-            borderColor={{ theme: 'background' }}
-            enableRadialLabels={false}
-            radialLabelsLinkColor={{ from: 'color' }}
-            slicesLabelsSkipAngle={10}
-            slicesLabelsTextColor="#333333"
-            animate={true}
-            sortByValue={true}
-            motionStiffness={90}
-            motionDamping={15}
-          />
+          <RPCUsagePieContainer>
+            <ResponsivePie
+              data={rpcUsagePieData}
+              margin={{ top: 20, left: 20, bottom: 20, right: 20 }}
+              innerRadius={0.7}
+              padAngle={0.7}
+              cornerRadius={3}
+              colors={{ scheme: 'nivo' }}
+              borderWidth={1}
+              borderColor={{ theme: 'background' }}
+              enableRadialLabels={false}
+              radialLabelsLinkColor={{ from: 'color' }}
+              slicesLabelsSkipAngle={10}
+              slicesLabelsTextColor="#333333"
+              animate={true}
+              sortByValue={true}
+              motionStiffness={90}
+              motionDamping={15}
+            />
+          </RPCUsagePieContainer>
         ) : (
           <RPCUsagePieViewNoData>No data</RPCUsagePieViewNoData>
         )}
