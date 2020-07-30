@@ -41,7 +41,7 @@ export const RPCUsagePieView = ({ rpcUsage, rpcTotalCount }: RPCUsagePieViewProp
         {rpcUsagePieData.length > 0 ? (
           <ResponsivePie
             data={rpcUsagePieData}
-            margin={{ top: 20, left: -100, bottom: 30, right: 100 }}
+            margin={{ top: 20, left: 20, bottom: 20, right: 20 }}
             innerRadius={0.7}
             padAngle={0.7}
             cornerRadius={3}
@@ -49,13 +49,6 @@ export const RPCUsagePieView = ({ rpcUsage, rpcTotalCount }: RPCUsagePieViewProp
             borderWidth={1}
             borderColor={{ theme: 'background' }}
             enableRadialLabels={false}
-            radialLabelsSkipAngle={10}
-            radialLabelsTextXOffset={6}
-            radialLabelsTextColor="#A9A9A9"
-            radialLabelsLinkOffset={0}
-            radialLabelsLinkDiagonalLength={16}
-            radialLabelsLinkHorizontalLength={24}
-            radialLabelsLinkStrokeWidth={1}
             radialLabelsLinkColor={{ from: 'color' }}
             slicesLabelsSkipAngle={10}
             slicesLabelsTextColor="#333333"
@@ -63,26 +56,6 @@ export const RPCUsagePieView = ({ rpcUsage, rpcTotalCount }: RPCUsagePieViewProp
             sortByValue={true}
             motionStiffness={90}
             motionDamping={15}
-            legends={[
-              {
-                anchor: 'right',
-                direction: 'column',
-                itemWidth: 100,
-                itemHeight: 18,
-                itemTextColor: '#999',
-                symbolSize: 18,
-                symbolShape: 'circle',
-                padding: { top: 5, right: 0, left: 0, bottom: 0 },
-                effects: [
-                  {
-                    on: 'hover',
-                    style: {
-                      itemTextColor: '#000'
-                    }
-                  }
-                ]
-              }
-            ]}
           />
         ) : (
           <RPCUsagePieViewNoData>No data</RPCUsagePieViewNoData>

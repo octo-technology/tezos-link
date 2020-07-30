@@ -7,7 +7,6 @@ export const ProjectTokenCard = styled(Card)`
   margin-bottom: 20px;
   padding: 20px 20px 10px 20px;
   height: 300px;
-  width: 300px;
 `
 
 export const ProjectTokenTitle = styled.div`
