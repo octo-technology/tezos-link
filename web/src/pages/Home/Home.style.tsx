@@ -245,6 +245,10 @@ export const HomeTrustedGrid = styled(HomeSection)`
   align-items: center;
   justify-content: space-around;
 
+  img {
+    max-width: 200px;
+  }
+
   @media (max-width: 900px) {
     display: grid;
     grid-gap: 20px;
