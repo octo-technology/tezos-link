@@ -34,11 +34,11 @@ resource "aws_launch_configuration" "tz_node" {
   })
 
   root_block_device {
-    volume_type = "io1"
-    volume_size = 10 #Gb
-    encrypted = true
+    volume_type           = "io1"
+    volume_size           = 10 #Gb
+    encrypted             = true
     delete_on_termination = true
-    iops = 500
+    iops                  = 500
   }
 
   lifecycle {
