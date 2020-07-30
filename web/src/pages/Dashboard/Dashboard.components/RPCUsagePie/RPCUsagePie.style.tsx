@@ -6,6 +6,9 @@ export const RPCUsagePieViewCard = styled(Card)`
   height: 300px;
   margin: 0 0 20px 0;
   max-width: calc(100vw - 40px);
+`
+
+export const RPCUsagePieContainer = styled.span`
   color: grey;
 `
 
