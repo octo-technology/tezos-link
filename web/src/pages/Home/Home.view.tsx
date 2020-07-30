@@ -59,15 +59,15 @@ export const Home = () => (
       <HomeSection>
         <HomeH1>Develop now with our Tezos APIs</HomeH1>
         <HomeH3>
-          Tezos Link's world-class infrastructure will ensure your decentralized application scales to meet your user
+          Tezos Link's infrastructure will ensure your decentralized application scales to meet your user
           demand.
         </HomeH3>
         <HomeBuiltArg>
           <div>
             <HomeBuiltArgTitle>BUILT FOR DEVELOPERS</HomeBuiltArgTitle>
             <HomeBuiltArgText>
-              Connect your app immediately with our instant access APIs. We support RPC over HTTPS interfaces,
-              providing high speed connections to the Tezos network.
+              Connect your app immediately with our instant access APIs. We support RPC over HTTPS interfaces, providing
+              high speed connections to the Tezos network.
             </HomeBuiltArgText>
           </div>
           <HomeBuiltArgImg alt="tezos" src="/images/arg1.svg" />
@@ -92,6 +92,16 @@ export const Home = () => (
           </div>
           <HomeBuiltArgImg alt="tezos" src="/images/arg3.svg" />
         </HomeBuiltArg>
+        <HomeBuiltArgRev>
+          <HomeBuiltArgImg alt="tezos" src="/images/architecture.png" />
+          <div>
+            <HomeBuiltArgTitle>SCALABLE</HomeBuiltArgTitle>
+            <HomeBuiltArgText>
+              Our architecture supports the workload required by your project, by scaling up Tezos nodes when we receive
+              many requests.
+            </HomeBuiltArgText>
+          </div>
+        </HomeBuiltArgRev>
       </HomeSection>
     </HomeBuilt>
     <HomeTrusted>
