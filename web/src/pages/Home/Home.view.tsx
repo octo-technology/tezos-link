@@ -59,8 +59,7 @@ export const Home = () => (
       <HomeSection>
         <HomeH1>Develop now with our Tezos APIs</HomeH1>
         <HomeH3>
-          Tezos Link's infrastructure will ensure your decentralized application scales to meet your user
-          demand.
+          Tezos Link's infrastructure will ensure your decentralized application scales to meet your user demand.
         </HomeH3>
         <HomeBuiltArg>
           <div>
@@ -97,8 +96,11 @@ export const Home = () => (
           <div>
             <HomeBuiltArgTitle>SCALABLE</HomeBuiltArgTitle>
             <HomeBuiltArgText>
-              Our architecture supports the workload required by your project, by scaling up Tezos nodes when we receive
-              many requests.
+              Our architecture supports the workload required by your project, by scaling up Tezos nodes when we see an
+              increase of requests. The infrastructure is open-sourced in our{' '}
+              <a href="https://github.com/octo-technology/tezos-link" target="_blank">
+                Github project
+              </a>
             </HomeBuiltArgText>
           </div>
         </HomeBuiltArgRev>
