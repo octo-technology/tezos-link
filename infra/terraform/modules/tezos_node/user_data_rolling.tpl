@@ -65,21 +65,24 @@ rm snapshot.rolling
 
 # Setup cronjob to avoid the "timed out" problem on the node
 
-#cat > health-logs-analysis.sh << 'EOF'
-##!/bin/bash
-#
-#if [[ $(docker logs mainnet_node_1 2>&1 | grep 'validator.peer: Fetch of operations ' | grep ' timed out' | wc -l) > 0 ]]; then
-#  echo "$(date -R) - health-logs-analysis - Warning : dysfunctionment detected. Killing the node"
-#  mkdir /root/.tezos-mainnet/
-#  cp -r /.tezos-mainnet/docker-compose.yml /root/.tezos-mainnet/docker-compose.yml
-#  mainnet.sh stop
-#else
-#  echo "$(date -R) - health-logs-analysis - Node healthy, doing nothing"
-#fi
-#EOF
-#chmod 755 health-logs-analysis.sh
-#echo "*/5 * * * * /home/ec2-user/health-logs-analysis.sh" | crontab -
+cat > health-logs-analysis.sh << 'EOF'
+#!/bin/bash
+
+if [[ $(curl localhost:8000/chains/main/blocks/head -w %%{time_total} -o /dev/null --silent) > 1 ]]; then
+  echo "$(date -R) - health-logs-analysis - Warning : Dysfunctionment detected. Restarting the node."
+  mkdir /root/.tezos-mainnet/
+  cp -r /.tezos-mainnet/docker-compose.yml /root/.tezos-mainnet/docker-compose.yml
+  ${network}.sh stop
+  sleep 10s
+  ${network}.sh node start --rpc-port 8000 --history-mode experimental-rolling
+else
+  echo "$(date -R) - health-logs-analysis - Node healthy, doing nothing"
+fi
+EOF
+chmod 755 health-logs-analysis.sh
+echo "*/2 * * * * /home/ec2-user/health-logs-analysis.sh" | crontab -
 
 # Restart autoscaling CPU alarm
-sleep 6m
+date -R
+sleep 8m
 aws autoscaling resume-processes --auto-scaling-group-name tzlink-${network}-rolling
