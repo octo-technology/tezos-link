@@ -18,11 +18,11 @@ export const Modal = styled(Card)`
 `
 
 export const DashboardOverlay = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
-  bottom: 0;
   left: 0;
-  right: 0;
+  width: 100%;
+  height: 100%;
   background-color: black;
   opacity: 0.5;
 `
@@ -35,4 +35,5 @@ export const Code = styled.span`
   -webkit-font-smoothing: auto;
   font-family: monospace;
   padding: 0.25em 0.5em;
+  word-break: break-all;
 `

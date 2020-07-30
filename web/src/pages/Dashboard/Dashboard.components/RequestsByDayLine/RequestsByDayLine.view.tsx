@@ -49,7 +49,7 @@ export const RequestsByDayLineView = ({ requestsByDay }: RequestsByDayLineViewPr
     },
     grid: {
       line: {
-        stroke: "#555555"
+        stroke: '#555555'
       }
     }
   }
@@ -58,6 +58,8 @@ export const RequestsByDayLineView = ({ requestsByDay }: RequestsByDayLineViewPr
     requestsByDay.filter(requestByDay => {
       return requestByDay.value > 10
     }).length > 0
+
+  const isMobile = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) <= 700
 
   return (
     <RequestsByDayLineViewStyled>
@@ -83,7 +85,7 @@ export const RequestsByDayLineView = ({ requestsByDay }: RequestsByDayLineViewPr
             legendOffset: 12
           }}
           axisBottom={{
-            format: '%b %d',
+            format: isMobile ? '%d' : '%b %d',
             tickValues: 'every 2 days',
             legendOffset: -12
           }}

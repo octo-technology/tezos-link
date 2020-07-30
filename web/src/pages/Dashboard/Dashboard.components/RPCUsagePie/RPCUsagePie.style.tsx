@@ -2,9 +2,11 @@ import styled from 'styled-components/macro'
 import { Card, FadeInFromLeft } from 'src/styles'
 
 export const RPCUsagePieViewCard = styled(Card)`
-  margin-bottom: 20px;
   padding: 20px 20px 15px 10px;
   height: 300px;
+  margin: 0 0 20px 0;
+  max-width: calc(100vw - 40px);
+  color: grey;
 `
 
 export const RPCUsagePieViewStyled = styled(FadeInFromLeft)`
@@ -38,8 +40,7 @@ export const RPCUsagePieViewTotalRequestsCount = styled.div`
   transform: translateY(-50%);
   text-align: center;
   width: inherit;
-  left: 50%;
-  margin-left: -162px;
+  left: calc(50% - 62px);
 `
 
 export const RPCUsagePieViewTotalRequestsCountNumber = styled.div`

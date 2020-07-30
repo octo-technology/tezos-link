@@ -15,10 +15,7 @@ type LastRequestsViewProps = { lastRequests: string[] }
 const showRequests = (request: string, isFirst: boolean) => {
   const stringLength = isFirst ? 40 : 60
   if (request.length > stringLength) {
-    return (
-      request.substring(0, stringLength) +
-      '...'
-    )
+    return request.substring(0, stringLength) + '...'
   }
 
   return request

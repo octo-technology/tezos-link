@@ -1,10 +1,11 @@
 import styled from 'styled-components/macro'
-import { Card, FadeInFromLeft, primaryColor, secondaryColor } from "src/styles";
+import { Card, FadeInFromLeft, primaryColor, secondaryColor } from 'src/styles'
 
 export const LastRequestsViewCard = styled(Card)`
-  margin-bottom: 20px;
+  margin: 0 0 20px 0;
   padding: 20px 20px 15px 10px;
   height: 300px;
+  max-width: calc(100vw - 40px);
 `
 
 export const LastRequestsViewStyled = styled(FadeInFromLeft)`
@@ -41,7 +42,8 @@ export const LastRequestsViewListItem = styled.li`
   padding: 5px 5px 5px 5px;
   counter-increment: my-counter;
   list-style-position: inside;
-  white-space: nowrap;
+
+  -space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   background-color: ${secondaryColor};
