@@ -23,9 +23,9 @@ dontCache = [
 rateLimitPeriod = 100
 rateLimitCount = 1000000
 blockchainRequestsCacheMaxItems = 2000
-projectsCacheMaxItems = 1000
-cacheMaxMetricItems = 100
-routineDelaySeconds = 60
+projectsCacheMaxItems = 2000
+cacheMaxMetricItems = 2000
+routineDelaySeconds = 5
 whitelistedRolling = [
   "(.*?)/head/(.*?)",
   "(.*?)/head",
