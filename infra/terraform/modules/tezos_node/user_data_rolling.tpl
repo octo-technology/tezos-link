@@ -70,13 +70,13 @@ cat > health-logs-analysis.sh << 'EOF'
 
 if [[ $(curl localhost:8000/chains/main/blocks/head -w %%{time_total} -o /dev/null --silent) > 2 ]]; then
   echo "$(date -R) - health-logs-analysis - Warning : Dysfunctionment detected. Restarting the node."
-  mkdir /root/.tezos-mainnet/
-  cp -r /.tezos-mainnet/docker-compose.yml /root/.tezos-mainnet/docker-compose.yml
+  mkdir /root/.tezos-${network}/
+  cp -r /.tezos-${network}/docker-compose.yml /root/.tezos-${network}/docker-compose.yml
   ${network}.sh stop
 
   echo -n "Remove peers.json file"
-  if [ -f "/var/lib/docker/volumes/mainnet_node_data/_data/data/peers.json" ]; then
-    rm -f /var/lib/docker/volumes/mainnet_node_data/_data/data/peers.json
+  if [ -f "/var/lib/docker/volumes/${network}_node_data/_data/data/peers.json" ]; then
+    rm -f /var/lib/docker/volumes/${network}_node_data/_data/data/peers.json
     echo "removed"
   else
     echo "absent. (doing nothing)"
