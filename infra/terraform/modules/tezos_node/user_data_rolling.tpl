@@ -68,15 +68,28 @@ rm snapshot.rolling
 cat > health-logs-analysis.sh << 'EOF'
 #!/bin/bash
 
-if [[ $(curl localhost:8000/chains/main/blocks/head -w %%{time_total} -o /dev/null --silent) > 1 ]]; then
+if [[ $(curl localhost:8000/chains/main/blocks/head -w %%{time_total} -o /dev/null --silent) > 2 ]]; then
   echo "$(date -R) - health-logs-analysis - Warning : Dysfunctionment detected. Restarting the node."
   mkdir /root/.tezos-mainnet/
   cp -r /.tezos-mainnet/docker-compose.yml /root/.tezos-mainnet/docker-compose.yml
   ${network}.sh stop
-  sleep 10s
+
+  echo -n "Remove peers.json file"
+  if [ -f "/var/lib/docker/volumes/mainnet_node_data/_data/data/peers.json" ]; then
+    rm -f /var/lib/docker/volumes/mainnet_node_data/_data/data/peers.json
+    echo "removed"
+  else
+    echo "absent. (doing nothing)"
+  fi
+
+  sleep 40s
+
   ${network}.sh node start --rpc-port 8000 --history-mode experimental-rolling
+
 else
+
   echo "$(date -R) - health-logs-analysis - Node healthy, doing nothing"
+
 fi
 EOF
 chmod 755 health-logs-analysis.sh
@@ -84,5 +97,5 @@ echo "*/2 * * * * /home/ec2-user/health-logs-analysis.sh" | crontab -
 
 # Restart autoscaling CPU alarm
 date -R
-sleep 8m
+sleep 4m
 aws autoscaling resume-processes --auto-scaling-group-name tzlink-${network}-rolling
