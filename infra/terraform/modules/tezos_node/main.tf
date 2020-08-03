@@ -59,6 +59,8 @@ resource "aws_autoscaling_group" "tz_nodes" {
   launch_configuration      = aws_launch_configuration.tz_node.id
   vpc_zone_identifier       = tolist(data.aws_subnet_ids.tzlink.ids)
 
+  default_cooldown = 180 #sec (= 3min)
+
   enabled_metrics = ["GroupInServiceInstances", "GroupPendingInstances", "GroupStandbyInstances", "GroupTerminatingInstances", "GroupTotalInstances"]
 
   target_group_arns = [aws_alb_target_group.tz_farm.arn]
