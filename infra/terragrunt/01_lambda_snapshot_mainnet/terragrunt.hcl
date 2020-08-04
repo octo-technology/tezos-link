@@ -22,5 +22,5 @@ inputs = {
 
   LAMBDA_VPC_CONFIG_ENABLE = false
 
-  RUN_EVERY = "cron(0 1 * * ? *)"
+  RUN_EVERY = "cron(0 1/12 * * ? *)"
 }

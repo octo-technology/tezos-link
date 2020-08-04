@@ -86,6 +86,18 @@ variable "CPU_DOWN_EVALUATION_PERIODS" {
   type = number
 }
 
+variable "RESPONSETIME_OUT_SCALING_COOLDOWN" {
+  type = number
+}
+
+variable "RESPONSETIME_OUT_SCALING_THRESHOLD" {
+  type = string
+}
+
+variable "RESPONSETIME_OUT_EVALUATION_PERIODS" {
+  type = number
+}
+
 variable "HEALTH_CHECK_GRACE_PERIOD" {
   type = number
 }

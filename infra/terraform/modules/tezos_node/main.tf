@@ -33,6 +33,14 @@ resource "aws_launch_configuration" "tz_node" {
     mode              = var.TZ_MODE
   })
 
+  root_block_device {
+    volume_type           = "io1"
+    volume_size           = 10 #Gb
+    encrypted             = true
+    delete_on_termination = true
+    iops                  = 500
+  }
+
   lifecycle {
     create_before_destroy = true
   }
@@ -50,6 +58,8 @@ resource "aws_autoscaling_group" "tz_nodes" {
   force_delete              = true
   launch_configuration      = aws_launch_configuration.tz_node.id
   vpc_zone_identifier       = tolist(data.aws_subnet_ids.tzlink.ids)
+
+  default_cooldown = 180 #sec (= 3min)
 
   enabled_metrics = ["GroupInServiceInstances", "GroupPendingInstances", "GroupStandbyInstances", "GroupTerminatingInstances", "GroupTotalInstances"]
 
