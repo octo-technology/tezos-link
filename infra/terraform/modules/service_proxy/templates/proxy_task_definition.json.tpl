@@ -31,12 +31,8 @@
           "value": "${database_username}"
         },
         {
-          "name": "DATABASE_PASSWORD",
-          "value": "${database_password}"
-        },
-        {
           "name": "DATABASE_TABLE",
-          "value": "${database_table}"
+          "value": "${database_name}"
         },
         {
           "name": "ARCHIVE_NODES_URL",
@@ -60,8 +56,14 @@
         },
         {
           "name": "ENV",
-          "value": "${environment_config}"
+          "value": "${configuration_file}"
         }
+    ],
+    "secrets": [
+      {
+        "name": "DATABASE_PASSWORD",
+        "valueFrom": "${database_password_arn}"
+      }
     ],
     "logConfiguration": {
       "logDriver": "awslogs",
