@@ -1,25 +1,38 @@
-resource "aws_s3_bucket" "tz_front" {
-  bucket = "tezoslink-front"
-  acl    = "public-read"
-  policy = <<EOF
-{
-  "Version":"2012-10-17",
-  "Statement":[
-    {
-      "Sid":"PublicRead",
-      "Effect":"Allow",
-      "Principal": "*",
-      "Action":["s3:GetObject"],
-      "Resource":["arn:aws:s3:::tezoslink-front/*"]
-    }
-  ]
+terraform {
+  required_version = "0.12.20"
+  backend "s3" {}
 }
-EOF
+
+data "aws_route53_zone" "tezoslink" {
+  name = "tezoslink.io."
+}
+
+resource "aws_route53_record" "front" {
+  zone_id = data.aws_route53_zone.tezoslink.zone_id
+  name    = "tezoslink.io"
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.tz_front.domain_name
+    zone_id                = aws_cloudfront_distribution.tz_front.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_s3_bucket" "tz_front" {
+  bucket = "tz-front"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 
   tags = {
-    Name      = "tezoslink-front"
-    Project   = var.PROJECT_NAME
-    BuildWith = var.BUILD_WITH
+    Name      = "tz-front"
+    Project   = var.project_name
   }
 }
 
@@ -31,7 +44,11 @@ resource "aws_cloudfront_distribution" "tz_front" {
 
   origin {
     domain_name = aws_s3_bucket.tz_front.bucket_regional_domain_name
-    origin_id   = "TezosLinkFrontS3"
+    origin_id   = "TZLinkFrontS3"
+
+    s3_origin_config {
+        origin_access_identity = "origin-access-identity/cloudfront/E1H8RH9S03SPXS"
+    }
   }
 
   restrictions {
@@ -41,7 +58,7 @@ resource "aws_cloudfront_distribution" "tz_front" {
   }
 
   default_cache_behavior {
-    target_origin_id = "TezosLinkFrontS3"
+    target_origin_id = "TZLinkFrontS3"
 
     allowed_methods = ["GET", "HEAD"]
     cached_methods  = ["GET", "HEAD"]
@@ -63,11 +80,13 @@ resource "aws_cloudfront_distribution" "tz_front" {
   aliases = ["tezoslink.io"]
 
   viewer_certificate {
-    #cloudfront_default_certificate = true
-    acm_certificate_arn      = "arn:aws:acm:us-east-1:609827314188:certificate/05558bc2-3703-49ab-ae81-e22ea2ea437e"
+    acm_certificate_arn      = var.certificate_arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2018"
   }
 
-  tags = {}
+  tags = {
+    Name      = "tz-front"
+    Project   = var.project_name
+  }
 }
