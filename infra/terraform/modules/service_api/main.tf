@@ -14,7 +14,7 @@ data "aws_vpc" "tzlink" {
   cidr_block = var.vpc_cidr
 
   tags = {
-    Name = "tzlink"
+    Name    = "tzlink"
     Project = var.project_name
   }
 }
@@ -23,7 +23,7 @@ data "aws_subnet_ids" "tzlink_public_ecs" {
   vpc_id = data.aws_vpc.tzlink.id
 
   tags = {
-    Name = "tzlink-public-ecs-*"
+    Name    = "tzlink-public-ecs-*"
     Project = var.project_name
   }
 }
@@ -32,7 +32,7 @@ data "aws_subnet_ids" "tzlink_private_ecs" {
   vpc_id = data.aws_vpc.tzlink.id
 
   tags = {
-    Name = "tzlink-private-ecs-*"
+    Name    = "tzlink-private-ecs-*"
     Project = var.project_name
   }
 }
@@ -167,8 +167,8 @@ resource "aws_ecs_task_definition" "api" {
 
   container_definitions = templatefile("${path.module}/templates/proxy_task_definition.json.tpl",
     {
-      task_name   = "api",
-      task_image  = format("%s:%s", var.docker_image_name, var.docker_image_version),
+      task_name  = "api",
+      task_image = format("%s:%s", var.docker_image_name, var.docker_image_version),
 
       task_port   = var.port,
       task_cpu    = var.cpu,
@@ -216,8 +216,8 @@ resource "aws_alb" "api" {
   security_groups = [aws_security_group.api_lb.id]
 
   tags = {
-    Name      = "tzlink-api"
-    Project   = var.project_name
+    Name    = "tzlink-api"
+    Project = var.project_name
   }
 }
 
@@ -242,8 +242,8 @@ resource "aws_alb_target_group" "api" {
   }
 
   tags = {
-    Name      = "tzlink-api"
-    Project   = var.project_name
+    Name    = "tzlink-api"
+    Project = var.project_name
   }
 
   depends_on = [aws_alb.api]

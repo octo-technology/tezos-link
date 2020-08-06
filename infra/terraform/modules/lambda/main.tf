@@ -33,7 +33,7 @@ data "aws_subnet_ids" "lambda" {
 }
 
 data "aws_security_group" "lambda" {
-  count  = var.vpc_config_enable ? 1 : 0
+  count = var.vpc_config_enable ? 1 : 0
 
   vpc_id = data.aws_vpc.tzlink[0].id
 
@@ -69,8 +69,8 @@ resource "aws_lambda_function" "executor" {
   }
 
   tags = {
-    Name      = var.name
-    Project   = var.project_name
+    Name    = var.name
+    Project = var.project_name
   }
 }
 
@@ -90,8 +90,8 @@ resource "aws_cloudwatch_event_rule" "cron" {
   schedule_expression = var.run_every
 
   tags = {
-    Name      = format("tzlink_%s_cronjob", var.name)
-    Project   = var.project_name
+    Name    = format("tzlink_%s_cronjob", var.name)
+    Project = var.project_name
   }
 }
 

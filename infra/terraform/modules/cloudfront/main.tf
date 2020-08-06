@@ -31,8 +31,8 @@ resource "aws_s3_bucket" "tz_front" {
   }
 
   tags = {
-    Name      = "tz-front"
-    Project   = var.project_name
+    Name    = "tz-front"
+    Project = var.project_name
   }
 }
 
@@ -47,7 +47,7 @@ resource "aws_cloudfront_distribution" "tz_front" {
     origin_id   = "TZLinkFrontS3"
 
     s3_origin_config {
-        origin_access_identity = "origin-access-identity/cloudfront/E1H8RH9S03SPXS"
+      origin_access_identity = "origin-access-identity/cloudfront/E1H8RH9S03SPXS"
     }
   }
 
@@ -86,7 +86,7 @@ resource "aws_cloudfront_distribution" "tz_front" {
   }
 
   tags = {
-    Name      = "tz-front"
-    Project   = var.project_name
+    Name    = "tz-front"
+    Project = var.project_name
   }
 }

@@ -17,7 +17,7 @@ data "aws_subnet_ids" "tzlink" {
   vpc_id = data.aws_vpc.tzlink.id
 
   tags = {
-    Name = "tzlink-farm-*"
+    Name    = "tzlink-farm-*"
     Project = var.project_name
   }
 }
@@ -56,8 +56,8 @@ resource "aws_security_group" "tezos_node" {
   vpc_id      = data.aws_vpc.tzlink.id
 
   tags = {
-    Name      = format("tzlink_farm_%s_%s", var.tz_network, var.tz_mode)
-    Project   = var.project_name
+    Name    = format("tzlink_farm_%s_%s", var.tz_network, var.tz_mode)
+    Project = var.project_name
   }
 }
 
@@ -243,8 +243,8 @@ resource "aws_alb" "tz_farm" {
   internal        = true
 
   tags = {
-    Name      = format("tzlink-farm-%s-%s", var.tz_network, var.tz_mode)
-    Project   = var.project_name
+    Name    = format("tzlink-farm-%s-%s", var.tz_network, var.tz_mode)
+    Project = var.project_name
   }
 }
 
@@ -267,8 +267,8 @@ resource "aws_alb_target_group" "tz_farm" {
   }
 
   tags = {
-    Name      = format("tzlink-farm-%s-%s", var.tz_network, var.tz_mode)
-    Project   = var.project_name
+    Name    = format("tzlink-farm-%s-%s", var.tz_network, var.tz_mode)
+    Project = var.project_name
   }
 
   depends_on = [aws_alb.tz_farm]

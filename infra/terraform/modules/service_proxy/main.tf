@@ -32,7 +32,7 @@ data "aws_subnet_ids" "tzlink_private_ecs" {
   vpc_id = data.aws_vpc.tzlink.id
 
   tags = {
-    Name = "tzlink-private-ecs-*"
+    Name    = "tzlink-private-ecs-*"
     Project = var.project_name
   }
 }
@@ -177,7 +177,7 @@ resource "aws_ecs_task_definition" "proxy" {
       database_password_arn = data.aws_secretsmanager_secret.tzlink_database_password.arn,
       database_name         = data.aws_rds_cluster.database.database_name,
 
-      tezos_network = upper(var.tz_network),
+      tezos_network          = upper(var.tz_network),
       tezos_archive_hostname = format("%s-archive.internal.tezoslink.io", var.tz_network),
       tezos_archive_port     = var.farm_archive_port,
       tezos_rolling_hostname = format("%s-rolling.internal.tezoslink.io", var.tz_network),
@@ -220,8 +220,8 @@ resource "aws_alb" "proxy" {
   security_groups = [aws_security_group.proxy_lb.id]
 
   tags = {
-    Name      = format("tzlink-proxy-%s", var.tz_network)
-    Project   = var.project_name
+    Name    = format("tzlink-proxy-%s", var.tz_network)
+    Project = var.project_name
   }
 }
 
@@ -246,15 +246,15 @@ resource "aws_alb_target_group" "proxy" {
   }
 
   tags = {
-    Name      = format("tzlink-proxy-%s", var.tz_network)
-    Project   = var.project_name
+    Name    = format("tzlink-proxy-%s", var.tz_network)
+    Project = var.project_name
   }
 
   depends_on = [aws_alb.proxy]
 }
 
 data "aws_acm_certificate" "network" {
-  domain   = format("%s.tezoslink.io", var.tz_network)
+  domain = format("%s.tezoslink.io", var.tz_network)
   #statuses = ["ISSUED"]
 }
 

@@ -5,11 +5,11 @@ variable "region" {
 }
 
 variable "project_name" {
-  type    = string
+  type        = string
   description = "The name of the project"
 }
 
 variable "certificate_arn" {
-  type    = string
+  type        = string
   description = "The certificate associated to cloudwatch SSL"
 }
