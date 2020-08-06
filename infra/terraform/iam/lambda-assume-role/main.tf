@@ -79,3 +79,16 @@ data "aws_iam_policy_document" "tzlink_metric_lambda_access" {
     ]
   }
 }
+
+data "aws_iam_policy_document" "tzlink_secretmanager_lambda_access" {
+  statement {
+
+    actions = [
+      "secretsmanager:GetSecretValue"
+    ]
+
+    resources = [
+      "arn:aws:secretsmanager:eu-west-1:*:secret:tzlink-database-password"
+    ]
+  }
+}

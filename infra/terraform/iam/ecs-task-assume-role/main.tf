@@ -28,4 +28,15 @@ data "aws_iam_policy_document" "tzlink_ecs_task_ecr_and_awslogs" {
       "*"
     ]
   }
+
+  statement {
+
+    actions = [
+      "secretsmanager:GetSecretValue"
+    ]
+
+    resources = [
+      "arn:aws:secretsmanager:eu-west-1:*:secret:tzlink-database-password"
+    ]
+  }
 }
