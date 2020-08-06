@@ -1,11 +1,26 @@
 #!/bin/bash -ex
 
 # Setup Docker, aws CLI and utilitary tools
+apt-get update
 
-dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-dnf install docker-ce unzip jq --nobest -y
-systemctl enable --now docker
-usermod -aG docker ec2-user
+apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common \
+    jq \
+    unzip
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+apt-key fingerprint 0EBFCD88
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io
+
+usermod -aG docker ubuntu
 
 curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
 chmod +x /usr/bin/docker-compose
@@ -18,15 +33,15 @@ unzip awscliv2.zip
 
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
 bash -c '
-echo "${lambda_public_key}" >> /home/ec2-user/.ssh/authorized_keys
+echo "${lambda_public_key}" >> /home/ubuntu/.ssh/authorized_keys
 '
 
 # Install Tezos docker-compose wrapper
 
-curl -o /usr/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
+curl https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh -o /usr/bin/${network}.sh 
 chmod +x /usr/bin/${network}.sh
 
-cd /home/ec2-user
+cd /home/ubuntu
 
 # Stop the autoscaling alarm based on CPU
 
@@ -34,7 +49,7 @@ aws autoscaling suspend-processes --auto-scaling-group-name tzlink-${network}-ro
 
 # Import snapshot from the S3 bucket
 
-aws s3 cp s3://tzlink-blockchain-data-dev/${network}_rolling-snapshot.tar.gz ${network}_rolling-snapshot.tar.gz
+aws s3 cp s3://tzlink-blockchain-data/${network}_rolling-snapshot.tar.gz ${network}_rolling-snapshot.tar.gz
 tar xvf ${network}_rolling-snapshot.tar.gz
 rm ${network}_rolling-snapshot.tar.gz
 
@@ -55,7 +70,7 @@ if [ -f "/var/lib/docker/volumes/${network}_node_data/_data/data/store" ]; then
   sudo rm -rf /var/lib/docker/volumes/${network}_node_data/_data/data/store
 fi
 
-${network}.sh snapshot import /home/ec2-user/snapshot.rolling
+${network}.sh snapshot import /home/ubuntu/snapshot.rolling
 
 # Start tezos node in rolling mode
 
@@ -93,7 +108,7 @@ else
 fi
 EOF
 chmod 755 health-logs-analysis.sh
-echo "*/2 * * * * /home/ec2-user/health-logs-analysis.sh" | crontab -
+echo "*/2 * * * * /home/ubuntu/health-logs-analysis.sh" | crontab -
 
 # Restart autoscaling CPU alarm
 date -R

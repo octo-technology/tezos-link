@@ -11,23 +11,27 @@ terraform {
 }
 
 inputs = {
-  TZ_NETWORK = "mainnet"
-  TZ_MODE    = "archive"
+  tz_network = "mainnet"
+  tz_mode    = "archive"
 
-  MIN_INSTANCE_NUMBER = 1
-  DESIRED_INSTANCE_NUMBER = 1
-  MAX_INSTANCE_NUMBER = 5
+  min_instance_number     = 1
+  desired_instance_number = 1
+  max_instance_number     = 5
 
-  HEALTH_CHECK_GRACE_PERIOD = 1620 #sec (=27min)
+  health_check_grace_period = 1620 #sec (=27min)
 
-  CPU_OUT_SCALING_COOLDOWN = 1800 #sec (=30min)
-  CPU_OUT_SCALING_THRESHOLD = 40 #%
-  CPU_OUT_EVALUATION_PERIODS = 30 #min
+  cpu_out_scaling_cooldown   = 1800 #sec (=30min)
+  cpu_out_scaling_threshold  = 40 #%
+  cpu_out_evaluation_periods = 30 #min
 
-  CPU_DOWN_SCALING_COOLDOWN = 300 #sec
-  CPU_DOWN_SCALING_THRESHOLD = 5 #%
-  CPU_DOWN_EVALUATION_PERIODS = 5 #min
+  cpu_down_scaling_cooldown   = 300 #sec
+  cpu_down_scaling_threshold  = 5 #%
+  cpu_down_evaluation_periods = 5 #min
 
-  INSTANCE_TYPE = "i3.large"
-  KEY_PAIR_NAME = "adbo"
+  responsetime_out_scaling_cooldown   = 60 #sec
+  responsetime_out_scaling_threshold  = 1.0 #sec
+  responsetime_out_evaluation_periods = 2 #min
+
+  instance_type = "i3.large"
+  key_pair_name = "adbo" # TODO : use a shared keypair
 }

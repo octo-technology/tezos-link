@@ -1,14 +1,29 @@
 #!/bin/bash -ex
 
 # Setup Docker, aws CLI and utilitary tools
+apt-get update
 
-dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-dnf install docker-ce unzip jq --nobest -y
-systemctl enable --now docker
-usermod -aG docker ec2-user
+apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common \
+    jq \
+    unzip
 
-curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+apt-key fingerprint 0EBFCD88
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io
+
+usermod -aG docker ubuntu
+
+curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+chmod +x /usr/bin/docker-compose
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
@@ -18,8 +33,12 @@ unzip awscliv2.zip
 
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
 bash -c '
-echo "${lambda_public_key}" >> /home/ec2-user/.ssh/authorized_keys
+echo "${lambda_public_key}" >> /home/ubuntu/.ssh/authorized_keys
 '
+
+# Stop the autoscaling alarm based on CPU
+
+aws autoscaling suspend-processes --auto-scaling-group-name tzlink-${network}-rolling --scaling-processes AlarmNotification
 
 # Mount I3 special volume
 
@@ -28,20 +47,20 @@ mount /dev/nvme0n1 /var/lib/docker/volumes
 
 # Install Tezos docker-compose wrapper
 
-curl -o /usr/local/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
-chmod +x /usr/local/bin/${network}.sh
+curl -o /usr/bin/${network}.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
+chmod +x /usr/bin/${network}.sh
 
 # Import archive from the S3 bucket
 
 cd /var/lib/docker/volumes
 
-aws s3 cp s3://tzlink-blockchain-data-dev/${network}_node_data.tar.gz ${network}_node_data.tar.gz
+aws s3 cp s3://tzlink-blockchain-data/${network}_node_data.tar.gz ${network}_node_data.tar.gz
 tar xvf ${network}_node_data.tar.gz
 mv archive ${network}_node_data
 chown -R 100:65533 ${network}_node_data
 rm -rf ${network}_node_data.tar.gz
 
-cd /home/ec2-user
+cd /home/ubuntu
 
 # Start tezos node in archive mode
 
@@ -68,7 +87,7 @@ echo ">>> Generate ${network}_rolling-snapshot.tar.gz from the snapshot"
 sudo tar zcvf ${network}_rolling-snapshot.tar.gz snapshot.rolling
 
 echo ">>> Send to S3 bucket ${network}_rolling-snapshot.tar.gz"
-aws s3 cp ${network}_rolling-snapshot.tar.gz s3://tzlink-blockchain-data-dev/${network}_rolling-snapshot.tar.gz
+aws s3 cp ${network}_rolling-snapshot.tar.gz s3://tzlink-blockchain-data/${network}_rolling-snapshot.tar.gz
 
 echo ">>> Clear temporary files"
 sudo rm ${network}_rolling-snapshot.tar.gz snapshot.rolling
@@ -122,7 +141,7 @@ echo ">>> Generate ${network}_node_data.tar.gz from archive"
 sudo tar zcvf ${network}_node_data.tar.gz ./archive
 
 echo ">>> Send to S3 bucket ${network}_node_data.tar.gz"
-aws s3 cp ./${network}_node_data.tar.gz s3://tzlink-blockchain-data-dev
+aws s3 cp ./${network}_node_data.tar.gz s3://tzlink-blockchain-data
 
 echo ">>> Clear temporary files"
 sudo rm -rf archive ${network}_node_data.tar.gz
@@ -144,10 +163,15 @@ Description=Backup service for Tezos node to S3
 [Service]
 Type=simple
 Restart=no
-ExecStart=/bin/bash /home/ec2-user/export-tezos-snap.sh
+ExecStart=/bin/bash /home/ubuntu/export-tezos-snap.sh
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
+
+# Restart autoscaling CPU alarm
+date -R
+sleep 4m
+aws autoscaling resume-processes --auto-scaling-group-name tzlink-${network}-rolling

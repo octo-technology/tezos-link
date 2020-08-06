@@ -1,103 +1,105 @@
-variable "REGION" {
-  type    = string
-  default = "europe-west-1"
+variable "region" {
+  type        = string
+  default     = "eu-west-1"
+  description = "The region where the module will be deployed."
 }
 
-variable "TZ_NETWORK" {
+variable "tz_network" {
   type    = string
-  default = "mainnet"
-
-  description = "The current network to deploy in the tezos_node. (possible choice: mainnet, carthagenet)"
+  description = "The tezos network that will be associated to the node. [mainnet, carthagenet]"
 }
 
-variable "TZ_MODE" {
+variable "tz_mode" {
   type    = string
-  default = "archive"
-
-  description = "The current mode of the node wanted (archive, rolling)"
+  description = "The load mode of the tezos-node. [archive, rolling]"
 }
 
-variable "PROJECT_NAME" {
+variable "project_name" {
   type    = string
-  default = "tezos-link"
+  description = "The name of the project"
 }
 
-variable "BUILD_WITH" {
+variable "vpc_cidr" {
   type    = string
-  default = "terraform"
+  description = "The CIDR of the VPC that will be deployed"
 }
 
-variable "VPC_CIDR" {
+variable "instance_type" {
   type    = string
-  default = "10.1.0.0/16"
+  description = "The size of the AWS instance that will be deployed"
 }
 
-variable "SUBNET_TZ_FARM_CIDR" {
-  type    = string
-  default = "10.1.0.0/24"
-}
-
-variable "INSTANCE_TYPE" {
-  type    = string
-  default = "i3.large"
-}
-
-variable "MIN_INSTANCE_NUMBER" {
+variable "min_instance_number" {
   type    = number
-  default = 1
+  description = "The minimal number of instance inside the autoscaling_group"
 }
 
-variable "MAX_INSTANCE_NUMBER" {
+variable "desired_instance_number" {
   type    = number
-  default = 3
+  description = "The desired number of instance wanted by default in the autoscaling_group"
 }
 
-variable "DESIRED_INSTANCE_NUMBER" {
+variable "max_instance_number" {
   type    = number
-  default = 1
+  description = "The maximal number of instance inside the autoscaling_group"
 }
 
-variable "KEY_PAIR_NAME" {
-  type    = string
-  default = "AWS-TEZOS-KEY"
-}
-
-variable "CPU_OUT_SCALING_COOLDOWN" {
-  type = number
-}
-
-variable "CPU_OUT_SCALING_THRESHOLD" {
-  type = number
-}
-
-variable "CPU_OUT_EVALUATION_PERIODS" {
-  type = number
-}
-
-variable "CPU_DOWN_SCALING_COOLDOWN" {
-  type = number
-}
-
-variable "CPU_DOWN_SCALING_THRESHOLD" {
-  type = number
-}
-
-variable "CPU_DOWN_EVALUATION_PERIODS" {
-  type = number
-}
-
-variable "RESPONSETIME_OUT_SCALING_COOLDOWN" {
-  type = number
-}
-
-variable "RESPONSETIME_OUT_SCALING_THRESHOLD" {
+variable "lambda_public_key" {
   type = string
+  description = "The ssh public key to permits to the lambda to connect on the instance"
 }
 
-variable "RESPONSETIME_OUT_EVALUATION_PERIODS" {
-  type = number
+variable "key_pair_name" {
+  type    = string
+  description = "The default key-pair placed on aws instance. Needed to connect with SSH on instances"
 }
 
-variable "HEALTH_CHECK_GRACE_PERIOD" {
+variable "cpu_out_scaling_cooldown" {
   type = number
+  description = "The cooldown (in second) between two trigger of the cpu_out autoscaling system"
+}
+
+variable "cpu_out_scaling_threshold" {
+  type = number
+  description = "The percentage of CPU utilization which will trigger the cpu_out cloudwatch alarm"
+}
+
+variable "cpu_out_evaluation_periods" {
+  type = number
+  description = "The number of consecutive minutes before triggering the cpu_out cloudwatch alarm"
+}
+
+variable "cpu_down_scaling_cooldown" {
+  type = number
+  description = "The cooldown (in second) between two trigger of the cpu_down autoscaling system"
+}
+
+variable "cpu_down_scaling_threshold" {
+  type = number
+  description = "The percentage of CPU utilization which will trigger the cpu_down cloudwatch alarm"
+}
+
+variable "cpu_down_evaluation_periods" {
+  type = number
+  description = "The number of consecutive minutes before triggering the cpu_down cloudwatch alarm"
+}
+
+variable "responsetime_out_scaling_cooldown" {
+  type = number
+  description = "The cooldown (in second) between two trigger of the responsetime_out autoscaling system"
+}
+
+variable "responsetime_out_scaling_threshold" {
+  type = string
+  description = "The percentage of CPU utilization which will trigger the responsetime_out cloudwatch alarm"
+}
+
+variable "responsetime_out_evaluation_periods" {
+  type = number
+  description = "The number of consecutive minutes before triggering the responsetime_out cloudwatch alarm"
+}
+
+variable "health_check_grace_period" {
+  type = number
+  description = "The time given to a machine to reach the HEALTHY state. If not, the machine will be destroy and another will be created instead"
 }
