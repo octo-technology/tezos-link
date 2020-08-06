@@ -69,8 +69,7 @@ resource "aws_security_group_rule" "all_egress_from_vpc" {
 
 resource "random_password" "database_master_password" {
   length           = 32
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  special          = false
 }
 
 resource "aws_secretsmanager_secret" "database_master_password" {
