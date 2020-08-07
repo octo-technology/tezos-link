@@ -63,5 +63,5 @@ jobs:
 
     - name: Deploy and update lambda
       run: |
-        aws s3 cp metrics/metrics.zip s3://tzlink-metrics-lambda-dev/v1.0.0/metrics.zip
-        aws lambda update-function-code --function-name metrics --s3-bucket tzlink-metrics-lambda-dev --s3-key v1.0.0/metrics.zip
+        aws s3 cp metrics/metrics.zip s3://tzlink-metrics-lambda/v1.0.0/metrics.zip
+        aws lambda update-function-code --function-name metrics --s3-bucket tzlink-metrics-lambda --s3-key v1.0.0/metrics.zip
