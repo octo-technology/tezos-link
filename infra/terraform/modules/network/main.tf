@@ -291,3 +291,74 @@ resource "aws_subnet" "private_database_b" {
     Project = var.project_name
   }
 }
+
+# SecurityGroup for AWS_API
+
+resource "aws_security_group" "aws_api" {
+  name        = "aws_api_endpoint"
+  description = "Security group applyied to vpc_endpoint to access them by http/https"
+  vpc_id      = aws_vpc.tzlink.id
+
+  tags = {
+      Name = "aws_api_endpoint"
+      Project = "tezos-link"
+  }
+}
+
+resource "aws_security_group_rule" "http_ingress_for_aws_api_from_vpc" {
+  type        = "ingress"
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  cidr_blocks = [var.vpc_cidr]
+
+  security_group_id = aws_security_group.aws_api.id
+}
+
+resource "aws_security_group_rule" "https_ingress_for_aws_api_from_vpc" {
+  type        = "ingress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  cidr_blocks = [var.vpc_cidr]
+
+  security_group_id = aws_security_group.aws_api.id
+}
+
+# S3 VPC Endpoint
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = aws_vpc.tzlink.id
+  service_name = format("com.amazonaws.%s.s3", var.region)
+
+  route_table_ids = [aws_route_table.tzlink_public.id]
+
+  tags = {
+    Name    = "tzlink-public-s3"
+    Project = var.project_name
+  }
+}
+
+# EC2 VPC Endpoint
+
+resource "aws_vpc_endpoint" "ec2" {
+  vpc_id       = aws_vpc.tzlink.id
+  service_name = format("com.amazonaws.%s.ec2", var.region)
+  vpc_endpoint_type = "Interface"
+
+  subnet_ids = [
+    aws_subnet.public_farm_a.id,
+    aws_subnet.public_farm_b.id
+  ]
+
+  security_group_ids = [
+    aws_security_group.aws_api.id
+    ]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name    = "tzlink-public-ec2"
+    Project = var.project_name
+  }
+}
