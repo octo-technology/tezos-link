@@ -14,8 +14,8 @@ inputs = {
   tz_network = "mainnet"
   tz_mode    = "rolling"
 
-  min_instance_number     = 1
-  desired_instance_number = 1
+  min_instance_number     = 2
+  desired_instance_number = 2
   max_instance_number     = 6
 
   health_check_grace_period = 900 #sec (=15min)

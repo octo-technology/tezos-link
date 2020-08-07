@@ -95,6 +95,7 @@ resource "aws_security_group_rule" "p2p_ingress_for_tezos_carthagenet_node" {
 }
 
 resource "aws_security_group_rule" "ssh_ingress_for_tezos_node_from_vpc" {
+  count       = var.tz_mode == "archive" ? 1 : 0
   type        = "ingress"
   from_port   = 22
   to_port     = 22
@@ -104,12 +105,53 @@ resource "aws_security_group_rule" "ssh_ingress_for_tezos_node_from_vpc" {
   security_group_id = aws_security_group.tezos_node.id
 }
 
-resource "aws_security_group_rule" "all_egress_for_tezos_node" {
+resource "aws_security_group_rule" "rpc_egress_for_tezos_node" {
   type        = "egress"
-  from_port   = 0
-  to_port     = 0
-  protocol    = "-1"
+  from_port   = 8732
+  to_port     = 8732
+  protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.tezos_node.id
+}
+
+resource "aws_security_group_rule" "websock_egress_for_tezos_node" {
+  type        = "egress"
+  from_port   = 9732
+  to_port     = 9732
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.tezos_node.id
+}
+
+resource "aws_security_group_rule" "http_egress_for_tezos_node" {
+  type        = "egress"
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.tezos_node.id
+}
+
+resource "aws_security_group_rule" "https_egress_for_tezos_node" {
+  type        = "egress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.tezos_node.id
+}
+
+resource "aws_security_group_rule" "ssh_egress_for_tezos_node_from_vpc" {
+  count       = var.tz_mode == "archive" ? 1 : 0
+  type        = "egress"
+  from_port   = 22
+  to_port     = 22
+  protocol    = "tcp"
+  cidr_blocks = [var.vpc_cidr]
 
   security_group_id = aws_security_group.tezos_node.id
 }
