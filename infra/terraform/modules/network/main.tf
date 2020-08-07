@@ -300,8 +300,8 @@ resource "aws_security_group" "aws_api" {
   vpc_id      = aws_vpc.tzlink.id
 
   tags = {
-      Name = "aws_api_endpoint"
-      Project = "tezos-link"
+    Name    = "aws_api_endpoint"
+    Project = "tezos-link"
   }
 }
 
@@ -342,8 +342,8 @@ resource "aws_vpc_endpoint" "s3" {
 # EC2 VPC Endpoint
 
 resource "aws_vpc_endpoint" "ec2" {
-  vpc_id       = aws_vpc.tzlink.id
-  service_name = format("com.amazonaws.%s.ec2", var.region)
+  vpc_id            = aws_vpc.tzlink.id
+  service_name      = format("com.amazonaws.%s.ec2", var.region)
   vpc_endpoint_type = "Interface"
 
   subnet_ids = [
@@ -353,7 +353,7 @@ resource "aws_vpc_endpoint" "ec2" {
 
   security_group_ids = [
     aws_security_group.aws_api.id
-    ]
+  ]
 
   private_dns_enabled = true
 
@@ -366,8 +366,8 @@ resource "aws_vpc_endpoint" "ec2" {
 # SecretsManager VPC Endpoint
 
 resource "aws_vpc_endpoint" "secretsmanager" {
-  vpc_id       = aws_vpc.tzlink.id
-  service_name = format("com.amazonaws.%s.secretsmanager", var.region)
+  vpc_id            = aws_vpc.tzlink.id
+  service_name      = format("com.amazonaws.%s.secretsmanager", var.region)
   vpc_endpoint_type = "Interface"
 
   subnet_ids = [
@@ -377,7 +377,7 @@ resource "aws_vpc_endpoint" "secretsmanager" {
 
   security_group_ids = [
     aws_security_group.aws_api.id
-    ]
+  ]
 
   private_dns_enabled = true
 
