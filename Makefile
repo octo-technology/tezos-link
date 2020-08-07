@@ -101,9 +101,10 @@ deploy-frontend:
 deploy-snapshot-lambda:
 	cp $(SNAPSHOT_BIN) bin/main
 	zip -j bin/$(SNAPSHOT).zip bin/main
-	aws s3 cp bin/$(SNAPSHOT).zip s3://tzlink-snapshot-lambda-dev/v1.0.0/$(SNAPSHOT).zip
+	aws s3 cp bin/$(SNAPSHOT).zip s3://tzlink-snapshot-lambda/v1.0.0/$(SNAPSHOT).zip
 	rm bin/$(SNAPSHOT).zip bin/main
-	aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/$(SNAPSHOT).zip --region eu-west-1
+	aws lambda update-function-code --function-name snapshot-mainnet --s3-bucket tzlink-snapshot-lambda --s3-key v1.0.0/$(SNAPSHOT).zip --region eu-west-1
+	aws lambda update-function-code --function-name snapshot-carthagenet --s3-bucket tzlink-snapshot-lambda --s3-key v1.0.0/$(SNAPSHOT).zip --region eu-west-1
 deploy-metrics-cleaner-lambda:
 	cp $(METRICS_CLEANER_BIN) bin/main
 	zip -j bin/$(METRICS_CLEANER).zip bin/main
