@@ -5,7 +5,8 @@
     "portMappings": [
       {
         "containerPort": ${task_port},
-        "hostPort": ${task_port}
+        "hostPort": ${task_port},
+        "protocol": "tcp"
       }
     ],
     "cpu": ${task_cpu},

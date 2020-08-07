@@ -362,3 +362,27 @@ resource "aws_vpc_endpoint" "ec2" {
     Project = var.project_name
   }
 }
+
+# SecretsManager VPC Endpoint
+
+resource "aws_vpc_endpoint" "secretsmanager" {
+  vpc_id       = aws_vpc.tzlink.id
+  service_name = format("com.amazonaws.%s.secretsmanager", var.region)
+  vpc_endpoint_type = "Interface"
+
+  subnet_ids = [
+    aws_subnet.public_farm_a.id,
+    aws_subnet.public_farm_b.id
+  ]
+
+  security_group_ids = [
+    aws_security_group.aws_api.id
+    ]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name    = "tzlink-public-secretsmanager"
+    Project = var.project_name
+  }
+}
