@@ -18,7 +18,7 @@ inputs = {
   name        = "snapshot-carthagenet"
   description = "Snapshot exporter lambda for carthagenet"
   environment_variables = {
-    NODE_USER = "ec2-user"
+    NODE_USER = "ubuntu"
     S3_REGION = "eu-west-1"
     S3_BUCKET = "tzlink-snapshot-lambda"
     S3_LAMBDA_KEY = "snapshot_lambda_key"
@@ -33,5 +33,5 @@ inputs = {
   # network configuration (if needed)
   vpc_config_enable = true
   subnet_name = "tzlink-farm-*"
-  security_group_name = "tezos_farm_carthagenet_archive"
+  security_group_name = "tzlink_farm_carthagenet_archive"
 }

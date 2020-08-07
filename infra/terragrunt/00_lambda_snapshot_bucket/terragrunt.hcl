@@ -8,4 +8,7 @@ terraform {
 
 inputs = {
   s3_bucket_name = "tzlink-snapshot-lambda"
+
+  vpc_endpoint_enabled = true
+  route_table_name = "tzlink-public"
 }

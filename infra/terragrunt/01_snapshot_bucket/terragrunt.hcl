@@ -13,4 +13,5 @@ terraform {
 inputs = {
   s3_bucket_name = "tzlink-blockchain-data"
   vpc_endpoint_enabled = true
+  route_table_name = "tzlink-public"
 }
