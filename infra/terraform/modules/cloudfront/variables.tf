@@ -1,14 +1,15 @@
-variable "REGION" {
-  type    = string
-  default = "eu-west-1"
+variable "region" {
+  type        = string
+  default     = "eu-west-1"
+  description = "The region where the module will be deployed."
 }
 
-variable "PROJECT_NAME" {
-  type    = string
-  default = "tezos-link"
+variable "project_name" {
+  type        = string
+  description = "The name of the project"
 }
 
-variable "BUILD_WITH" {
-  type    = string
-  default = "terraform"
+variable "certificate_arn" {
+  type        = string
+  description = "The certificate associated to cloudwatch SSL"
 }

@@ -11,27 +11,27 @@ terraform {
 }
 
 inputs = {
-  TZ_NETWORK = "mainnet"
-  TZ_MODE    = "rolling"
+  tz_network = "mainnet"
+  tz_mode    = "rolling"
 
-  MIN_INSTANCE_NUMBER = 2
-  DESIRED_INSTANCE_NUMBER = 2
-  MAX_INSTANCE_NUMBER = 6
+  min_instance_number     = 2
+  desired_instance_number = 2
+  max_instance_number     = 6
 
-  HEALTH_CHECK_GRACE_PERIOD = 900 #sec (=15min)
+  health_check_grace_period = 900 #sec (=15min)
 
-  CPU_OUT_SCALING_COOLDOWN = 300 #sec
-  CPU_OUT_SCALING_THRESHOLD = 30 #%
-  CPU_OUT_EVALUATION_PERIODS = 5 #min
+  cpu_out_scaling_cooldown   = 300 #sec (=5min)
+  cpu_out_scaling_threshold  = 40 #%
+  cpu_out_evaluation_periods = 5 #min
 
-  CPU_DOWN_SCALING_COOLDOWN = 300 #sec
-  CPU_DOWN_SCALING_THRESHOLD = 5 #%
-  CPU_DOWN_EVALUATION_PERIODS = 5 #min
+  cpu_down_scaling_cooldown   = 300 #sec
+  cpu_down_scaling_threshold  = 5 #%
+  cpu_down_evaluation_periods = 5 #min
 
-  RESPONSETIME_OUT_SCALING_COOLDOWN = 60 #sec
-  RESPONSETIME_OUT_SCALING_THRESHOLD = 0.6 #sec
-  RESPONSETIME_OUT_EVALUATION_PERIODS = 2 #min
+  responsetime_out_scaling_cooldown   = 60 #sec
+  responsetime_out_scaling_threshold  = 0.6 #sec
+  responsetime_out_evaluation_periods = 2 #min
 
-  INSTANCE_TYPE = "t3.small"
-  KEY_PAIR_NAME = "adbo"
+  instance_type = "t3.small"
+  key_pair_name = "adbo" # TODO : use a shared keypair
 }

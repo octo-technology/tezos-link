@@ -101,15 +101,16 @@ deploy-frontend:
 deploy-snapshot-lambda:
 	cp $(SNAPSHOT_BIN) bin/main
 	zip -j bin/$(SNAPSHOT).zip bin/main
-	aws s3 cp bin/$(SNAPSHOT).zip s3://tzlink-snapshot-lambda-dev/v1.0.0/$(SNAPSHOT).zip
+	aws s3 cp bin/$(SNAPSHOT).zip s3://tzlink-snapshot-lambda/v1.0.0/$(SNAPSHOT).zip
 	rm bin/$(SNAPSHOT).zip bin/main
-	aws lambda update-function-code --function-name snapshot --s3-bucket tzlink-snapshot-lambda-dev --s3-key v1.0.0/$(SNAPSHOT).zip --region eu-west-1
+	aws lambda update-function-code --function-name snapshot-mainnet --s3-bucket tzlink-snapshot-lambda --s3-key v1.0.0/$(SNAPSHOT).zip --region eu-west-1
+	aws lambda update-function-code --function-name snapshot-carthagenet --s3-bucket tzlink-snapshot-lambda --s3-key v1.0.0/$(SNAPSHOT).zip --region eu-west-1
 deploy-metrics-cleaner-lambda:
 	cp $(METRICS_CLEANER_BIN) bin/main
 	zip -j bin/$(METRICS_CLEANER).zip bin/main
-	aws s3 cp bin/$(METRICS_CLEANER).zip s3://tzlink-metrics-lambda-dev/v1.0.0/$(METRICS_CLEANER).zip
+	aws s3 cp bin/$(METRICS_CLEANER).zip s3://tzlink-metric-cleaner-lambda/v1.0.0/$(METRICS_CLEANER).zip
 	rm bin/$(METRICS_CLEANER).zip bin/main
-	aws lambda update-function-code --function-name metrics --s3-bucket tzlink-metrics-lambda-dev --s3-key v1.0.0/$(METRICS_CLEANER).zip --region eu-west-1
+	aws lambda update-function-code --function-name metrics --s3-bucket tzlink-metric-cleaner-lambda --s3-key v1.0.0/$(METRICS_CLEANER).zip --region eu-west-1
 docs:
 	if ! which swag; then go get -u github.com/swaggo/swag/cmd/swag ; fi
 	swag init --generalInfo rest_controller.go --dir internal/$(API)/infrastructure/rest --output api-docs/$(API)

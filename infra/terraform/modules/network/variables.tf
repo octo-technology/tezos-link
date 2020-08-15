@@ -1,44 +1,35 @@
-variable "REGION" {
-  type    = string
-  default = "europe-west-1"
+variable "region" {
+  type        = string
+  default     = "eu-west-1"
+  description = "The region where the module will be deployed"
 }
 
-variable "ENV" {
-  type    = string
-  default = "dev"
+variable "project_name" {
+  type        = string
+  description = "The name of the project"
 }
 
-variable "PROJECT_NAME" {
-  type    = string
-  default = "tezos-link"
+variable "vpc_cidr" {
+  type        = string
+  description = "The CIDR of the VPC that will be deployed"
 }
 
-variable "BUILD_WITH" {
-  type    = string
-  default = "terraform"
+variable "subnet_tz_farm_cidr" {
+  type        = string
+  description = "The CIDR of the subnet associated to the tezos-node farm"
 }
 
-variable "VPC_CIDR" {
-  type    = string
-  default = "10.1.0.0/16"
+variable "subnet_tz_public_ecs_cidr" {
+  type        = string
+  description = "The CIDR of the subnet associated to the ecs's loadbalancers"
 }
 
-variable "SUBNET_TZ_FARM_CIDR" {
-  type    = string
-  default = "10.1.0.0/24"
+variable "subnet_tz_private_ecs_cidr" {
+  type        = string
+  description = "The CIDR of the subnet associated to the ecs containers"
 }
 
-variable "SUBNET_TZ_PUBLIC_PROXY_CIDR" {
-  type    = string
-  default = "10.1.1.0/24"
-}
-
-variable "SUBNET_TZ_PRIVATE_PROXY_CIDR" {
-  type    = string
-  default = "10.1.2.0/24"
-}
-
-variable "SUBNET_TZ_PRIVATE_DATABASE_CIDR" {
-  type    = string
-  default = "10.1.3.0/24"
+variable "subnet_tz_private_database_cidr" {
+  type        = string
+  description = "The CIDR of the subnet associated to the databases"
 }

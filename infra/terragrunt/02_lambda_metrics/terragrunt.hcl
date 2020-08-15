@@ -11,21 +11,23 @@ terraform {
 }
 
 inputs = {
-  S3_BUCKET_NAME = "tzlink-metrics-lambda-${get_env("TF_VAR_ENV", "dev")}"
-  S3_CODE_PATH = "v1.0.0/metrics.zip"
-
-  LAMBDA_NAME = "metrics"
-  LAMBDA_DESCRIPTION = "RDS old metrics cleaner lambda"
-  LAMBDA_ENVIRONMENT_VARIABLES = {
-    DATABASE_USERNAME = "administrator"
-    DATABASE_TABLE = "tezoslink"
-    DATABASE_PASSWORD = "${get_env("TF_VAR_DATABASE_PASSWORD")}"
-    DATABASE_URL = "tzlink-database.cluster-cmeu9dixowfa.eu-west-1.rds.amazonaws.com"
+  # lambda configuration
+  name        = "metrics"
+  description = "RDS metrics cleaner"
+  environment_variables = {
+    DATABASE_USERNAME = "tezoslink_team"
+    DATABASE_NAME     = "tezoslink"
+    DATABASE_URL      = "tzlink-database.cluster-cjwwybxbgnpm.eu-west-1.rds.amazonaws.com"
+    DATABASE_PASSWORD_SECRET_ARN = "arn:aws:secretsmanager:eu-west-1:912174778846:secret:tzlink-database-password-IwehdC"
   }
+  run_every = "cron(0 1 * * ? *)"
 
-  LAMBDA_VPC_CONFIG_ENABLE = true
-  LAMBDA_SUBNET_NAME = "tzlink-private-database-*"
-  LAMBDA_SECURITY_GROUP_NAME = "database"
+  # based on 00_lambda_snapshot_bucket
+  bucket_name = "tzlink-metric-cleaner-lambda"
+  code_path   = "v1.0.0/metrics.zip"
 
-  RUN_EVERY = "cron(0 1 * * ? *)"
+  # network configuration (if needed)
+  vpc_config_enable = true
+  subnet_name = "tzlink-private-database-*"
+  security_group_name = "tzlink-database"
 }

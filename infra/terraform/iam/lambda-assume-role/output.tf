@@ -13,3 +13,7 @@ output "tzlink_snapshot_lambda_access" {
 output "tzlink_metric_lambda_access" {
   value = data.aws_iam_policy_document.tzlink_metric_lambda_access.json
 }
+
+output "tzlink_secretmanager_lambda_access" {
+  value = data.aws_iam_policy_document.tzlink_secretmanager_lambda_access.json
+}

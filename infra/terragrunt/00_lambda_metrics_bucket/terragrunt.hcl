@@ -7,5 +7,5 @@ terraform {
 }
 
 inputs = {
-  S3_BUCKET_NAME = "tzlink-metrics-lambda-${get_env("TF_VAR_ENV", "dev")}"
+  s3_bucket_name = "tzlink-metric-cleaner-lambda"
 }

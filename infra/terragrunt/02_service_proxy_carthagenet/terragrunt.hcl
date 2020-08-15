@@ -3,7 +3,12 @@ include {
 }
 
 dependencies {
-  paths = ["../01_ecs_cluster", "../01_rds_cluster"]
+  paths = [
+            "../00_ecs_cluster",
+            "../01_rds_cluster",
+            "../01_tezos_carthagenet_archive_node",
+            "../01_tezos_carthagenet_rolling_node"
+          ]
 }
 
 terraform {
@@ -11,18 +16,20 @@ terraform {
 }
 
 inputs = {
-  PROXY_DOCKER_IMAGE_NAME = "louptheronlth/tezos-link"
-  PROXY_DOCKER_IMAGE_VERSION = "${get_env("TF_VAR_DOCKER_IMAGE_VERSION", "proxy-dev")}"
-  PROXY_DESIRED_COUNT = 1
+  docker_image_name        = "louptheronlth/tezos-link"
+  docker_image_version     = "${get_env("TF_VAR_DOCKER_IMAGE_VERSION", "proxy-dev")}"
+  desired_container_number = 2
 
-  PROXY_CONFIGURATION_FILE = "prod"
-  PROXY_PORT = 8001
-  PROXY_CPU = 256
-  PROXY_MEMORY = 512
+  port   = 8001
+  cpu    = 256
+  memory = 512
 
-  TEZOS_FARM_ARCHIVE_PORT = 80
-  TEZOS_FARM_ROLLING_PORT = 80
-  TZ_NETWORK = "carthagenet"
+  configuration_file = "prod"
+  tz_network         = "carthagenet"
 
-  DATABASE_PASSWORD = "${get_env("TF_VAR_DATABASE_PASSWORD", "xxxx")}"
+  database_master_username = "tezoslink_team"
+  database_name            = "tezoslink"
+
+  farm_archive_port = 80
+  farm_rolling_port = 80
 }

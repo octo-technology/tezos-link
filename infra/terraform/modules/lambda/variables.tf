@@ -1,80 +1,65 @@
-variable "REGION" {
+variable "region" {
   type        = string
-  description = "The region where the module is deployed"
   default     = "eu-west-1"
+  description = "The region where the module will be deployed."
 }
 
-variable "ENV" {
+variable "project_name" {
   type        = string
-  description = "The environment where the lambda will be executed."
-  default     = "dev"
+  description = "The name of the project"
 }
 
-variable "PROJECT_NAME" {
+variable "bucket_name" {
   type        = string
-  description = "The name of the project associated to the lambda."
-  default     = "tezos-link"
+  description = "The S3 bucket name where the code used is placed"
 }
 
-variable "BUILD_WITH" {
+variable "code_path" {
   type        = string
-  description = "Permits to know on the AWS tags that objects are build with IaC."
-  default     = "terraform"
+  description = "The path to the code used by the lambda function inside the S3 bucket"
 }
 
-variable "VPC_CIDR" {
+variable "name" {
   type        = string
-  description = "The CIDR of the VPC where the lambda will be placed"
-  default     = ""
+  description = "The name of the lambda function"
 }
 
-variable "S3_BUCKET_NAME" {
+variable "description" {
   type        = string
-  description = "The S3 bucket name that will be associated to the lambda"
+  description = "The description of the lambda function"
 }
 
-variable "S3_CODE_PATH" {
-  type        = string
-  description = "The path where the code is stored."
-  default     = "v1.0.0/snapshot.zip"
-}
-
-variable "LAMBDA_NAME" {
-  type        = string
-  description = "The purpose of the lambda (ex: snapshot)."
-}
-
-variable "LAMBDA_DESCRIPTION" {
-  type        = string
-  description = "The description of the lambda."
-}
-
-variable "LAMBDA_ENVIRONMENT_VARIABLES" {
+variable "environment_variables" {
   type        = map(string)
-  description = "The environment variables to give to the lambda."
+  description = "The map of the environment variables used by the lambda"
   default     = {}
 }
 
-variable "LAMBDA_VPC_CONFIG_ENABLE" {
-  type        = bool
-  description = "Permits to put the lambda in the VPC or not."
-  default     = false
-}
-
-variable "LAMBDA_SUBNET_NAME" {
+variable "run_every" {
   type        = string
-  description = "The subnet where the lambda will be placed (regex autorized)."
-  default     = ""
-}
-
-variable "LAMBDA_SECURITY_GROUP_NAME" {
-  type        = string
-  description = "The security_group associated to the lamdba."
-  default     = ""
-}
-
-variable "RUN_EVERY" {
-  type        = string
-  description = "The cron expression which will will trigger the lambda."
+  description = "The cron expression which schedule the lambda trigger alarm. (default: every 12 hours)"
   default     = "rate(12 hours)"
+}
+
+variable "vpc_config_enable" {
+  type        = bool
+  description = "Enable the placement of the lambda inside the VPC"
+}
+
+variable "vpc_cidr" {
+  type        = string
+  description = "[OPTIONAL] The VPC CIDR where the lambda will be deployed. (needed when vpc_config_enable=true)"
+  default     = ""
+}
+
+variable "subnet_name" {
+  type        = string
+  description = "[OPTIONAL] The subnet where the lambda will be deployed. (needed when vpc_config_enable=true)"
+  default     = ""
+}
+
+variable "security_group_name" {
+  type        = string
+  description = "[OPTIONAL] The security_group used by the lambda. (needed when vpc_config_enable=true)"
+  default     = ""
 }

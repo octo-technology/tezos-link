@@ -48,7 +48,8 @@ func HandleRequest(ctx context.Context) (string, error) {
 
 func getPublicKeyFromS3() ssh.AuthMethod {
 	sess, _ := session.NewSession(&aws.Config{
-		Region: aws.String(os.Getenv("S3_REGION"))},
+		Region: aws.String(os.Getenv("S3_REGION")),
+	},
 	)
 
 	downloader := s3manager.NewDownloader(sess)
@@ -101,9 +102,9 @@ func getInstanceIP() *string {
 				},
 			},
 			{
-				Name: aws.String("tag:BuildWith"),
+				Name: aws.String("tag:Accessibility"),
 				Values: []*string{
-					aws.String("terraform"),
+					aws.String("public"),
 				},
 			},
 			{
@@ -126,7 +127,7 @@ func getInstanceIP() *string {
 		panic(fmt.Sprintf("Error when describe instances :  %v", err))
 	}
 
-	firstIP := res.Reservations[0].Instances[0].PublicIpAddress
+	firstIP := res.Reservations[0].Instances[0].PrivateIpAddress
 
 	log.Print(fmt.Sprintf("Running lambda on instance : %s", *firstIP))
 

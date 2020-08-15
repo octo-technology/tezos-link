@@ -11,5 +11,6 @@ terraform {
 }
 
 inputs = {
-  DATABASE_PASSWORD = "${get_env("TF_VAR_DATABASE_PASSWORD", "xxxx")}"
+  database_master_username = "tezoslink_team"
+  database_name            = "tezoslink"
 }

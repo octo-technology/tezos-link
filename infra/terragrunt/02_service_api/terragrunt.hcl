@@ -3,7 +3,10 @@ include {
 }
 
 dependencies {
-  paths = ["../01_ecs_cluster", "../01_rds_cluster"]
+  paths = [
+            "../00_ecs_cluster",
+            "../01_rds_cluster"
+          ]
 }
 
 terraform {
@@ -11,15 +14,16 @@ terraform {
 }
 
 inputs = {
-  API_DOCKER_IMAGE_NAME = "louptheronlth/tezos-link"
-  API_DOCKER_IMAGE_VERSION = "${get_env("TF_VAR_DOCKER_IMAGE_VERSION", "proxy-api")}"
-  API_DESIRED_COUNT = 1
+  docker_image_name        = "louptheronlth/tezos-link"
+  docker_image_version     = "${get_env("TF_VAR_DOCKER_IMAGE_VERSION", "proxy-api")}"
+  desired_container_number = 1
 
-  API_CONFIGURATION_FILE = "local"
+  port   = 8001
+  cpu    = 256
+  memory = 512
 
-  API_PORT = 8000
-  API_CPU = 256
-  API_MEMORY = 512
+  configuration_file = "local"
 
-  DATABASE_PASSWORD = "${get_env("TF_VAR_DATABASE_PASSWORD", "xxxx")}"
+  database_master_username = "tezoslink_team"
+  database_name            = "tezoslink"
 }

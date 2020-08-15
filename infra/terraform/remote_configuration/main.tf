@@ -1,5 +1,5 @@
-resource "aws_s3_bucket" "tfstate_storage" {
-  bucket = "tzlink-tfstate"
+resource "aws_s3_bucket" "remote_state_storage" {
+  bucket = "tzlink-remote-state"
 
   server_side_encryption_configuration {
     rule {
@@ -14,15 +14,14 @@ resource "aws_s3_bucket" "tfstate_storage" {
   }
 
   tags = {
-    Name        = "tzlink-tfstate"
+    Name        = "tzlink-remote-state"
     Project     = "tezos-link"
-    Environment = "all"
-    BuildWith   = "terraform"
+    Environment = "global"
   }
 }
 
-resource "aws_dynamodb_table" "tfstate_lock" {
-  name           = "tzlink-tfstate-lock"
+resource "aws_dynamodb_table" "remote_state_lock" {
+  name           = "tzlink-remote-state-lock"
   read_capacity  = 20
   write_capacity = 20
   hash_key       = "LockID"
@@ -33,9 +32,8 @@ resource "aws_dynamodb_table" "tfstate_lock" {
   }
 
   tags = {
-    Name        = "tzlink-tfstate-lock"
+    Name        = "tzlink-remote-state-lock"
     Project     = "tezos-link"
-    Environment = "all"
-    BuildWith   = "terraform"
+    Environment = "global"
   }
 }

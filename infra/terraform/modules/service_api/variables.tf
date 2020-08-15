@@ -1,82 +1,60 @@
-variable "REGION" {
-  type    = string
-  default = "eu-west-1"
+variable "region" {
+  type        = string
+  default     = "eu-west-1"
+  description = "The region where the module will be deployed"
 }
 
-variable "ENV" {
-  type    = string
-  default = "dev"
+variable "project_name" {
+  type        = string
+  description = "The name of the project"
 }
 
-variable "PROJECT_NAME" {
-  type    = string
-  default = "tezos-link"
+variable "vpc_cidr" {
+  type        = string
+  description = "The CIDR of the VPC where the ECS service will be deployed"
 }
 
-variable "BUILD_WITH" {
-  type    = string
-  default = "terraform"
+variable "docker_image_name" {
+  type        = string
+  description = "The name of the deployed image"
 }
 
-variable "VPC_CIDR" {
-  type    = string
-  default = "10.1.0.0/16"
+variable "docker_image_version" {
+  type        = string
+  description = "The version of the deployed image"
 }
 
-variable "API_DOCKER_IMAGE_NAME" {
-  type    = string
-  default = "louptheronlth/tezos-link"
+variable "desired_container_number" {
+  type        = number
+  description = "The desired of container deployed by the service"
 }
 
-variable "API_DOCKER_IMAGE_VERSION" {
-  type    = string
-  default = "backend-dev"
+variable "port" {
+  type        = number
+  description = "The port open by the container that will be targeted by the loadbalancer"
 }
 
-variable "API_PORT" {
-  type    = number
-  default = 8001
+variable "cpu" {
+  type        = number
+  description = "The CPU used by the service to run service's containers. (AWS CPU unit: 1vCPU = 1024)"
 }
 
-variable "API_CPU" {
-  type    = number
-  default = 1024 # 1 vCPU
+variable "memory" {
+  type        = number
+  description = "The RAM used by the service to run service's containers"
 }
 
-variable "API_MEMORY" {
-  type    = number
-  default = 250
+variable "configuration_file" {
+  type        = string
+  description = "the name of the configuration file inside the container"
 }
 
-variable "DATABASE_USERNAME" {
-  type = string
+variable "database_master_username" {
+  type        = string
+  description = "The username used by the service to connect on the RDS database."
 }
 
-variable "DATABASE_PASSWORD" {
-  type = string
-}
-
-variable "DATABASE_TABLE" {
-  type    = string
-  default = "tezoslink"
-}
-
-variable "TEZOS_FARM_URL" {
-  type    = string
-  default = "farm.example.nop"
-}
-
-variable "TEZOS_FARM_ARCHIVE_PORT" {
-  type    = string
-  default = 80
-}
-
-variable "API_CONFIGURATION_FILE" {
-  type    = string
-  default = "dev"
-}
-
-variable "API_DESIRED_COUNT" {
-  type    = number
-  default = 0
+variable "database_name" {
+  type        = string
+  description = "The name of the database used by the service"
 }

@@ -1,4 +1,5 @@
-variable "REGION" {
-  type    = string
-  default = "europe-west-1"
+variable "region" {
+  type        = string
+  default     = "eu-west-1"
+  description = "The region where the module will be deployed."
 }
