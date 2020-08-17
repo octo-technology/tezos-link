@@ -41,7 +41,9 @@ The repository is currently following this organization:
         └── docs # usage documentation
 ```
 
-## Run services locally on the machine
+## Run services locally on the machine with mockup blockchain node
+
+> Blockchain nodes are mocked up for development environment the be as lightweight as possible. 
 
 ### Requirements
 
@@ -67,10 +69,10 @@ It will run:
 - `tezos-link_proxy`
 - `tezos-link_proxy-carthagenet`
 - `tezos-link_api`
-- `mockserver/mockserver:mockserver-5.9.0`
+- `mockserver/mockserver:mockserver-5.9.0` (mocking a blockchain node)
 - `postgres:9.6`
 
-Mockserver is mocking the blockchain node, the only endpoint served by this mock is:
+The only endpoint served by the blockchain mock is:
 
 ```bash
 curl -X PUT localhost:8001/v1/<YOUR_PROJECT_ID>/mockserver/status
@@ -214,25 +216,50 @@ REST API to manage projects and get project's metrics.
 - `TEZOS_ROLLING_PORT` (default: `1090`)
 - `SERVER_PORT` (default: `8001`)
 
-### Snapshot exporter
+### Snapshot exporter lambda
 
 Lambda function scheduled with a `Cloudwatch Rule` cronjob, connect to a node with SSH and trigger a snapshot export.
 
-#### Deploy
+#### Deploy for testing and  for development purpose
+
+Individual deployment of the lambda is possible for testing and development purpose.
 
 > You will need AWS credentials setup on your machine, see [AWS Credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
 
-It will build, send to the S3 bucket and update lambda code:
+It will build, send to the S3 bucket and update snapshot lambda code:
 
 ```bash
 $> make build-unix
-$> make deploy-lambda
+$> make deploy-snapshot-lambda
 ```
 
 To execute the lambda, run:
 
 ```bash
 aws lambda invoke --region=eu-west-1 --function-name=snapshot --log Tail output.txt | grep "LogResult"| awk -F'"' '{print $4}' | base64 --decode
+```
+
+### Metrics cleaner lambda
+
+Lambda function scheduled with a `Cloudwatch Rule` cronjob, connect to a node with SSH and trigger a metrics clean.
+
+#### Deploy for testing and development purpose
+
+Individual deployment of the lambda is possible for testing and development purpose.
+
+> You will need AWS credentials setup on your machine, see [AWS Credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
+
+It will build, send to the S3 bucket and update metrics-cleaner lambda code:
+
+```bash
+$> make build-unix
+$> make deploy-metrics-cleaner-lambda
+```
+
+To execute the lambda, run:
+
+```bash
+aws lambda invoke --region=eu-west-1 --function-name=metrics --log Tail output.txt | grep "LogResult"| awk -F'"' '{print $4}' | base64 --decode
 ```
 
 #### Environment variables
