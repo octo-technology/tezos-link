@@ -76,7 +76,7 @@ resource "aws_cloudfront_distribution" "tz_front" {
       response_code         = "200"
       response_page_path    = "/index.html"
     }
-  ]  
+  ]
 
   default_cache_behavior {
     target_origin_id = "TZLinkFrontS3"
