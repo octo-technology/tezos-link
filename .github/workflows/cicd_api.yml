@@ -69,12 +69,12 @@ jobs:
     - name: Install terraform
       uses: little-core-labs/install-terraform@v1
       with:
-        version: 0.12.20
+        version: 0.12.24
 
     - name: Setup Terragrunt
       uses: autero1/action-terragrunt@v0.1.0
       with:
-        terragrunt_version: 0.21.4
+        terragrunt_version: 0.23.29
 
     - uses: actions/checkout@v2
     
