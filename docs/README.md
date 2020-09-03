@@ -1,4 +1,6 @@
-# Technical documentations
+# Documentation
+
+In this folder, you will find all the documentation about development, process and deployment of the application.
 
 ## Table of Contents
 
@@ -6,7 +8,7 @@
 
 2 - [Architecture](./Architecture.md)
 
-3 - [Services](./services)
+3 - [Services](./services) <TODO>
   - [API](./services/API.md)
   - [Proxy](./services/Proxy.md)
   - [Frontend](./services/Frontend.md)
@@ -16,9 +18,15 @@
 5 - Deploy the project on:
   - [an AWS tenant](./How_to_deploy_on_AWS.md)
 
-6 - [Lambdas](./lambdas)
-  - [Snapshot exporter](./lambdas/Snapshot_Exporter.md)
-  - [Metrics cleaner](./lambdas/Metrics_Cleaner.md)
+6 - [Lambdas](./lambdas) <TODO>
+  - [Snapshot exporter](./lambdas/Snapshot_Exporter.md) <TODO>
+  - [Metrics cleaner](./lambdas/Metrics_Cleaner.md) <TODO>
+
+7 - Additional process:
+  - [How test the stack]() <TODO>
+  - [Add a new network](./Add_a_new_network.md)
+  - [How make a database evolution]() <TODO>
+  - [Connect on a virtual machine to debug]() (maintainers only) <TODO>
 
 A - [References](./References.md)
 
