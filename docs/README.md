@@ -6,14 +6,14 @@
 
 2 - [Architecture](./Architecture.md)
 
-3 - [Run the project on the machine](./How_to_run_locally.md)
-
-4 - [Deploy the project on a cloud provider](./How_to_deploy_on_AWS.md)
-
-5 - [Services](./services)
+3 - [Services](./services)
   - [API](./services/API.md)
   - [Proxy](./services/Proxy.md)
   - [Frontend](./services/Frontend.md)
+
+4 - [Run the project on the machine](./How_to_run_locally.md)
+
+5 - [Deploy the project on a cloud provider](./How_to_deploy_on_AWS.md)
 
 6 - [Lambdas](./lambdas)
   - [Snapshot exporter](./lambdas/Snapshot_Exporter.md)
