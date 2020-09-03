@@ -228,3 +228,10 @@ $> terragrunt plan
 # To apply the change
 $> terragrunt apply
 ```
+
+## References
+
+This repo took some ideas & code from:
+
+- https://github.com/tezexInfo/TezProxy
+- https://github.com/AymericBethencourt/serverless-mern-stack/
