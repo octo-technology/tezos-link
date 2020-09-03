@@ -13,7 +13,8 @@
 
 4 - [Run the project on the machine](./How_to_run_locally.md)
 
-5 - [Deploy the project on a cloud provider](./How_to_deploy_on_AWS.md)
+5 - Deploy the project on:
+  - [an AWS tenant](./How_to_deploy_on_AWS.md)
 
 6 - [Lambdas](./lambdas)
   - [Snapshot exporter](./lambdas/Snapshot_Exporter.md)
