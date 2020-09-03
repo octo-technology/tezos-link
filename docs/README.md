@@ -2,40 +2,24 @@
 
 ## Table of Contents
 
-- [Project organization](#project-organization)
-- [Run services locally on the machine](#run-services-locally-on-the-machine)
-- [Build all services](#build-all-services)
-- [Tests all services](#tests-all-services)
-- [Frontend](#frontend)
-- [Services](#services)
-  - [API](#api)
-  - [Proxy](#proxy)
-  - [Snapshot exporter](#snapshot-exporter)
-- [Infrastructure](#infrastructure)
-  - [Architecture](#architecture)
-  - [Requirements](#requirements)
-  - [How To Deploy](#how-to-deploy)
-- [Documentation](#documentation)
-- [References](#references)
+1 - [Project organization](./Project_organization.md)
 
-## Project Organization
+2 - [Architecture](./Architecture.md)
 
-The repository is currently following this organization:
+3 - [Run the project on the machine](./How_to_run_locally.md)
 
-```
-.
-├── api          # api documentation
-├── build        # packaging
-├── cmd          # mains
-├── config       # config parsers
-├── data         # config and migrations
-├── infra        # infrastructure
-├── internal     # services
-├── test         # test-specific files
-└── web          # frontend
-    └── public
-        └── docs # usage documentation
-```
+4 - [Deploy the project on a cloud provider](./How_to_deploy_on_AWS.md)
+
+5 - [Services](./services)
+  - [API](./services/API.md)
+  - [Proxy](./services/Proxy.md)
+  - [Frontend](./services/Frontend.md)
+
+6 - [Lambdas](./lambdas)
+  - [Snapshot exporter](./lambdas/Snapshot_Exporter.md)
+  - [Metrics cleaner](./lambdas/Metrics_Cleaner.md)
+
+A - [References](./References.md)
 
 ## Run services locally on the machine with mockup blockchain node
 
@@ -228,10 +212,3 @@ $> terragrunt plan
 # To apply the change
 $> terragrunt apply
 ```
-
-## References
-
-This repo took some ideas & code from:
-
-- https://github.com/tezexInfo/TezProxy
-- https://github.com/AymericBethencourt/serverless-mern-stack/
