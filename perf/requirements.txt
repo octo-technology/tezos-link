@@ -13,7 +13,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.3
 locust==1.0.3
 locust-plugins==1.0.12
-lxml==4.6.3
+lxml==4.6.5
 MarkupSafe==1.1.1
 msgpack==1.0.0
 psutil==5.7.0
