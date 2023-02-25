@@ -28,8 +28,7 @@ require (
 	github.com/swaggo/http-swagger v0.0.0-20200103000832-0e9263c4b516
 	github.com/swaggo/swag v1.6.3
 	github.com/ulule/limiter v2.2.2+incompatible
-	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
-	golang.org/x/tools v0.0.0-20200219195521-7c4b6277d74d // indirect
+	golang.org/x/crypto v0.1.0
 	google.golang.org/grpc v1.21.0 // indirect
 	gopkg.in/yaml.v2 v2.2.4 // indirect
 )
